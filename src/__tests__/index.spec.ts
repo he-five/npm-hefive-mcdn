@@ -1,5 +1,19 @@
-import { sum } from '../index'
+import { McdnDriver } from '../index'
 
-test('Sum 4 + 5 = 9', () => {
-  expect(sum(4, 5)).toBe(9)
+// let driver : Index | null = null
+//
+// beforeEach(() => {
+//   driver = new Index();
+// });
+
+test('Connect MCDN', () => {
+  let driver = new McdnDriver()
+  driver.connectMcdn('COM1')
+  expect(driver.connected).toBe(true)
+})
+
+test('Connect Serial', () => {
+  let driver = new McdnDriver()
+  driver.connectSerial('COM2')
+  expect(driver.connected).toBe(true)
 })
