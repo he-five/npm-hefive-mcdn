@@ -24,7 +24,8 @@ class Serial {
   }
 
   public readFwVersion(){
-    this.serialPort.write('ver', (err: any) => {
+    let buff = Buffer.from('ver\r', 'ascii');
+    this.serialPort.write(buff, (err: any) => {
       if (err) {
         // TODO add error handaling
       }
