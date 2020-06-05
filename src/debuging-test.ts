@@ -1,5 +1,5 @@
-import {McdnDriver} from './index'
+ import { McdnDriver } from './index'
 
-let driver = new McdnDriver();
-driver.connectSerial('com1');
-driver.disconnect();
+ const driver = new McdnDriver()
+ driver.connectSerial('COM5');
+ driver.disconnect();

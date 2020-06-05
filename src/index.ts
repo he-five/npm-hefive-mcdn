@@ -1,10 +1,10 @@
-var path = require('path');
-import { ChildProcess } from 'child_process'
-const child_process = require('child_process')
-
+import {McdnCmd, Commands} from "./mcdn-cmd";
+import {ChildProcess} from 'child_process'
 import {EventEmitter} from 'events';
 
-
+//import { PlatformPath }  from 'path';
+const path =  require('path');
+const child_process = require('child_process')
 
 class McdnDriver extends EventEmitter {
   public connected : boolean
@@ -17,15 +17,17 @@ class McdnDriver extends EventEmitter {
   }
 
   public connectMcdn (portName: string) {
-    this.driverProcess = child_process.fork(path.join(__dirname,'/drivers/mcdn'), [portName])
-    if (this.driverProcess!.connected) {
-      this.connected = true
-      this.consumeEvents()
-    }
+    let serilOrMcdn = 'mcdn';
+    this.createProcess(serilOrMcdn);
   }
 
   public connectSerial (portName: string) {
-    this.driverProcess = child_process.fork(path.join(__dirname,'./drivers/serial'), [portName])
+    let serilOrMcdn = 'serial';
+    this.createProcess(serilOrMcdn);
+   }
+
+  private createProcess(serilOrMcdn: string) {
+    this.driverProcess = child_process.fork(path.join(__dirname, '/drivers/index'), serilOrMcdn)
     if (this.driverProcess!.connected) {
       this.connected = true
       this.consumeEvents()
@@ -33,18 +35,8 @@ class McdnDriver extends EventEmitter {
   }
 
   public disconnect () {
-    this.driverProcess?.send({cmd:'disconnect'});
-
+    this.driverProcess?.send(new McdnCmd(Commands.DISCONNECT));
   }
-
-  /**
-   * events.EventEmitter
-   * 1. close
-   * 2. disconnect
-   * 3. error
-   * 4. exit
-   * 5. message
-   */
 
   public consumeEvents () {
     this.driverProcess?.on('close', () => {

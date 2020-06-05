@@ -1,23 +1,44 @@
+const SerialPort = require('serialport')
+
+
 class Serial {
-  constructor () {}
-  public connect () {}
+  private serialPort : typeof SerialPort
+  private connected : boolean;
+
+  constructor (){
+    this.connected = false;
+    this.serialPort = null;
+  }
+  public connect (portName : string) {
+    if (!this.connected){
+      // Not connected
+        this.serialPort = new SerialPort(portName, (err: string) => {
+          if (err){
+            this.connected = false;
+            // TODO Error event 'Open port failed'
+          }
+        });
+        this.connected = true;
+        this.startLisening();
+    }
+  }
+
+  private startLisening(){
+    if (!this.connected){
+      return;
+    }
+    // Switches the port into "flowing mode"
+    this.serialPort.on('data', (data : string) => {
+      console.log('Data:', data)
+    })
+
+    // Open errors will be emitted as an error event
+    this.serialPort.on('error', (err : any) => {
+      console.log('Error: ', err.message)
+    })
+  }
+
   public disconnect () {}
 }
 
-let serial = new Serial()
-
-serial.connect()
-
-process.on('message', (data) => {
-   switch (data.cmd) {
-     case 'disconnect':
-       serial.disconnect();
-       process.exit(0);
-       break;
-     default:
-       console.log('unknown command')
-   }
-  //
-  // }
-  //
-})
+export { Serial }
