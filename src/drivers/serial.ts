@@ -12,7 +12,7 @@ class Serial {
   public connect (portName : string) {
     if (!this.connected){
       // Not connected
-        this.serialPort = new SerialPort(portName, (err: string) => {
+        this.serialPort = new SerialPort(portName,{ baudRate: 115200 }, (err: string) => {
           if (err){
             this.connected = false;
             // TODO Error event 'Open port failed'
