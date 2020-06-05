@@ -5,6 +5,14 @@ import {EventEmitter} from 'events';
 const path =  require('path');
 const child_process = require('child_process')
 
+
+// TEMP just to test listing functionality
+const SerialPort = require('serialport')
+SerialPort.list().then(
+    (ports:any) => ports.forEach(console.log),
+    (err:any) => console.error(err)
+)
+
 class McdnDriver extends EventEmitter {
   public connected : boolean
   private driverProcess: ChildProcess | null
