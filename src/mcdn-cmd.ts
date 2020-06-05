@@ -2,6 +2,7 @@
 enum Commands {
     DISCONNECT = 'DISCONNECT',
     CONNECT = `CONNECT`,
+    FW_VER = `FW_VER`,
 
 }
 

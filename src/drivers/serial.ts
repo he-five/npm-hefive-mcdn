@@ -23,6 +23,14 @@ class Serial {
     }
   }
 
+  public readFwVersion(){
+    this.serialPort.write('ver', (err: any) => {
+      if (err) {
+        // TODO add error handaling
+      }
+    })
+  }
+
   private startLisening(){
     if (!this.connected){
       return;

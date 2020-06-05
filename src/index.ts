@@ -2,7 +2,6 @@ import {McdnCmd, Commands} from "./mcdn-cmd";
 import {ChildProcess} from 'child_process'
 import {EventEmitter} from 'events';
 
-//import { PlatformPath }  from 'path';
 const path =  require('path');
 const child_process = require('child_process')
 
@@ -18,25 +17,32 @@ class McdnDriver extends EventEmitter {
 
   public connectMcdn (portName: string) {
     let serilOrMcdn = 'mcdn';
-    this.createProcess(serilOrMcdn);
+    this.createProcess(serilOrMcdn, portName);
   }
 
   public connectSerial (portName: string) {
     let serilOrMcdn = 'serial';
-    this.createProcess(serilOrMcdn);
+    this.createProcess(serilOrMcdn, portName);
    }
 
-  private createProcess(serilOrMcdn: string) {
-    this.driverProcess = child_process.fork(path.join(__dirname, '/drivers/index'), serilOrMcdn)
+  private createProcess(serilOrMcdn: string, portName: string) {
+    this.driverProcess = child_process.fork(path.join(__dirname, '/drivers/index'), [serilOrMcdn])
     if (this.driverProcess!.connected) {
       this.connected = true
       this.consumeEvents()
+      this.driverProcess?.send(new McdnCmd(Commands.CONNECT, portName));
     }
   }
 
   public disconnect () {
     this.driverProcess?.send(new McdnCmd(Commands.DISCONNECT));
   }
+
+  public getFwVersion() {
+    this.driverProcess?.send(new McdnCmd(Commands.FW_VER));
+  }
+
+
 
   public consumeEvents () {
     this.driverProcess?.on('close', () => {
@@ -51,6 +57,7 @@ class McdnDriver extends EventEmitter {
     })
     this.driverProcess?.on('message', msg => {
       console.log(`driverProcess error: ${msg}`)
+
     })
   }
 }
