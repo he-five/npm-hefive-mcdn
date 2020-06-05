@@ -4,14 +4,16 @@ const child_process = require('child_process')
 
 import {EventEmitter} from 'events';
 
-class McdnDriver extends EventEmitter {
-  public connected = false
 
+
+class McdnDriver extends EventEmitter {
+  public connected : boolean
   private driverProcess: ChildProcess | null
 
   constructor () {
     super()
     this.driverProcess = null
+    this.connected = false;
   }
 
   public connectMcdn (portName: string) {
@@ -30,7 +32,10 @@ class McdnDriver extends EventEmitter {
     }
   }
 
-  public disconect () {}
+  public disconnect () {
+    this.driverProcess?.send({cmd:'disconnect'});
+
+  }
 
   /**
    * events.EventEmitter
@@ -44,9 +49,10 @@ class McdnDriver extends EventEmitter {
   public consumeEvents () {
     this.driverProcess?.on('close', () => {
       console.log('driverProcess close')
+      this.connected = false
     })
     this.driverProcess?.on('disconnect', () => {
-      console.log('driverProcess disconnect')
+      //console.log('driverProcess disconnect')
     })
     this.driverProcess?.on('error', err => {
       console.log(`driverProcess error: ${err}`)
