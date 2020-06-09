@@ -1,10 +1,15 @@
 
+const CmdPass = '>'
+const CmdFail = '?'
+
 enum Commands {
+    NONE = '',
     DISCONNECT = 'DISCONNECT',
     CONNECT = `CONNECT`,
     FW_VER = `FW_VER`,
 
 }
+
 
 class McdnCmd {
     public cmd: Commands;
@@ -16,4 +21,4 @@ class McdnCmd {
     }
 }
 
-export {McdnCmd, Commands};
+export {McdnCmd, Commands, CmdFail, CmdPass};

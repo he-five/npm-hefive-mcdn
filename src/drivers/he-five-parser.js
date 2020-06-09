@@ -1,21 +1,11 @@
+import { CmdFail, CmdPass } from '../mcdn-cmd'
 const { Transform } = require('stream')
 
-/**
- * A transform stream that emits data each time a byte sequence is received.
- * @extends Transform
- * @summary To use the `Delimiter` parser, provide a delimiter as a string, buffer, or array of bytes. Runs in O(n) time.
- * @example
- const SerialPort = require('serialport')
- const Delimiter = require('@serialport/parser-delimiter')
- const port = new SerialPort('/dev/tty-usbserial1')
- const parser = port.pipe(new Delimiter({ delimiter: '\n' }))
- parser.on('data', console.log)
- */
 class HeFiveParser extends Transform {
   constructor(options = {}) {
     super(options)
-    this.passDelimiter = Buffer.from('>', 'ascii');
-    this.failDelimiter = Buffer.from('?', 'ascii');
+    this.passDelimiter = Buffer.from(CmdPass, 'ascii');
+    this.failDelimiter = Buffer.from(CmdFail, 'ascii');
     this.buffer = Buffer.alloc(0)
   }
 
@@ -26,7 +16,7 @@ class HeFiveParser extends Transform {
           ((position = data.indexOf(this.failDelimiter)) !== -1))
     {
       this.push(data)
-      data = data.slice(position + this.passDelimiter.length)
+      data = data.slice(position + 1)
     }
     this.buffer = data
     cb()
