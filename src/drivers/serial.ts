@@ -1,6 +1,6 @@
 import {CmdPass, Commands} from "../mcdn-cmd";
 import {DriverReply} from "../driver-replay";
-
+const delimiter  = require('@serialport/parser-delimiter');
 const SerialPort = require('serialport')
 const HeFiveParser = require('./he-five-parser')
 
@@ -41,6 +41,9 @@ class Serial {
         }
       })
     }
+    else{
+      // SEND error
+    }
   }
 
   private startLisening(){
@@ -48,8 +51,8 @@ class Serial {
       return;
     }
     // Switches the port into "flowing mode"
-    // this.serialPort.on('data', (data : Buffer) => {
-    //   //console.log('RAW:', data.toString('ascii'))
+    //this.serialPort.on('data', (data : Buffer) => {
+    //   console.log('RAW:', data.toString('ascii'))
     // })
 
     this.parser.on('data', (data : Buffer) => {
@@ -61,7 +64,7 @@ class Serial {
         strData = strData.trim();
         reply.passed = strData.endsWith(CmdPass);
         let arg  = strData.slice(0)
-        reply.
+        //reply.
 
 
       }

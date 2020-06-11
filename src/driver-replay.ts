@@ -3,14 +3,14 @@ import {Commands} from "./mcdn-cmd";
 class DriverReply {
     public cmd      : Commands;
     public passed   : boolean;
-    public data     : any;
-    public netId    : number
+    public answer   : any;
+    public deviceId    : number
 
     constructor () {
         this.cmd        = Commands.NONE;
         this.passed     = false;
-        this.data       = null;
-        this.netId      = 1
+        this.answer       = null;
+        this.deviceId      = 1
     }
 
 }

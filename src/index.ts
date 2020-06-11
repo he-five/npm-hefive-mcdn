@@ -3,15 +3,9 @@ import {ChildProcess} from 'child_process'
 import {EventEmitter} from 'events';
 
 const path =  require('path');
+const SerialPort = require('serialport')
 const child_process = require('child_process')
 
-
-// TEMP just to test listing functionality
-const SerialPort = require('serialport')
-SerialPort.list().then(
-    (ports:any) => ports.forEach(console.log),
-    (err:any) => console.error(err)
-)
 
 class McdnDriver extends EventEmitter {
   public connected : boolean
@@ -21,6 +15,27 @@ class McdnDriver extends EventEmitter {
     super()
     this.driverProcess = null
     this.connected = false;
+  }
+
+  public enumSerialPorts() {
+
+    SerialPort.list().then(
+        (ports:any[]) => {
+          let portsPath : string[] = [];
+          ports.forEach((port) => {
+            console.log(port['path'])
+            if (port['path']){
+              portsPath.push(port['path']);
+            }
+          })
+          this.emit('ports', portsPath);
+        },
+        (err:any) => {
+          this.emit('error', err);
+          //console.error(err)
+
+        }
+    )
   }
 
   public connectMcdn (portName: string) {
@@ -49,8 +64,6 @@ class McdnDriver extends EventEmitter {
   public getFwVersion() {
     this.driverProcess?.send(new McdnCmd(Commands.FW_VER));
   }
-
-
 
   public consumeEvents () {
     this.driverProcess?.on('close', () => {

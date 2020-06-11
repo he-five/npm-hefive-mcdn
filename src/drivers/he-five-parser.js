@@ -1,23 +1,39 @@
-import { CmdFail, CmdPass } from '../mcdn-cmd'
+//import {cmdFail, cmdPass } from '../mcdn-cmd'
 const { Transform } = require('stream')
+
 
 class HeFiveParser extends Transform {
   constructor(options = {}) {
     super(options)
-    this.passDelimiter = Buffer.from(CmdPass, 'ascii');
-    this.failDelimiter = Buffer.from(CmdFail, 'ascii');
+
+    if (options.cmdTerminators){
+      if (Array.isArray(options.cmdTerminators)){
+        options.cmdTerminators.forEach((term) => {
+          this.terminators.push(Buffer.from(term, 'ascii'));
+        })
+      }
+      else {
+        throw new TypeError('"cmdTerminators" expect to be array ')
+      }
+    }
+    else{
+      throw new TypeError('"cmdTerminators" has a 0 or undefined length')
+    }
+
     this.buffer = Buffer.alloc(0)
   }
 
   _transform(chunk, encoding, cb) {
     let data = Buffer.concat([this.buffer, chunk])
-    let position
-    while (((position = data.indexOf(this.passDelimiter)) !== -1) ||
-          ((position = data.indexOf(this.failDelimiter)) !== -1))
-    {
-      this.push(data)
-      data = data.slice(position + 1)
-    }
+
+    this.terminators.forEach((term) => {
+      let position;
+      while ((position = data.indexOf(term)) !== -1) {
+
+        this.push(data.slice(0, position + term.length ))
+        data = data.slice(position + term.length)
+      }
+    })
     this.buffer = data
     cb()
   }
