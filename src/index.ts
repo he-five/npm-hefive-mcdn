@@ -68,7 +68,7 @@ class McdnDriver extends EventEmitter {
   }
 
   public sendCmd(cmd : Commands){
-    console.log(`CLIENT REQUEST ${cmd}`)
+    console.log(`CLIENT REQUEST: ${cmd}`)
     this.driverProcess?.send(new McdnCmd(cmd));
   }
 
