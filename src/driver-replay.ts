@@ -26,13 +26,25 @@ class IpcReply {
     public drvReply     : DriverReply | null;
     public err          : any
 
-    constructor () {
-        this.type         = IpcReplyType.INVALID;
+    constructor (type :IpcReplyType, data: any ) {
+        this.type         = type;
         this.drvReply     = null;
-        this.err          = null
+        this.err          = null;
+
+        switch (type){
+            case IpcReplyType.DRV:
+                this.drvReply   = data
+                break;
+            case IpcReplyType.ERROR:
+                this.err        = data
+                break;
+            default:
+                // ERROR
+
+        }
     }
 
 }
 
 
-export { DriverReply, IpcReply }
+export { DriverReply, IpcReply, IpcReplyType }

@@ -1,8 +1,10 @@
 import {cmdFail, cmdPass, Commands} from "../mcdn-cmd";
-import {DriverReply} from "../driver-replay";
-const delimiter  = require('@serialport/parser-delimiter');
+import {DriverReply, IpcReply, IpcReplyType} from "../driver-replay";
 const SerialPort = require('serialport')
 const HeFiveParser = require('./he-five-parser')
+
+const lineTerminator = '\r\n'
+
 
 class Serial {
   private serialPort  : typeof SerialPort
@@ -56,24 +58,49 @@ class Serial {
     // })
 
     this.parser.on('data', (data : Buffer) => {
-      console.log('PARSED:', data)
-      let strData =  data.toString('ascii')
-      if (data.length > 0){
-        let reply = new DriverReply();
-        reply.cmd = this.cmd;
-        strData = strData.trim();
-        reply.passed = strData.endsWith(cmdPass);
-        let arg  = strData.slice(0)
-        //reply.
+      //setImmediate((data) =>{
+        let strData =  data.toString('ascii')
+        console.log('Complete answer:', strData)
+        if (strData.length > 0){
+          //new
+          let reply = new DriverReply();
+          reply.cmd = this.cmd;
+          strData = strData.trim();
+          reply.passed = strData.endsWith(cmdPass);
+          strData  = strData.slice(0, strData.length - 1);
+          let position:number =  strData.indexOf(lineTerminator);
+          if (position !== -1 ) {
+            let devStr = strData.slice(position+lineTerminator.length, strData.length);
+            //console.log('deviceId:', devStr)
+            reply.deviceId = parseInt(devStr)
+            reply.answer = strData.slice(0, position);
+            //console.log('reply.answer:'+ reply.answer)
+          }
+          else { // ERROR
 
-
-      }
+          }
+         this.postProcessAnswer(reply)
+        }
+     //})
     })
     // Open errors will be emitted as an error event
     this.serialPort.on('error', (err : any) => {
       console.log('Error: ', err.message)
       //process.send?.(err);
     })
+  }
+
+  private postProcessAnswer(reply : DriverReply){
+
+    switch(reply.cmd){
+      case Commands.FW_VER:
+        reply.answer = reply.answer.slice(0,reply.answer.indexOf(','))
+        break;
+    }
+    //console.log(reply);
+
+    process.send?.(new IpcReply(IpcReplyType.DRV, reply))
+
   }
 
   public disconnect () {}

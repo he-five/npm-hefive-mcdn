@@ -1,6 +1,7 @@
-import {McdnCmd, Commands} from "./mcdn-cmd";
+import {Commands, McdnCmd} from "./mcdn-cmd";
 import {ChildProcess} from 'child_process'
 import {EventEmitter} from 'events';
+import {IpcReply, IpcReplyType} from "./driver-replay";
 
 const path =  require('path');
 const SerialPort = require('serialport')
@@ -62,7 +63,13 @@ class McdnDriver extends EventEmitter {
   }
 
   public getFwVersion() {
-    this.driverProcess?.send(new McdnCmd(Commands.FW_VER));
+//    this.driverProcess?.send(new McdnCmd(Commands.FW_VER));
+    this.sendCmd(Commands.FW_VER)
+  }
+
+  public sendCmd(cmd : Commands){
+    console.log(`CLIENT REQUEST ${cmd}`)
+    this.driverProcess?.send(new McdnCmd(cmd));
   }
 
   public consumeEvents () {
@@ -76,11 +83,12 @@ class McdnDriver extends EventEmitter {
     this.driverProcess?.on('error', err => {
       console.log(`driverProcess error: ${err}`)
     })
-    this.driverProcess?.on('message', msg => {
-      console.log(`driverProcess error: ${msg}`)
-      this.emit('data', msg);
-
-    })
+    this.driverProcess?.on('message', ( msg:IpcReply )=> {
+      //console.log(`driverProcess error: ${msg}`)
+      if (msg.type == IpcReplyType.DRV){
+          this.emit('data', msg.drvReply);
+      }
+   })
   }
 }
 

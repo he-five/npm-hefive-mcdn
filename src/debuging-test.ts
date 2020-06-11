@@ -1,20 +1,23 @@
-import { McdnDriver } from './index'
+import {McdnDriver} from './index'
+import {Commands} from "./mcdn-cmd";
 
 const driver = new McdnDriver()
 driver.enumSerialPorts()
 driver.on('ports', (ports) => {
     console.log(ports);
+    driver.openSerialPort('COM8');
+    driver.sendCmd(Commands.FW_VER);
 })
-driver.openSerialPort('COM5');
+
 // driver.openMcdnPort('COM5');
 // driver.closePort();
-// driver.getFwVersion();
+//driver.getFwVersion();
 // driver.sendStr( cmd : string);
-// driver.sendCmd( cmd : Commands.GOTO_POS(pos: number));
+
 //
 // driver.on('error', err)
 driver.on('data', (data) => {
-    console.log(data);
+   console.log(`CLIENT DATA: ${JSON.stringify(data)}`);
 })
 
 // Commands.ENCODER 'enc'
