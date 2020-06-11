@@ -1,4 +1,4 @@
-import {CmdPass, Commands} from "../mcdn-cmd";
+import {cmdFail, cmdPass, Commands} from "../mcdn-cmd";
 import {DriverReply} from "../driver-replay";
 const delimiter  = require('@serialport/parser-delimiter');
 const SerialPort = require('serialport')
@@ -26,7 +26,7 @@ class Serial {
             // TODO Error event 'Open port failed'
           }
         });
-        this.parser =  this.serialPort.pipe(new HeFiveParser())
+        this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
         this.connected = true;
         this.startLisening();
     }
@@ -62,7 +62,7 @@ class Serial {
         let reply = new DriverReply();
         reply.cmd = this.cmd;
         strData = strData.trim();
-        reply.passed = strData.endsWith(CmdPass);
+        reply.passed = strData.endsWith(cmdPass);
         let arg  = strData.slice(0)
         //reply.
 
@@ -72,6 +72,7 @@ class Serial {
     // Open errors will be emitted as an error event
     this.serialPort.on('error', (err : any) => {
       console.log('Error: ', err.message)
+      //process.send?.(err);
     })
   }
 

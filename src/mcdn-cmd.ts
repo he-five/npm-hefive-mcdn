@@ -1,6 +1,6 @@
 
-const CmdPass = '>'
-const CmdFail = '?'
+const cmdPass = '>'
+const cmdFail = '?'
 
 enum Commands {
     NONE = '',
@@ -21,4 +21,4 @@ class McdnCmd {
     }
 }
 
-export {McdnCmd, Commands, CmdFail, CmdPass};
+export {McdnCmd, Commands, cmdPass, cmdFail};

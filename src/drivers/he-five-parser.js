@@ -6,18 +6,19 @@ class HeFiveParser extends Transform {
   constructor(options = {}) {
     super(options)
 
-    if (options.cmdTerminators){
-      if (Array.isArray(options.cmdTerminators)){
-        options.cmdTerminators.forEach((term) => {
+    this.terminators = [];
+    if (options.terminators){
+      if (Array.isArray(options.terminators)){
+        options.terminators.forEach((term) => {
           this.terminators.push(Buffer.from(term, 'ascii'));
         })
       }
       else {
-        throw new TypeError('"cmdTerminators" expect to be array ')
+        throw new TypeError('"terminators" expect to be array ')
       }
     }
     else{
-      throw new TypeError('"cmdTerminators" has a 0 or undefined length')
+      throw new TypeError('"terminators" has to be paas as option')
     }
 
     this.buffer = Buffer.alloc(0)

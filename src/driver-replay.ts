@@ -15,4 +15,24 @@ class DriverReply {
 
 }
 
-export { DriverReply }
+enum IpcReplyType {
+    INVALID,
+    DRV = 'DRV',
+    ERROR = 'ERR',
+}
+
+class IpcReply {
+    public type         : IpcReplyType;
+    public drvReply     : DriverReply | null;
+    public err          : any
+
+    constructor () {
+        this.type         = IpcReplyType.INVALID;
+        this.drvReply     = null;
+        this.err          = null
+    }
+
+}
+
+
+export { DriverReply, IpcReply }

@@ -23,7 +23,7 @@ class McdnDriver extends EventEmitter {
         (ports:any[]) => {
           let portsPath : string[] = [];
           ports.forEach((port) => {
-            console.log(port['path'])
+            //console.log(port['path'])
             if (port['path']){
               portsPath.push(port['path']);
             }
@@ -38,12 +38,12 @@ class McdnDriver extends EventEmitter {
     )
   }
 
-  public connectMcdn (portName: string) {
+  public openMcdnPort (portName: string) {
     let serilOrMcdn = 'mcdn';
     this.createProcess(serilOrMcdn, portName);
   }
 
-  public connectSerial (portName: string) {
+  public openSerialPort (portName: string) {
     let serilOrMcdn = 'serial';
     this.createProcess(serilOrMcdn, portName);
    }
@@ -78,6 +78,7 @@ class McdnDriver extends EventEmitter {
     })
     this.driverProcess?.on('message', msg => {
       console.log(`driverProcess error: ${msg}`)
+      this.emit('data', msg);
 
     })
   }
