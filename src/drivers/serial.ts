@@ -1,4 +1,4 @@
-import {cmdFail, cmdPass, Commands} from "../mcdn-cmd";
+import {cmdFail, cmdPass, Commands, McdnCmd} from "../mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
 
 const SerialPort = require('serialport')
@@ -67,6 +67,21 @@ class Serial {
     }
   }
 
+  public sendStr(cmd : string){
+    if (this.connected == false) {
+      process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
+      return
+    }
+
+    if (this.cmdInProgress == false){
+      this.cmdInProgress = true
+      this.sendThruPort(Commands.STRING,cmd);
+    }
+    // else{
+    //   this.queue.enqueue(cmd);
+    // }
+  }
+
   public sendCmd(cmd : Commands){
     if (this.connected == false) {
       process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
@@ -84,9 +99,9 @@ class Serial {
   }
 
 
-  private sendThruPort(cmd: Commands) {
+  private sendThruPort(cmd: Commands, data?: string) {
     this.cmd = cmd;
-    let actualCmd = ''
+    let actualCmd: string | undefined = ''
     switch (this.cmd) {
       case Commands.FW_VER:
         actualCmd = 'ver'
@@ -100,7 +115,11 @@ class Serial {
       case Commands.EMPTY:
         actualCmd = ' '
         break;
+      case Commands.STRING:
+        actualCmd = data
+        break;
     }
+    //console.log(`${actualCmd}${cmdTerm}`)
 
     this.serialPort.write(`${actualCmd}${cmdTerm}`, asciiEnc, (err: any) => {
       if (err) {

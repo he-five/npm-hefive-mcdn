@@ -12,6 +12,7 @@ declare class McdnDriver extends EventEmitter {
     disconnect(): void;
     getFwVersion(): void;
     sendCmd(cmd: Commands): void;
+    sendStr(str: string): void;
     consumeEvents(): void;
 }
 export { McdnDriver };

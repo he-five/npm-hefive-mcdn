@@ -16,8 +16,7 @@ driver.on('ports', (ports) => {
 
     setTimeout(() => {
         driver.openSerialPort('COM3');
-        driver.sendCmd(Commands.FW_VER);
-        driver.sendCmd(Commands.ENCODER);
+        driver.sendStr('ver');
     }, 3000)
  })
 

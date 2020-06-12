@@ -68,6 +68,11 @@ class McdnDriver extends EventEmitter {
         this.driverProcess?.send(new McdnCmd(cmd));
     }
 
+    public sendStr(str: string) {
+        console.log(`STR REQUEST: ${str}`)
+        this.driverProcess?.send(new McdnCmd(Commands.STRING, str));
+    }
+
     public consumeEvents() {
         this.driverProcess?.on('close', () => {
             console.log('close')

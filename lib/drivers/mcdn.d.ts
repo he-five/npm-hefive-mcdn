@@ -4,5 +4,6 @@ declare class MCDN {
     connect(): void;
     disconnect(): void;
     sendCmd(cmd: Commands): void;
+    sendStr(cmd: string): void;
 }
 export { MCDN };

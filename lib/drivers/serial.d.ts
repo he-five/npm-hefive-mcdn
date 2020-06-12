@@ -8,6 +8,7 @@ declare class Serial {
     private cmdInProgress;
     constructor();
     connect(portName: string): void;
+    sendStr(cmd: string): void;
     sendCmd(cmd: Commands): void;
     private sendThruPort;
     private startLisening;

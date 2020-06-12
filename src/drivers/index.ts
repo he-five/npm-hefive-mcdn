@@ -13,6 +13,9 @@ process.on('message', (msg : McdnCmd) => {
         case Commands.CONNECT:
             driver.connect(msg.data);
             break;
+        case Commands.STRING:
+            driver.sendStr(msg.data);
+            break;
         default:
             driver.sendCmd(msg.cmd)
             break;

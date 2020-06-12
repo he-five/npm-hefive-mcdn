@@ -6,11 +6,12 @@ declare enum Commands {
     FW_VER = "FW_VER",
     ENCODER = "ENCODER",
     FOLLOWING_ERROR = "FOLLOWING_ERROR",
-    EMPTY = "EMPTY"
+    EMPTY = "EMPTY",
+    STRING = "STR"
 }
 declare class McdnCmd {
     cmd: Commands;
     data: any;
-    constructor(cmd: Commands, data?: any);
+    constructor(cmd: Commands, data?: string);
 }
 export { McdnCmd, Commands, cmdPass, cmdFail };
