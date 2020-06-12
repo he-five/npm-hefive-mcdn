@@ -2,12 +2,13 @@ const cmdPass = '>'
 const cmdFail = '?'
 
 enum Commands {
-    NONE = '',
+
     DISCONNECT          = 'DISCONNECT',
     CONNECT             = `CONNECT`,
     FW_VER              = `FW_VER`,
     ENCODER             = 'ENCODER',
-    FOLLOWING_ERROR     = 'FOLLOWING_ERROR'
+    FOLLOWING_ERROR     = 'FOLLOWING_ERROR',
+    EMPTY               = 'EMPTY'
 }
 
 class McdnCmd {

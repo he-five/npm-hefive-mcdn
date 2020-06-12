@@ -13,10 +13,9 @@ process.on('message', (msg : McdnCmd) => {
         case Commands.CONNECT:
             driver.connect(msg.data);
             break;
-        case Commands.FW_VER:
-            driver.readFwVersion();
-            break;
         default:
-            console.log('unknown command')
+            driver.sendCmd(msg.cmd)
+            break;
+
     }
 })

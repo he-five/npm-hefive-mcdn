@@ -7,7 +7,7 @@ class DriverReply {
     public deviceId    : number
 
     constructor () {
-        this.cmd        = Commands.NONE;
+        this.cmd        = Commands.EMPTY;
         this.passed     = false;
         this.answer       = null;
         this.deviceId      = 1

@@ -1,9 +1,10 @@
+import {Commands} from "../mcdn-cmd";
 
 class MCDN {
   constructor () {}
   public connect () {}
   public disconnect () {}
-  public readFwVersion(){}
+  public sendCmd(cmd : Commands){}
 
 }
 

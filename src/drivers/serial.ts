@@ -1,20 +1,51 @@
 import {cmdFail, cmdPass, Commands} from "../mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
+
 const SerialPort = require('serialport')
 const HeFiveParser = require('./he-five-parser')
 const lineTerminator = '\r\n'
 const cmdTerm = '\r'
+const asciiEnc     = 'ascii'
+
+class Queue{
+  _queue: Commands[];
+
+  constructor(queue?: Commands[]) {
+    this._queue = queue || [];
+  }
+
+  enqueue(item: Commands) {
+    this._queue.push(item);
+  }
+
+  dequeue(): Commands | undefined {
+    return this._queue.shift();
+  }
+
+  clear() {
+    this._queue = [];
+  }
+
+  get count(): number {
+    return this._queue.length;
+  }
+}
 
 class Serial {
-  private serialPort  : typeof SerialPort
-  private connected   : boolean;
-  private parser      : typeof HeFiveParser;
-  private cmd         : Commands;
+  private serialPort    : typeof SerialPort
+  private connected     : boolean;
+  private parser        : typeof HeFiveParser;
+  private cmd           : Commands;
+  private queue         : Queue
+  private cmdInProgress : boolean;
 
   constructor (){
-    this.connected  = false;
-    this.serialPort = null;
-    this.cmd        = Commands.NONE;
+    this.connected      = false;
+    this.serialPort     = null;
+    this.cmd            = Commands.EMPTY;
+    this.queue          = new Queue()
+    this.cmdInProgress  = false
+
   }
   public connect (portName : string) {
     if (!this.connected){
@@ -26,46 +57,66 @@ class Serial {
           }
         });
 
-        // Send empty command before starting real-communication
-      this.serialPort.write(cmdTerm, 'ascii', (err: any) => {
-        if (err) {
-          process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))
-        }
-      });
+      // Send empty command before starting real-communication
+      this.queue.enqueue(Commands.EMPTY);
+
+
       this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
       this.connected = true;
       this.startLisening();
     }
   }
 
-  public readFwVersion(){
-    if (this.connected){
-      this.cmd = Commands.FW_VER;
-      this.serialPort.write('ver' + cmdTerm, 'ascii', (err: any) => {
-        if (err) {
-          process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))
-        }
-      })
+  public sendCmd(cmd : Commands){
+    if (this.connected == false) {
+      process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
+      return
+    }
+
+    if (this.cmdInProgress == false){
+      this.cmdInProgress = true
+      this.sendThruPort(cmd);
     }
     else{
-      process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
+      this.queue.enqueue(cmd);
     }
+
+  }
+
+
+  private sendThruPort(cmd: Commands) {
+    this.cmd = cmd;
+    let actualCmd = ''
+    switch (this.cmd) {
+      case Commands.FW_VER:
+        actualCmd = 'ver'
+        break;
+      case Commands.ENCODER:
+        actualCmd = 'pos'
+        break;
+      case Commands.FOLLOWING_ERROR:
+        actualCmd = 'err'
+        break;
+      case Commands.EMPTY:
+        actualCmd = ' '
+        break;
+    }
+
+    this.serialPort.write(`${actualCmd}${cmdTerm}`, asciiEnc, (err: any) => {
+      if (err) {
+        process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))
+      }
+    })
   }
 
   private startLisening(){
     if (!this.connected){
       return;
     }
-    // Switches the port into "flowing mode"
-    // this.serialPort.once('data', (data : Buffer) => {
-    //    console.log('RAW:', data.toString('ascii'))
-    //
-    // })
 
     this.parser.on('data', (data : Buffer) => {
-      //setImmediate((data) =>{
-        let strData =  data.toString('ascii')
-        console.log('answer:', strData)
+        let strData =  data.toString(asciiEnc)
+        //console.log('answer:', strData)
         if (strData.length > 0){
           //new
           let reply = new DriverReply();
@@ -78,32 +129,48 @@ class Serial {
             let devStr = strData.slice(position+lineTerminator.length, strData.length);
             //console.log('deviceId:', devStr)
             reply.deviceId = parseInt(devStr)
-
-
-            reply.answer = strData.slice(0, position);
+            if (strData){
+              reply.answer = strData.slice(0, position);
+            }
             //console.log('reply.answer:'+ reply.answer)
-            this.postProcessAnswer(reply)
           }
+          this.postProcessAnswer(reply)
         }
-     //})
-    })
+     })
     // Open errors will be emitted as an error event
     this.serialPort.on('error', (err : any) => {
+      //this.cmdInProgress = false
       console.log('Error: ', err.message)
       process.send?.(new IpcReply(IpcReplyType.ERROR, err))
     })
+
+
   }
 
   private postProcessAnswer(reply : DriverReply){
-
+    this.cmdInProgress = false
       switch(reply.cmd){
+        case Commands.EMPTY:
+          this.checkForPendingCmd();
+          return;
         case Commands.FW_VER:
           if (reply.answer){
             reply.answer = reply.answer.slice(0,reply.answer.indexOf(','))
           }
           break;
       }
-      process.send?.(new IpcReply(IpcReplyType.DRV, reply))
+    process.send?.(new IpcReply(IpcReplyType.DRV, reply))
+    this.checkForPendingCmd();
+
+  }
+
+  private checkForPendingCmd() {
+    if (this.queue.count > 0) {
+      let nextCmd = this.queue.dequeue()
+      if (nextCmd) {
+        this.sendCmd(nextCmd);
+      }
+    }
   }
 
   public disconnect () {}
