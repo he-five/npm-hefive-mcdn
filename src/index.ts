@@ -80,13 +80,18 @@ class McdnDriver extends EventEmitter {
     })
     this.driverProcess?.on('error', err => {
       console.log(`driverProcess error: ${err}`)
+      this.emit('error', err);
     })
     this.driverProcess?.on('message', ( msg:IpcReply )=> {
       //console.log(`driverProcess error: ${msg}`)
       if (msg.type == IpcReplyType.DRV){
           this.emit('data', msg.drvReply);
       }
-   })
+      if (msg.type == IpcReplyType.ERROR){
+        this.emit('error', msg.err);
+      }
+
+    })
   }
 }
 

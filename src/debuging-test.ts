@@ -6,7 +6,9 @@ driver.enumSerialPorts()
 driver.on('ports', (ports) => {
     console.log(ports);
     driver.openSerialPort('COM8');
-    driver.sendCmd(Commands.FW_VER);
+
+    setTimeout(()=> {driver.sendCmd(Commands.FW_VER);}, 6000)
+
 })
 
 // driver.openMcdnPort('COM5');
@@ -15,7 +17,10 @@ driver.on('ports', (ports) => {
 // driver.sendStr( cmd : string);
 
 //
-// driver.on('error', err)
+driver.on('error', (err) => {
+    console.log(`CLIENT ERROR: ${err}`);
+})
+
 driver.on('data', (data) => {
    console.log(`CLIENT DATA: ${JSON.stringify(data)}`);
 })

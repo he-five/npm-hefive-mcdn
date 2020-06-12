@@ -19,24 +19,22 @@ class Serial {
   public connect (portName : string) {
     if (!this.connected){
       // Not connected
-        this.serialPort = new SerialPort(portName,{ baudRate: 115200 }, (err: string) => {
+        this.serialPort = new SerialPort(portName,{ baudRate: 115200 }, (err: any) => {
           if (err){
             this.connected = false;
-            // TODO Error event 'Open port failed'
+            process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))
           }
         });
 
         // Send empty command before starting real-communication
       this.serialPort.write(cmdTerm, 'ascii', (err: any) => {
         if (err) {
-          // TODO add error handaling
+          process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))
         }
       });
       this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
       this.connected = true;
       this.startLisening();
-
-
     }
   }
 
@@ -45,12 +43,12 @@ class Serial {
       this.cmd = Commands.FW_VER;
       this.serialPort.write('ver' + cmdTerm, 'ascii', (err: any) => {
         if (err) {
-          // TODO add error handaling
+          process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))
         }
       })
     }
     else{
-      // SEND error
+      process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
     }
   }
 
@@ -86,35 +84,26 @@ class Serial {
             //console.log('reply.answer:'+ reply.answer)
             this.postProcessAnswer(reply)
           }
-          else { // ERROR
-
-          }
-
         }
      //})
     })
     // Open errors will be emitted as an error event
     this.serialPort.on('error', (err : any) => {
       console.log('Error: ', err.message)
-      //process.send?.(err);
+      process.send?.(new IpcReply(IpcReplyType.ERROR, err))
     })
   }
 
   private postProcessAnswer(reply : DriverReply){
 
-    if (reply.answer){
       switch(reply.cmd){
         case Commands.FW_VER:
-          reply.answer = reply.answer.slice(0,reply.answer.indexOf(','))
+          if (reply.answer){
+            reply.answer = reply.answer.slice(0,reply.answer.indexOf(','))
+          }
           break;
       }
-      //console.log(reply);
-
       process.send?.(new IpcReply(IpcReplyType.DRV, reply))
-    }
-
-
-
   }
 
   public disconnect () {}

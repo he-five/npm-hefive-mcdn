@@ -23,13 +23,13 @@ enum IpcReplyType {
 
 class IpcReply {
     public type         : IpcReplyType;
-    public drvReply     : DriverReply | null;
-    public err          : any
+    public drvReply     : DriverReply | undefined;
+    public err          : string
 
     constructor (type :IpcReplyType, data: any ) {
         this.type         = type;
-        this.drvReply     = null;
-        this.err          = null;
+        this.drvReply     = undefined;
+        this.err          = '';
 
         switch (type){
             case IpcReplyType.DRV:
