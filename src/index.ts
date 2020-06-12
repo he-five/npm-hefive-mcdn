@@ -19,7 +19,6 @@ class McdnDriver extends EventEmitter {
   }
 
   public enumSerialPorts() {
-
     SerialPort.list().then(
         (ports:any[]) => {
           let portsPath : string[] = [];
@@ -34,7 +33,6 @@ class McdnDriver extends EventEmitter {
         (err:any) => {
           this.emit('error', err);
           //console.error(err)
-
         }
     )
   }
@@ -63,7 +61,7 @@ class McdnDriver extends EventEmitter {
   }
 
   public getFwVersion() {
-//    this.driverProcess?.send(new McdnCmd(Commands.FW_VER));
+
     this.sendCmd(Commands.FW_VER)
   }
 

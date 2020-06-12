@@ -2,17 +2,14 @@ import {cmdFail, cmdPass, Commands} from "../mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "../driver-replay";
 const SerialPort = require('serialport')
 const HeFiveParser = require('./he-five-parser')
-
 const lineTerminator = '\r\n'
-
+const cmdTerm = '\r'
 
 class Serial {
   private serialPort  : typeof SerialPort
   private connected   : boolean;
   private parser      : typeof HeFiveParser;
   private cmd         : Commands;
-
-
 
   constructor (){
     this.connected  = false;
@@ -28,16 +25,25 @@ class Serial {
             // TODO Error event 'Open port failed'
           }
         });
-        this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
-        this.connected = true;
-        this.startLisening();
+
+        // Send empty command before starting real-communication
+      this.serialPort.write(cmdTerm, 'ascii', (err: any) => {
+        if (err) {
+          // TODO add error handaling
+        }
+      });
+      this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
+      this.connected = true;
+      this.startLisening();
+
+
     }
   }
 
   public readFwVersion(){
     if (this.connected){
       this.cmd = Commands.FW_VER;
-      this.serialPort.write('ver\r', 'ascii', (err: any) => {
+      this.serialPort.write('ver' + cmdTerm, 'ascii', (err: any) => {
         if (err) {
           // TODO add error handaling
         }
@@ -53,8 +59,9 @@ class Serial {
       return;
     }
     // Switches the port into "flowing mode"
-    //this.serialPort.on('data', (data : Buffer) => {
-    //   console.log('RAW:', data.toString('ascii'))
+    // this.serialPort.once('data', (data : Buffer) => {
+    //    console.log('RAW:', data.toString('ascii'))
+    //
     // })
 
     this.parser.on('data', (data : Buffer) => {
@@ -73,13 +80,16 @@ class Serial {
             let devStr = strData.slice(position+lineTerminator.length, strData.length);
             //console.log('deviceId:', devStr)
             reply.deviceId = parseInt(devStr)
+
+
             reply.answer = strData.slice(0, position);
             //console.log('reply.answer:'+ reply.answer)
+            this.postProcessAnswer(reply)
           }
           else { // ERROR
 
           }
-         this.postProcessAnswer(reply)
+
         }
      //})
     })
@@ -92,14 +102,18 @@ class Serial {
 
   private postProcessAnswer(reply : DriverReply){
 
-    switch(reply.cmd){
-      case Commands.FW_VER:
-        reply.answer = reply.answer.slice(0,reply.answer.indexOf(','))
-        break;
-    }
-    //console.log(reply);
+    if (reply.answer){
+      switch(reply.cmd){
+        case Commands.FW_VER:
+          reply.answer = reply.answer.slice(0,reply.answer.indexOf(','))
+          break;
+      }
+      //console.log(reply);
 
-    process.send?.(new IpcReply(IpcReplyType.DRV, reply))
+      process.send?.(new IpcReply(IpcReplyType.DRV, reply))
+    }
+
+
 
   }
 
