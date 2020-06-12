@@ -1,4 +1,4 @@
-import {Commands} from "./mcdn-cmd";
+import {Commands} from "../mcdn-cmd";
 
 class DriverReply {
     public cmd      : Commands;

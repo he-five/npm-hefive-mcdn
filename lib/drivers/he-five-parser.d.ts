@@ -1,10 +1,8 @@
+/// <reference types="node" />
 export = HeFiveParser;
-declare const HeFiveParser_base: any;
+declare const HeFiveParser_base: typeof import("stream").Transform;
 declare class HeFiveParser extends HeFiveParser_base {
-    [x: string]: any;
     constructor(options?: {});
     terminators: any[];
-    buffer: any;
-    _transform(chunk: any, encoding: any, cb: any): void;
-    _flush(cb: any): void;
+    buffer: Buffer;
 }

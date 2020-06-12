@@ -1,5 +1,5 @@
 import {cmdFail, cmdPass, Commands} from "../mcdn-cmd";
-import {DriverReply, IpcReply, IpcReplyType} from "../driver-replay";
+import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
 const SerialPort = require('serialport')
 const HeFiveParser = require('./he-five-parser')
 const lineTerminator = '\r\n'

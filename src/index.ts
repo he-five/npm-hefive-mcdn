@@ -1,7 +1,7 @@
 import {Commands, McdnCmd} from "./mcdn-cmd";
 import {ChildProcess} from 'child_process'
 import {EventEmitter} from 'events';
-import {IpcReply, IpcReplyType} from "./driver-replay";
+import {IpcReply, IpcReplyType} from "./drivers/driver-replay";
 
 const path =  require('path');
 const SerialPort = require('serialport')
@@ -61,12 +61,11 @@ class McdnDriver extends EventEmitter {
   }
 
   public getFwVersion() {
-
     this.sendCmd(Commands.FW_VER)
   }
 
   public sendCmd(cmd : Commands){
-    console.log(`CLIENT REQUEST: ${cmd}`)
+    console.log(`REQUEST: ${cmd}`)
     this.driverProcess?.send(new McdnCmd(cmd));
   }
 
