@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { Commands } from "./mcdn-cmd";
 import { EventEmitter } from 'events';
 declare class McdnDriver extends EventEmitter {
