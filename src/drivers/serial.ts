@@ -173,7 +173,13 @@ class Serial {
     }
   }
 
-  public disconnect () {}
+  public disconnect () {
+    if (!this.connected){
+      return;
+    }
+    this.connected = false
+    this.serialPort.close();
+  }
 }
 
 export { Serial }

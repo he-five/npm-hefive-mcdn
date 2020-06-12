@@ -9,6 +9,16 @@ driver.on('ports', (ports) => {
     driver.sendCmd(Commands.FW_VER);
     driver.sendCmd(Commands.ENCODER);
     driver.sendCmd(Commands.FOLLOWING_ERROR);
+
+    setTimeout(() => {
+        driver.disconnect()
+    }, 1000)
+
+    setTimeout(() => {
+        driver.openSerialPort('COM3');
+        driver.sendCmd(Commands.FW_VER);
+        driver.sendCmd(Commands.ENCODER);
+    }, 3000)
  })
 
 // driver.openMcdnPort('COM5');
