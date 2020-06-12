@@ -65,7 +65,7 @@ class Serial {
     this.parser.on('data', (data : Buffer) => {
       //setImmediate((data) =>{
         let strData =  data.toString('ascii')
-        console.log('Complete answer:', strData)
+        console.log('answer:', strData)
         if (strData.length > 0){
           //new
           let reply = new DriverReply();

@@ -1,13 +1,13 @@
-import {McdnDriver} from './index'
-import {Commands} from "./mcdn-cmd";
+import {McdnDriver, Commands} from "./index";
+
 
 const driver = new McdnDriver()
 driver.enumSerialPorts()
 driver.on('ports', (ports) => {
     console.log(ports);
-    driver.openSerialPort('COM8');
+    driver.openSerialPort('COM3');
 
-    setTimeout(()=> {driver.sendCmd(Commands.FW_VER);}, 6000)
+    setTimeout(()=> {driver.sendCmd(Commands.FW_VER);}, 1000)
 
 })
 
