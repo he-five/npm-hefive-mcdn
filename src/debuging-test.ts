@@ -5,8 +5,8 @@ const driver = new McdnDriver()
 console.time('EXECUTION TIME enumSerialPorts')
 driver.enumSerialPorts()
 driver.on('ports', (ports) => {
-    console.log(ports);
     console.timeEnd('EXECUTION TIME enumSerialPorts')
+    console.log(ports);
     console.time('EXECUTION TIME openSerialPort')
     driver.openSerialPort('COM3');
 
@@ -23,6 +23,7 @@ driver.on('connected', () => {
     driver.sendCmd(Commands.FOLLOWING_ERROR);
 
     setTimeout(() => {
+        console.time('EXECUTION TIME \'ver\'')
         driver.sendStr('ver');
     }, 500)
 
@@ -51,6 +52,12 @@ driver.on('data', (data) => {
     if (data.cmd == 'FOLLOWING_ERROR'){
         console.timeEnd('EXECUTION TIME Commands.FOLLOWING_ERROR')
     }
+
+    if (data.cmd == 'STR'){
+        console.timeEnd('EXECUTION TIME \'ver\'')
+    }
+
+
 
     console.log(`DATA: ${JSON.stringify(data)}`);
 })
