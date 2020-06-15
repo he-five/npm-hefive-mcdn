@@ -2,18 +2,24 @@ import {McdnDriver, Commands} from "./index";
 
 
 const driver = new McdnDriver()
+console.time('EXECUTION TIME enumSerialPorts')
 driver.enumSerialPorts()
 driver.on('ports', (ports) => {
     console.log(ports);
+    console.timeEnd('EXECUTION TIME enumSerialPorts')
+    console.time('EXECUTION TIME openSerialPort')
     driver.openSerialPort('COM3');
 
  })
 
 driver.on('connected', () => {
+    console.timeEnd('EXECUTION TIME openSerialPort')
     console.log(`CONNECTED`);
-
+    console.time('EXECUTION TIME Commands.FW_VER')
     driver.sendCmd(Commands.FW_VER);
+    console.time('EXECUTION TIME Commands.ENCODER')
     driver.sendCmd(Commands.ENCODER);
+    console.time('EXECUTION TIME Commands.FOLLOWING_ERROR')
     driver.sendCmd(Commands.FOLLOWING_ERROR);
 
     setTimeout(() => {
@@ -34,7 +40,19 @@ driver.on('error', (err) => {
 })
 
 driver.on('data', (data) => {
-   console.log(`DATA: ${JSON.stringify(data)}`);
+    if (data.cmd == 'FW_VER'){
+        console.timeEnd('EXECUTION TIME Commands.FW_VER')
+    }
+
+    if (data.cmd == 'ENCODER'){
+        console.timeEnd('EXECUTION TIME Commands.ENCODER')
+    }
+
+    if (data.cmd == 'FOLLOWING_ERROR'){
+        console.timeEnd('EXECUTION TIME Commands.FOLLOWING_ERROR')
+    }
+
+    console.log(`DATA: ${JSON.stringify(data)}`);
 })
 
 // driver.openMcdnPort('COM5');
