@@ -1,9 +1,9 @@
 {
   "name": "@hefive/mcdn",
   "version": "0.0.1",
-  "author": "He-Five",
-  "license": "SEE LICENSE IN <filename>",
-  "description": "Driver for He-Five motion-controller",
+  "author": "HE FIVE LLC",
+  "license": "MIT",
+  "description": "Communication driver for HE FIVE's Digital Servo Drives",
   "keywords": [
     "hefive",
     "mcdn",
