@@ -10,11 +10,13 @@ declare class DriverReply {
 declare enum IpcReplyType {
     INVALID = 0,
     DRV = "DRV",
-    ERROR = "ERR"
+    ERROR = "ERR",
+    CONNECTED = "CONNECTED",
+    DISCONNECTED = "DISCONNECTED"
 }
 declare class IpcReply {
     type: IpcReplyType;
-    drvReply: DriverReply | undefined;
+    drvReply: DriverReply | boolean | undefined;
     err: string;
     constructor(type: IpcReplyType, data: any);
 }

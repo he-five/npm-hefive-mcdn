@@ -76,8 +76,10 @@ class McdnDriver extends EventEmitter {
 
     public consumeEvents() {
         this.driverProcess?.on('close', () => {
-            console.log('close')
+            //console.log('close')
             this.connected = false
+            this.emit('disconnected');
+
         })
         this.driverProcess?.on('disconnect', () => {
             //console.log('driverProcess disconnect')
@@ -94,7 +96,9 @@ class McdnDriver extends EventEmitter {
             if (msg.type == IpcReplyType.ERROR) {
                 this.emit('error', msg.err);
             }
-
+            if (msg.type == IpcReplyType.CONNECTED) {
+                this.emit('connected', msg.drvReply);
+            }
         })
     }
 }

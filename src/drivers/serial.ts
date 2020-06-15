@@ -1,4 +1,4 @@
-import {cmdFail, cmdPass, ServiceCommands, McdnCmd} from "./mcdn-cmd";
+import {cmdFail, cmdPass, ServiceCommands} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
 import {Commands} from "../commands";
 
@@ -43,7 +43,7 @@ class Serial {
   constructor (){
     this.connected      = false;
     this.serialPort     = null;
-    this.cmd            = ServiceCommands.EMPTY;
+    this.cmd            = ServiceCommands.CLEAR_BUFF;
     this.queue          = new Queue()
     this.cmdInProgress  = false
 
@@ -58,13 +58,12 @@ class Serial {
           }
         });
 
-      // Send empty command before starting real-communication
-      this.queue.enqueue(ServiceCommands.EMPTY);
-
-
       this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
       this.connected = true;
       this.startLisening();
+      // Send empty command before starting real-communication
+      this.sendCmd(ServiceCommands.CLEAR_BUFF);
+
     }
   }
 
@@ -113,7 +112,7 @@ class Serial {
       case Commands.FOLLOWING_ERROR:
         actualCmd = 'err'
         break;
-      case ServiceCommands.EMPTY:
+      case ServiceCommands.CLEAR_BUFF:
         actualCmd = ' '
         break;
       case ServiceCommands.STRING:
@@ -170,7 +169,9 @@ class Serial {
   private postProcessAnswer(reply : DriverReply){
     this.cmdInProgress = false
       switch(reply.cmd){
-        case ServiceCommands.EMPTY:
+        case ServiceCommands.CLEAR_BUFF:
+          // replay verify
+          process.send?.(new IpcReply(IpcReplyType.CONNECTED, true))
           this.checkForPendingCmd();
           return;
         case Commands.FW_VER:

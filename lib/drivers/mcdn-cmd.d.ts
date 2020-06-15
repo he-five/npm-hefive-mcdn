@@ -4,7 +4,7 @@ declare const cmdFail = "?";
 declare enum ServiceCommands {
     DISCONNECT = "DISCONNECT",
     CONNECT = "CONNECT",
-    EMPTY = "EMPTY",
+    CLEAR_BUFF = "CLEAR_BUFF",
     STRING = "STR"
 }
 declare class McdnCmd {

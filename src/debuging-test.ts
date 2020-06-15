@@ -6,6 +6,12 @@ driver.enumSerialPorts()
 driver.on('ports', (ports) => {
     console.log(ports);
     driver.openSerialPort('COM3');
+
+ })
+
+driver.on('connected', () => {
+    console.log(`CONNECTED`);
+
     driver.sendCmd(Commands.FW_VER);
     driver.sendCmd(Commands.ENCODER);
     driver.sendCmd(Commands.FOLLOWING_ERROR);
@@ -14,18 +20,16 @@ driver.on('ports', (ports) => {
         driver.disconnect()
     }, 1000)
 
-    setTimeout(() => {
-        driver.openSerialPort('COM3');
-        driver.sendStr('ver');
-    }, 3000)
- })
+    // setTimeout(() => {
+    //     driver.openSerialPort('COM3');
+    //     driver.sendStr('ver');
+    // }, 3000)
+})
 
-// driver.openMcdnPort('COM5');
-// driver.closePort();
+driver.on('disconnected', () => {
+    console.log(`DISCONNECTED`);
+})
 
-// driver.sendStr( cmd : string);
-
-//
 driver.on('error', (err) => {
     console.log(`ERROR: ${err}`);
 })
@@ -33,5 +37,8 @@ driver.on('error', (err) => {
 driver.on('data', (data) => {
    console.log(`DATA: ${JSON.stringify(data)}`);
 })
+
+// driver.openMcdnPort('COM5');
+// driver.closePort();
 
 

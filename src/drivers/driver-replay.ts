@@ -10,7 +10,7 @@ class DriverReply {
     public deviceId     : number
 
     constructor () {
-        this.cmd        = ServiceCommands.EMPTY;
+        this.cmd        = ServiceCommands.CLEAR_BUFF;
         this.passed     = false;
         this.answer       = null;
         this.deviceId      = 1
@@ -22,11 +22,13 @@ enum IpcReplyType {
     INVALID,
     DRV = 'DRV',
     ERROR = 'ERR',
+    CONNECTED = 'CONNECTED',
+    DISCONNECTED = 'DISCONNECTED'
 }
 
 class IpcReply {
     public type         : IpcReplyType;
-    public drvReply     : DriverReply | undefined;
+    public drvReply     : DriverReply | boolean | undefined;
     public err          : string
 
     constructor (type :IpcReplyType, data: any ) {
