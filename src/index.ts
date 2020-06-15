@@ -1,4 +1,4 @@
-import {Commands} from "./mcdn-cmd";
+import {Commands} from "./commands";
 import {McdnDriver} from "./mcdn-driver";
 
 export {McdnDriver, Commands};

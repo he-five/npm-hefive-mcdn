@@ -1,7 +1,8 @@
 import {EventEmitter} from "events";
 import {ChildProcess} from "child_process";
-import {Commands, McdnCmd} from "./mcdn-cmd";
 import {IpcReply, IpcReplyType} from "./drivers/driver-replay";
+import {ServiceCommands, McdnCmd} from "./drivers/mcdn-cmd";
+import {Commands} from "./commands";
 
 const path = require('path');
 const SerialPort = require('serialport')
@@ -51,26 +52,26 @@ class McdnDriver extends EventEmitter {
         if (this.driverProcess!.connected) {
             this.connected = true
             this.consumeEvents()
-            this.driverProcess?.send(new McdnCmd(Commands.CONNECT, portName));
+            this.driverProcess?.send(new McdnCmd(ServiceCommands.CONNECT, portName));
         }
     }
 
     public disconnect() {
-        this.driverProcess?.send(new McdnCmd(Commands.DISCONNECT));
+        this.driverProcess?.send(new McdnCmd(ServiceCommands.DISCONNECT));
     }
 
     public getFwVersion() {
         this.sendCmd(Commands.FW_VER)
     }
 
-    public sendCmd(cmd: Commands) {
+    public sendCmd(cmd: Commands | ServiceCommands) {
         console.log(`REQUEST: ${cmd}`)
         this.driverProcess?.send(new McdnCmd(cmd));
     }
 
     public sendStr(str: string) {
         console.log(`STR REQUEST: ${str}`)
-        this.driverProcess?.send(new McdnCmd(Commands.STRING, str));
+        this.driverProcess?.send(new McdnCmd(ServiceCommands.STRING, str));
     }
 
     public consumeEvents() {

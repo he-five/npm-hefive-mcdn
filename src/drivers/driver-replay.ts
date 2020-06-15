@@ -1,13 +1,16 @@
-import {Commands} from "../mcdn-cmd";
+
+import {ServiceCommands} from "./mcdn-cmd";
+import {Commands} from "../commands";
+
 
 class DriverReply {
-    public cmd      : Commands;
-    public passed   : boolean;
-    public answer   : any;
-    public deviceId    : number
+    public cmd          : Commands | ServiceCommands | string;
+    public passed       : boolean;
+    public answer       : any;
+    public deviceId     : number
 
     constructor () {
-        this.cmd        = Commands.EMPTY;
+        this.cmd        = ServiceCommands.EMPTY;
         this.passed     = false;
         this.answer       = null;
         this.deviceId      = 1

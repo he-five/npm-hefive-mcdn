@@ -1,10 +1,11 @@
-import {Commands, McdnCmd} from "../mcdn-cmd";
+import { ServiceCommands } from "./mcdn-cmd";
+import {Commands} from "../commands";
 
 class MCDN {
   constructor () {}
   public connect () {}
   public disconnect () {}
-  public sendCmd(cmd : Commands){}
+  public sendCmd(cmd : Commands | ServiceCommands){}
   public sendStr(cmd : string){}
 
 }

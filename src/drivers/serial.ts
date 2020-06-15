@@ -1,5 +1,6 @@
-import {cmdFail, cmdPass, Commands, McdnCmd} from "../mcdn-cmd";
+import {cmdFail, cmdPass, ServiceCommands, McdnCmd} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
+import {Commands} from "../commands";
 
 const SerialPort = require('serialport')
 const HeFiveParser = require('./he-five-parser')
@@ -8,17 +9,17 @@ const cmdTerm = '\r'
 const asciiEnc     = 'ascii'
 
 class Queue{
-  _queue: Commands[];
+  _queue: string[];
 
-  constructor(queue?: Commands[]) {
+  constructor(queue?: string[]) {
     this._queue = queue || [];
   }
 
-  enqueue(item: Commands) {
+  enqueue(item: string) {
     this._queue.push(item);
   }
 
-  dequeue(): Commands | undefined {
+  dequeue(): string | undefined {
     return this._queue.shift();
   }
 
@@ -35,14 +36,14 @@ class Serial {
   private serialPort    : typeof SerialPort
   private connected     : boolean;
   private parser        : typeof HeFiveParser;
-  private cmd           : Commands;
+  private cmd           : Commands | ServiceCommands | string;
   private queue         : Queue
   private cmdInProgress : boolean;
 
   constructor (){
     this.connected      = false;
     this.serialPort     = null;
-    this.cmd            = Commands.EMPTY;
+    this.cmd            = ServiceCommands.EMPTY;
     this.queue          = new Queue()
     this.cmdInProgress  = false
 
@@ -58,7 +59,7 @@ class Serial {
         });
 
       // Send empty command before starting real-communication
-      this.queue.enqueue(Commands.EMPTY);
+      this.queue.enqueue(ServiceCommands.EMPTY);
 
 
       this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
@@ -75,14 +76,14 @@ class Serial {
 
     if (this.cmdInProgress == false){
       this.cmdInProgress = true
-      this.sendThruPort(Commands.STRING,cmd);
+      this.sendThruPort(ServiceCommands.STRING,cmd);
     }
     // else{
     //   this.queue.enqueue(cmd);
     // }
   }
 
-  public sendCmd(cmd : Commands){
+  public sendCmd(cmd : Commands | ServiceCommands | string){
     if (this.connected == false) {
       process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
       return
@@ -99,7 +100,7 @@ class Serial {
   }
 
 
-  private sendThruPort(cmd: Commands, data?: string) {
+  private sendThruPort(cmd: Commands | ServiceCommands | string, data?: string) {
     this.cmd = cmd;
     let actualCmd: string | undefined = ''
     switch (this.cmd) {
@@ -112,10 +113,10 @@ class Serial {
       case Commands.FOLLOWING_ERROR:
         actualCmd = 'err'
         break;
-      case Commands.EMPTY:
+      case ServiceCommands.EMPTY:
         actualCmd = ' '
         break;
-      case Commands.STRING:
+      case ServiceCommands.STRING:
         actualCmd = data
         break;
     }
@@ -169,7 +170,7 @@ class Serial {
   private postProcessAnswer(reply : DriverReply){
     this.cmdInProgress = false
       switch(reply.cmd){
-        case Commands.EMPTY:
+        case ServiceCommands.EMPTY:
           this.checkForPendingCmd();
           return;
         case Commands.FW_VER:

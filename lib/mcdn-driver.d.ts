@@ -1,6 +1,7 @@
 /// <reference types="node" />
 import { EventEmitter } from "events";
-import { Commands } from "./mcdn-cmd";
+import { ServiceCommands } from "./drivers/mcdn-cmd";
+import { Commands } from "./commands";
 declare class McdnDriver extends EventEmitter {
     connected: boolean;
     private driverProcess;
@@ -11,7 +12,7 @@ declare class McdnDriver extends EventEmitter {
     private createProcess;
     disconnect(): void;
     getFwVersion(): void;
-    sendCmd(cmd: Commands): void;
+    sendCmd(cmd: Commands | ServiceCommands): void;
     sendStr(str: string): void;
     consumeEvents(): void;
 }

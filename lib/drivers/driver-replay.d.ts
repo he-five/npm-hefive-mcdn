@@ -1,6 +1,7 @@
-import { Commands } from "../mcdn-cmd";
+import { ServiceCommands } from "./mcdn-cmd";
+import { Commands } from "../commands";
 declare class DriverReply {
-    cmd: Commands;
+    cmd: Commands | ServiceCommands | string;
     passed: boolean;
     answer: any;
     deviceId: number;
