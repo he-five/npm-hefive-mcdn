@@ -1,6 +1,6 @@
 {
   "name": "@hefive/mcdn",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "author": "He-Five",
   "license": "SEE LICENSE IN <filename>",
   "description": "Driver for He-Five motion-controller",
