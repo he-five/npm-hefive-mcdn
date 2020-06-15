@@ -17,13 +17,12 @@ driver.on('connected', () => {
     driver.sendCmd(Commands.FOLLOWING_ERROR);
 
     setTimeout(() => {
-        driver.disconnect()
-    }, 1000)
+        driver.sendStr('ver');
+    }, 500)
 
-    // setTimeout(() => {
-    //     driver.openSerialPort('COM3');
-    //     driver.sendStr('ver');
-    // }, 3000)
+     setTimeout(() => {
+         driver.disconnect()
+     }, 1000)
 })
 
 driver.on('disconnected', () => {
