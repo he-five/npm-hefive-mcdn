@@ -11,12 +11,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iot-syst/npm-hefive-mcdn.git"
+    "url": "git+https://github.com/he-five/npm-hefive-mcdn.git"
   },
   "bugs": {
-    "url": "https://github.com/iot-syst/npm-hefive-mcdn/issues"
+    "url": "https://github.com/he-five/npm-hefive-mcdn/issues"
   },
-  "homepage": "https://github.com/iot-syst/npm-hefive-mcdn#readme",
+  "homepage": "https://github.com/he-five/npm-hefive-mcdn#readme",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
