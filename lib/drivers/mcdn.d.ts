@@ -1,5 +1,5 @@
 import { ServiceCommands } from "./mcdn-cmd";
-import { Commands } from "../commands";
+import { Commands } from "../index";
 declare class MCDN {
     constructor();
     connect(): void;

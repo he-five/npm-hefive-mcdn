@@ -1,4 +1,4 @@
-import { Commands } from "../commands";
+import { Commands } from "../index";
 declare const cmdPass = ">";
 declare const cmdFail = "?";
 declare enum ServiceCommands {
