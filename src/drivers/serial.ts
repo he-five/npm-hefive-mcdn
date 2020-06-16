@@ -1,6 +1,6 @@
 import {cmdFail, cmdPass, ServiceCommands} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {Commands} from "../commands";
+import {Commands} from "../index";
 
 const SerialPort = require('serialport')
 const HeFiveParser = require('./he-five-parser')

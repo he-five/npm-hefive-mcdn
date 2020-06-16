@@ -1,6 +1,6 @@
 
 import {ServiceCommands} from "./mcdn-cmd";
-import {Commands} from "../commands";
+import {Commands} from "../index";
 
 
 class DriverReply {
