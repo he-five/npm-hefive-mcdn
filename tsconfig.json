@@ -3,13 +3,15 @@
     "target": "es6", /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019' or 'ESNEXT'. */
     "module": "commonjs",
     "moduleResolution": "node",
+    "esModuleInterop": true, /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "resolveJsonModule": true,
     "lib": ["es2017", "es7", "es6"],
+    "types": ["node"],
     "declaration": true,
     "allowJs": true, /* Allow javascript files to be compiled. */
     "strict": true, /* Enable all strict type-checking options. */
-    "outDir": "./lib", /* Redirect output structure to the directory. */
-    "esModuleInterop": true, /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
-    "types": ["node"]
+    "outDir": "./lib" /* Redirect output structure to the directory. */
+
   },
   "include": ["src"],
   "exclude": ["node_modules",
