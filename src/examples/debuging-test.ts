@@ -1,5 +1,4 @@
-import {McdnDriver, Commands} from "./index";
-
+import {Commands, McdnDriver} from '../index';
 
 const driver = new McdnDriver()
 console.time('EXECUTION TIME enumSerialPorts')

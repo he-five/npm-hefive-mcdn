@@ -3,9 +3,6 @@ import {ChildProcess} from "child_process";
 import {McdnCmd, ServiceCommands} from "./drivers/mcdn-cmd";
 import {IpcReply, IpcReplyType} from "./drivers/driver-replay";
 
-export {McdnDriver};
-
-
 const path = require('path');
 const SerialPort = require('serialport')
 const child_process = require('child_process')
@@ -111,4 +108,4 @@ class McdnDriver extends EventEmitter {
     }
 }
 
-export {Commands};
+export {Commands, McdnDriver};

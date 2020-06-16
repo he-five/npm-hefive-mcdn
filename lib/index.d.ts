@@ -1,7 +1,6 @@
 /// <reference types="node" />
 import { EventEmitter } from "events";
 import { ServiceCommands } from "./drivers/mcdn-cmd";
-export { McdnDriver };
 declare enum Commands {
     FW_VER = "FW_VER",
     ENCODER = "ENCODER",
@@ -21,4 +20,4 @@ declare class McdnDriver extends EventEmitter {
     sendStr(str: string): void;
     consumeEvents(): void;
 }
-export { Commands };
+export { Commands, McdnDriver };
