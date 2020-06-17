@@ -13,7 +13,7 @@
     "outDir": "./lib" /* Redirect output structure to the directory. */
 
   },
-  "include": ["src"],
+  "include": ["src", "examples"],
   "exclude": ["node_modules",
   "lib"]
 }
