@@ -1,4 +1,4 @@
-import {cmdFail, cmdPass, ServiceCommands} from "./mcdn-cmd";
+import {cmdFail, cmdPass, McdnCmd, ServiceCommands} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
 import {Commands} from "../index";
 
@@ -9,17 +9,17 @@ const cmdTerm = '\r'
 const asciiEnc     = 'ascii'
 
 class Queue{
-  _queue: string[];
+  _queue: any[];
 
-  constructor(queue?: string[]) {
+  constructor(queue?: any[]) {
     this._queue = queue || [];
   }
 
-  enqueue(item: string) {
+  enqueue(item: any) {
     this._queue.push(item);
   }
 
-  dequeue(): string | undefined {
+  dequeue(): any {
     return this._queue.shift();
   }
 
@@ -61,28 +61,28 @@ class Serial {
       this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
       this.connected = true;
       this.startLisening();
-      // Send empty command before starting real-communication
-      this.sendCmd(ServiceCommands.CLEAR_BUFF);
+      // Send empty command before starting real communication
+      this.sendCmd(new McdnCmd(ServiceCommands.CLEAR_BUFF));
 
     }
   }
 
-  public sendStr(cmd : string){
-    if (this.connected == false) {
-      process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
-      return
-    }
+  // public sendStr(cmd : string){
+  //   if (this.connected == false) {
+  //     process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
+  //     return
+  //   }
+  //
+  //   if (this.cmdInProgress == false){
+  //     this.cmdInProgress = true
+  //     this.sendThruPort(ServiceCommands.STRING,cmd);
+  //   }
+  //    else{
+  //      this.queue.enqueue(cmd);
+  //    }
+  // }
 
-    if (this.cmdInProgress == false){
-      this.cmdInProgress = true
-      this.sendThruPort(ServiceCommands.STRING,cmd);
-    }
-    // else{
-    //   this.queue.enqueue(cmd);
-    // }
-  }
-
-  public sendCmd(cmd : Commands | ServiceCommands | string){
+  public sendCmd(cmd : McdnCmd ){
     if (this.connected == false) {
       process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
       return
@@ -99,8 +99,8 @@ class Serial {
   }
 
 
-  private sendThruPort(cmd: Commands | ServiceCommands | string, data?: string) {
-    this.cmd = cmd;
+  private sendThruPort(cmd: McdnCmd ) {
+    this.cmd = cmd.cmd;
     let actualCmd: string | undefined = ''
     switch (this.cmd) {
       case Commands.FW_VER:
@@ -116,7 +116,7 @@ class Serial {
         actualCmd = ' '
         break;
       case ServiceCommands.STRING:
-        actualCmd = data
+        actualCmd = cmd.data
         break;
     }
     //console.log(`${actualCmd}${cmdTerm}`)

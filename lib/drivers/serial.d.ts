@@ -1,5 +1,4 @@
-import { ServiceCommands } from "./mcdn-cmd";
-import { Commands } from "../index";
+import { McdnCmd } from "./mcdn-cmd";
 declare class Serial {
     private serialPort;
     private connected;
@@ -9,8 +8,7 @@ declare class Serial {
     private cmdInProgress;
     constructor();
     connect(portName: string): void;
-    sendStr(cmd: string): void;
-    sendCmd(cmd: Commands | ServiceCommands | string): void;
+    sendCmd(cmd: McdnCmd): void;
     private sendThruPort;
     private startLisening;
     private postProcessAnswer;

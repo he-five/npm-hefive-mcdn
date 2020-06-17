@@ -7,7 +7,7 @@ driver.on('ports', (ports) => {
     console.timeEnd('EXECUTION TIME enumSerialPorts')
     console.log(ports);
     console.time('EXECUTION TIME openSerialPort')
-    driver.openSerialPort('COM3');
+    driver.openSerialPort('COM5');
 
  })
 
@@ -20,10 +20,11 @@ driver.on('connected', () => {
     driver.sendCmd(Commands.ENCODER);
     console.time('EXECUTION TIME Commands.FOLLOWING_ERROR')
     driver.sendCmd(Commands.FOLLOWING_ERROR);
+    console.time('EXECUTION TIME \'ver\'')
+    driver.sendStr('ver');
 
     setTimeout(() => {
-        console.time('EXECUTION TIME \'ver\'')
-        driver.sendStr('ver');
+
     }, 500)
 
      setTimeout(() => {

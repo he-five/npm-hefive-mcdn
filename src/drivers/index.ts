@@ -13,11 +13,11 @@ process.on('message', (msg : McdnCmd) => {
         case ServiceCommands.CONNECT:
             driver.connect(msg.data);
             break;
-        case ServiceCommands.STRING:
-            driver.sendStr(msg.data);
-            break;
+        // case ServiceCommands.STRING:
+        //     driver.sendStr(msg.data);
+        //     break;
         default:
-            driver.sendCmd(msg.cmd)
+            driver.sendCmd(msg)
             break;
 
     }

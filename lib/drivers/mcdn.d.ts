@@ -1,10 +1,8 @@
-import { ServiceCommands } from "./mcdn-cmd";
-import { Commands } from "../index";
+import { McdnCmd } from "./mcdn-cmd";
 declare class MCDN {
     constructor();
     connect(): void;
     disconnect(): void;
-    sendCmd(cmd: Commands | ServiceCommands): void;
-    sendStr(cmd: string): void;
+    sendCmd(cmd: McdnCmd): void;
 }
 export { MCDN };
