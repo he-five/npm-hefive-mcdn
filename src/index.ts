@@ -1,7 +1,7 @@
 import {EventEmitter} from "events";
 import {ChildProcess} from "child_process";
 import {McdnCmd, ServiceCommands} from "./drivers/mcdn-cmd";
-import {IpcReply, IpcReplyType} from "./drivers/driver-replay";
+import {DriverReply, IpcReply, IpcReplyType} from "./drivers/driver-replay";
 
 const path = require('path');
 const SerialPort = require('serialport')
@@ -16,11 +16,12 @@ enum Commands {
 class McdnDriver extends EventEmitter {
     public connected: boolean
     private driverProcess: ChildProcess | null
-
+    private callbacksMap: any;
     constructor() {
         super()
         this.driverProcess = null
-        this.connected = false;
+        this.connected = false
+        this.callbacksMap = new Map();
     }
 
     public enumSerialPorts() {
@@ -62,16 +63,24 @@ class McdnDriver extends EventEmitter {
     }
 
     public disconnect() {
-        this.driverProcess?.send(new McdnCmd(ServiceCommands.DISCONNECT));
+        this.driverProcess?.send(new McdnCmd(ServiceCommands.DISCONNECT, undefined));
     }
 
     public getFwVersion() {
         this.sendCmd(Commands.FW_VER)
     }
 
-    public sendCmd(cmd: Commands | ServiceCommands) {
+    public sendCmd(cmd: Commands | ServiceCommands, callback?: (data: any) => void) {
         console.log(`REQUEST: ${cmd}`)
-        this.driverProcess?.send(new McdnCmd(cmd));
+        // expected driver reply to call callback function too
+        if (callback){
+            let key = `${cmd.toString()}_${Date.now()}`;
+            this.callbacksMap.set(key, callback)
+            this.driverProcess?.send(new McdnCmd(cmd, undefined, key));
+        }
+        else{
+            this.driverProcess?.send(new McdnCmd(cmd, undefined));
+        }
     }
 
     public sendStr(str: string) {
@@ -95,6 +104,22 @@ class McdnDriver extends EventEmitter {
         })
         this.driverProcess?.on('message', (msg: IpcReply) => {
             //console.log(`driverProcess message: ${msg}`)
+
+            if (msg.type == IpcReplyType.DRV) {
+                let reply = msg.drvReply as DriverReply
+                if (this.callbacksMap.has(reply.callbackId)){
+                    let callbackFunc = this.callbacksMap.get(reply.callbackId)
+                    this.callbacksMap.delete(reply.callbackId);
+                    try {
+                        callbackFunc(msg.drvReply)
+                    }
+                    catch (err) {
+                        // TODO something
+                    }
+
+                }
+            }
+
             if (msg.type == IpcReplyType.DRV) {
                 this.emit('data', msg.drvReply);
             }

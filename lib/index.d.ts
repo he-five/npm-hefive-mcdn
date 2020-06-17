@@ -9,6 +9,7 @@ declare enum Commands {
 declare class McdnDriver extends EventEmitter {
     connected: boolean;
     private driverProcess;
+    private callbacksMap;
     constructor();
     enumSerialPorts(): void;
     openMcdnPort(portName: string): void;
@@ -16,7 +17,7 @@ declare class McdnDriver extends EventEmitter {
     private createProcess;
     disconnect(): void;
     getFwVersion(): void;
-    sendCmd(cmd: Commands | ServiceCommands): void;
+    sendCmd(cmd: Commands | ServiceCommands, callback?: (data: any) => void): void;
     sendStr(str: string): void;
     consumeEvents(): void;
 }

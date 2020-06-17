@@ -4,16 +4,18 @@ import {Commands} from "../index";
 
 
 class DriverReply {
-    public cmd          : Commands | ServiceCommands | string;
-    public passed       : boolean;
-    public answer       : any;
+    public cmd          : Commands | ServiceCommands | string
+    public passed       : boolean
+    public answer       : any
     public deviceId     : number
+    public callbackId   : string | undefined
 
     constructor () {
-        this.cmd        = ServiceCommands.CLEAR_BUFF;
-        this.passed     = false;
-        this.answer       = null;
-        this.deviceId      = 1
+        this.cmd        = ServiceCommands.CLEAR_BUFF
+        this.passed     = false
+        this.answer     = null
+        this.deviceId   = 1
+        this.callbackId = undefined
     }
 
 }

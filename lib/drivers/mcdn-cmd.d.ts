@@ -10,6 +10,7 @@ declare enum ServiceCommands {
 declare class McdnCmd {
     cmd: Commands | ServiceCommands;
     data: any;
-    constructor(cmd: Commands | ServiceCommands, data?: string);
+    uniqueId: string | undefined;
+    constructor(cmd: Commands | ServiceCommands, data: string | undefined, uniqueId?: string);
 }
 export { McdnCmd, ServiceCommands, cmdPass, cmdFail };

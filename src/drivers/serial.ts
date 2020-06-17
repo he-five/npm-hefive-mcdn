@@ -37,6 +37,7 @@ class Serial {
   private connected     : boolean;
   private parser        : typeof HeFiveParser;
   private cmd           : Commands | ServiceCommands | string;
+  private callbacId     : string | undefined
   private queue         : Queue
   private cmdInProgress : boolean;
 
@@ -62,7 +63,7 @@ class Serial {
       this.connected = true;
       this.startLisening();
       // Send empty command before starting real communication
-      this.sendCmd(new McdnCmd(ServiceCommands.CLEAR_BUFF));
+      this.sendCmd(new McdnCmd(ServiceCommands.CLEAR_BUFF, undefined));
 
     }
   }
@@ -101,6 +102,8 @@ class Serial {
 
   private sendThruPort(cmd: McdnCmd ) {
     this.cmd = cmd.cmd;
+    this.callbacId = cmd.uniqueId;
+
     let actualCmd: string | undefined = ''
     switch (this.cmd) {
       case Commands.FW_VER:
@@ -140,6 +143,8 @@ class Serial {
           //new
           let reply = new DriverReply();
           reply.cmd = this.cmd;
+          reply.callbackId = this.callbacId;
+
           strData = strData.trim();
           reply.passed = strData.endsWith(cmdPass);
           strData  = strData.slice(0, strData.length - 1);
@@ -162,8 +167,6 @@ class Serial {
       console.log('Error: ', err.message)
       process.send?.(new IpcReply(IpcReplyType.ERROR, err))
     })
-
-
   }
 
   private postProcessAnswer(reply : DriverReply){

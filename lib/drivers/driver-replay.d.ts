@@ -5,6 +5,7 @@ declare class DriverReply {
     passed: boolean;
     answer: any;
     deviceId: number;
+    callbackId: string | undefined;
     constructor();
 }
 declare enum IpcReplyType {

@@ -4,6 +4,7 @@ declare class Serial {
     private connected;
     private parser;
     private cmd;
+    private callbacId;
     private queue;
     private cmdInProgress;
     constructor();

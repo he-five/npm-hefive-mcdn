@@ -13,12 +13,14 @@ enum ServiceCommands {
 
 
 class McdnCmd {
-    public cmd: Commands | ServiceCommands;
-    public data: any;
+    public cmd      : Commands | ServiceCommands;
+    public data     : any;
+    public uniqueId : string | undefined;
 
-    constructor(cmd: Commands | ServiceCommands, data?: string) {
+    constructor(cmd: Commands | ServiceCommands, data: string | undefined, uniqueId?: string) {
         this.cmd = cmd
         this.data = data
+        this.uniqueId = uniqueId;
     }
 }
 
