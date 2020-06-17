@@ -13,6 +13,23 @@ enum Commands {
     FOLLOWING_ERROR = 'FOLLOWING_ERROR',
 }
 
+class CommandReply {
+    public cmd          : Commands | string
+    public passed       : boolean
+    public answer       : any
+    public deviceId     : number
+
+    constructor(cmd: Commands | string, passed: boolean, answer: any, deviceId: number) {
+        this.cmd        = cmd
+        this.passed     = passed
+        this.answer     = answer
+        this.deviceId   = deviceId
+
+    }
+}
+
+
+
 class McdnDriver extends EventEmitter {
     public connected: boolean
     private driverProcess: ChildProcess | null
@@ -110,8 +127,9 @@ class McdnDriver extends EventEmitter {
                 if (this.callbacksMap.has(reply.callbackId)){
                     let callbackFunc = this.callbacksMap.get(reply.callbackId)
                     this.callbacksMap.delete(reply.callbackId);
+
                     try {
-                        callbackFunc(msg.drvReply)
+                        callbackFunc(new CommandReply(reply.cmd, reply.passed, reply.answer,reply.deviceId))
                     }
                     catch (err) {
                         // TODO something
@@ -121,7 +139,8 @@ class McdnDriver extends EventEmitter {
             }
 
             if (msg.type == IpcReplyType.DRV) {
-                this.emit('data', msg.drvReply);
+                let reply = msg.drvReply as DriverReply
+                this.emit('data', new CommandReply(reply.cmd, reply.passed, reply.answer,reply.deviceId));
             }
             if (msg.type == IpcReplyType.ERROR) {
                 this.emit('error', msg.err);
@@ -133,4 +152,4 @@ class McdnDriver extends EventEmitter {
     }
 }
 
-export {Commands, McdnDriver};
+export {Commands, McdnDriver, CommandReply};

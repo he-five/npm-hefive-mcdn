@@ -6,6 +6,13 @@ declare enum Commands {
     ENCODER = "ENCODER",
     FOLLOWING_ERROR = "FOLLOWING_ERROR"
 }
+declare class CommandReply {
+    cmd: Commands | string;
+    passed: boolean;
+    answer: any;
+    deviceId: number;
+    constructor(cmd: Commands | string, passed: boolean, answer: any, deviceId: number);
+}
 declare class McdnDriver extends EventEmitter {
     connected: boolean;
     private driverProcess;
@@ -21,4 +28,4 @@ declare class McdnDriver extends EventEmitter {
     sendStr(str: string): void;
     consumeEvents(): void;
 }
-export { Commands, McdnDriver };
+export { Commands, McdnDriver, CommandReply };

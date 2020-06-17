@@ -1,7 +1,8 @@
-import { Commands, McdnDriver } from '../index'
+import {CommandReply, Commands, McdnDriver} from '../index'
 
 // eslint-disable-next-line no-unused-vars
 function testCallback (data:any) {
+  let reply = data as CommandReply
   console.log(`testCallback: ${JSON.stringify(data)}`)
 }
 
