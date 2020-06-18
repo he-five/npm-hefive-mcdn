@@ -7,11 +7,13 @@ declare class Serial {
     private callbacId;
     private queue;
     private cmdInProgress;
+    private cmdSendTime;
+    private timer;
     constructor();
     connect(portName: string): void;
     sendCmd(cmd: McdnCmd): void;
     private sendThruPort;
-    private startLisening;
+    private startListening;
     private postProcessAnswer;
     private checkForPendingCmd;
     disconnect(): void;

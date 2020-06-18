@@ -34,21 +34,26 @@ class Queue{
 
 class Serial {
   private serialPort    : typeof SerialPort
-  private connected     : boolean;
-  private parser        : typeof HeFiveParser;
-  private cmd           : Commands | ServiceCommands | string;
+  private connected     : boolean
+  private parser        : typeof HeFiveParser
+  private cmd           : Commands | ServiceCommands | string
   private callbacId     : string | undefined
   private queue         : Queue
-  private cmdInProgress : boolean;
+  private cmdInProgress : boolean
+  private cmdSendTime   : number
+  private timer         : any
 
-  constructor (){
-    this.connected      = false;
-    this.serialPort     = null;
-    this.cmd            = ServiceCommands.CLEAR_BUFF;
-    this.queue          = new Queue()
-    this.cmdInProgress  = false
+  constructor () {
+    this.connected = false
+    this.serialPort = null
+    this.cmd = ServiceCommands.CLEAR_BUFF
+    this.queue = new Queue()
+    this.cmdInProgress = false
+    this.cmdSendTime = 0
+    this.timer = undefined
 
   }
+
   public connect (portName : string) {
     if (!this.connected){
       // Not connected
@@ -61,9 +66,25 @@ class Serial {
 
       this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
       this.connected = true;
-      this.startLisening();
+      this.startListening();
       // Send empty command before starting real communication
       this.sendCmd(new McdnCmd(ServiceCommands.CLEAR_BUFF, undefined));
+
+      this.timer = setInterval(() => {
+        if (this.cmdInProgress) {
+          if ((Date.now() - this.cmdSendTime) > 500) {
+            switch (this.cmd) {
+              case ServiceCommands.CLEAR_BUFF:
+                process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
+                this.connected      = false
+                this.cmdInProgress  = false
+                break;
+              default:
+                process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
+            }
+          }
+        }
+      }, 50)
 
     }
   }
@@ -90,19 +111,18 @@ class Serial {
     }
 
     if (this.cmdInProgress == false){
-      this.cmdInProgress = true
       this.sendThruPort(cmd);
     }
     else{
       this.queue.enqueue(cmd);
     }
-
   }
 
-
   private sendThruPort(cmd: McdnCmd ) {
-    this.cmd = cmd.cmd;
-    this.callbacId = cmd.uniqueId;
+    this.cmdInProgress    = true
+    this.cmd              = cmd.cmd
+    this.callbacId        = cmd.uniqueId
+    this.cmdSendTime      = Date.now()
 
     let actualCmd: string | undefined = ''
     switch (this.cmd) {
@@ -131,7 +151,7 @@ class Serial {
     })
   }
 
-  private startLisening(){
+  private startListening(){
     if (!this.connected){
       return;
     }
@@ -163,7 +183,7 @@ class Serial {
      })
     // Open errors will be emitted as an error event
     this.serialPort.on('error', (err : any) => {
-      //this.cmdInProgress = false
+      this.cmdInProgress = false
       console.log('Error: ', err.message)
       process.send?.(new IpcReply(IpcReplyType.ERROR, err))
     })
