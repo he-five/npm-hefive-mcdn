@@ -77,12 +77,12 @@ class Serial {
               case ServiceCommands.CLEAR_BUFF:
                 process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
                 this.connected      = false
-                this.cmdInProgress  = false
                 break;
               default:
                 process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
             }
           }
+          this.cmdInProgress  = false
         }
       }, 50)
 
