@@ -194,7 +194,8 @@ class Serial {
       switch(reply.cmd){
         case ServiceCommands.CLEAR_BUFF:
           // replay verify
-          process.send?.(new IpcReply(IpcReplyType.CONNECTED, true))
+          reply.answer = true
+          process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
           this.checkForPendingCmd();
           return;
         case Commands.FW_VER:

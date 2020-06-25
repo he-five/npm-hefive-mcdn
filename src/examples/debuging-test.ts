@@ -16,9 +16,9 @@ driver.on('ports', (ports) => {
   driver.openSerialPort('COM5')
 })
 
-driver.on('connected', () => {
+driver.on('connected', (data :boolean) => {
   console.timeEnd('EXECUTION TIME openSerialPort')
-  console.log('CONNECTED')
+  console.log('CONNECTED: ' + data)
   console.time('EXECUTION TIME Commands.FW_VER')
   driver.sendCmd(Commands.FW_VER, testCallback)
   console.time('EXECUTION TIME Commands.ENCODER')

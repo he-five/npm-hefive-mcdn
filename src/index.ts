@@ -146,7 +146,8 @@ class McdnDriver extends EventEmitter {
                 this.emit('error', msg.err);
             }
             if (msg.type == IpcReplyType.CONNECTED) {
-                this.emit('connected', msg.drvReply);
+                let reply = msg.drvReply as DriverReply
+                this.emit('connected', reply.answer);
             }
         })
     }

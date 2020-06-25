@@ -46,7 +46,7 @@ class IpcReply {
                 this.err        = data
                 break;
             default:
-                // ERROR
+                this.drvReply   = data
 
         }
     }
