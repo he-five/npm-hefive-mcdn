@@ -8,7 +8,7 @@ process.on('message', (msg : McdnCmd) => {
     switch (msg.cmd) {
         case ServiceCommands.DISCONNECT:
             driver.disconnect();
-            process.exit(0);
+            //process.exit(0);
             break;
         case ServiceCommands.CONNECT:
             driver.connect(msg.data);

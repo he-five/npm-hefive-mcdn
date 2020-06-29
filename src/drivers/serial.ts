@@ -187,7 +187,15 @@ class Serial {
       console.log('Error: ', err.message)
       process.send?.(new IpcReply(IpcReplyType.ERROR, err))
     })
+
+
+    // The close event is emitted when the port is closed
+    this.serialPort.on('close', () => {
+      process.exit(0);
+    })
   }
+
+
 
   private postProcessAnswer(reply : DriverReply){
     this.cmdInProgress = false
