@@ -14,6 +14,7 @@ process.on('message', (msg : McdnCmd) => {
             driver.connect(msg.data);
             break;
         case ServiceCommands.DISCONNECT:
+
             driver.disconnect();
             break;
         // case ServiceCommands.STRING:

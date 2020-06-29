@@ -13,7 +13,7 @@ driver.on('ports', (ports) => {
   console.timeEnd('EXECUTION TIME enumSerialPorts')
   console.log(ports)
   console.time('EXECUTION TIME openSerialPort')
-  driver.openSerialPort('COM5')
+  driver.openSerialPort('COM9')
 })
 
 driver.on('connected', (data :boolean) => {
@@ -33,7 +33,7 @@ driver.on('connected', (data :boolean) => {
   // }, 500)
 
   setTimeout(() => {
-    driver.disconnect()
+    //driver.disconnect()
   }, 1000)
 })
 

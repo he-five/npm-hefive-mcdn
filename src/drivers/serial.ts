@@ -34,7 +34,6 @@ class Queue{
 
 class Serial {
   private serialPort    : typeof SerialPort
-  private connected     : boolean
   private parser        : typeof HeFiveParser
   private cmd           : Commands | ServiceCommands | string
   private callbacId     : string | undefined
@@ -44,7 +43,6 @@ class Serial {
   private timer         : any
 
   constructor () {
-    this.connected = false
     this.serialPort = null
     this.cmd = ServiceCommands.CLEAR_BUFF
     this.queue = new Queue()
@@ -55,24 +53,22 @@ class Serial {
   }
 
   public connect (portName : string) {
-    if (!this.connected){
+    if (!this.serialPort?.connected){
       // Not connected
         this.serialPort = new SerialPort(portName,{ baudRate: 115200 }, (err: any) => {
           if (err){
-            this.connected = false;
             process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))
           }
         });
 
       this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
-      this.connected = true;
       this.startListening();
       // Send empty command before starting real communication
       this.sendCmd(new McdnCmd(ServiceCommands.CLEAR_BUFF, undefined));
 
       this.timer = setInterval(() => {
         if (this.cmdInProgress) {
-          if ((Date.now() - this.cmdSendTime) > 500) {
+          if ((Date.now() - this.cmdSendTime) > 25000) {
             switch (this.cmd) {
               case ServiceCommands.CLEAR_BUFF:
                 let reply = new DriverReply();
@@ -80,8 +76,7 @@ class Serial {
                 reply.callbackId = this.callbacId;
                 reply.answer = false
                 process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
-                this.connected      = false
-                this.cmdInProgress  = false
+                this.disconnect()
                 break;
               default:
                 process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
@@ -97,7 +92,7 @@ class Serial {
 
 
   public sendCmd(cmd : McdnCmd ){
-    if (this.connected == false) {
+    if (this.serialPort.connected == false) {
       process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
       return
     }
@@ -144,10 +139,6 @@ class Serial {
   }
 
   private startListening(){
-    if (!this.connected){
-      return;
-    }
-
     this.parser.on('data', (data : Buffer) => {
         let strData =  data.toString(asciiEnc)
         //console.log('answer:', strData)
@@ -196,9 +187,6 @@ class Serial {
           // replay verify
           reply.answer = true
           process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
-          this.connected = false
-          this.serialPort.close();
-          this.checkForPendingCmd();
           return;
         case Commands.FW_VER:
           if (reply.answer){
@@ -221,11 +209,10 @@ class Serial {
   }
 
   public disconnect () {
-    if (!this.connected){
+    if (!this.serialPort.connected){
       process.exit(0);
       return;
     }
-    this.connected = false
     this.serialPort.close();
   }
 }

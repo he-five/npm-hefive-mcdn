@@ -1,7 +1,6 @@
 import { McdnCmd } from "./mcdn-cmd";
 declare class Serial {
     private serialPort;
-    private connected;
     private parser;
     private cmd;
     private callbacId;
