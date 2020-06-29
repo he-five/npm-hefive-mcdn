@@ -19,14 +19,14 @@ driver.on('ports', (ports) => {
 driver.on('connected', (data :boolean) => {
   console.timeEnd('EXECUTION TIME openSerialPort')
   console.log('CONNECTED: ' + data)
-  console.time('EXECUTION TIME Commands.FW_VER')
-  driver.sendCmd(Commands.FW_VER, testCallback)
-  console.time('EXECUTION TIME Commands.ENCODER')
-  driver.sendCmd(Commands.ENCODER, testCallback)
-  console.time('EXECUTION TIME Commands.FOLLOWING_ERROR')
-  driver.sendCmd(Commands.FOLLOWING_ERROR, testCallback)
-  console.time('EXECUTION TIME \'ver\'')
-  driver.sendStr('ver')
+//  console.time('EXECUTION TIME Commands.FW_VER')
+//  driver.sendCmd(Commands.FW_VER, testCallback)
+//  console.time('EXECUTION TIME Commands.ENCODER')
+//  driver.sendCmd(Commands.ENCODER, testCallback)
+//  console.time('EXECUTION TIME Commands.FOLLOWING_ERROR')
+//  driver.sendCmd(Commands.FOLLOWING_ERROR, testCallback)
+//  console.time('EXECUTION TIME \'ver\'')
+//  driver.sendStr('ver')
 
   // setTimeout(() => {
   //

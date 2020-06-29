@@ -75,34 +75,26 @@ class Serial {
           if ((Date.now() - this.cmdSendTime) > 500) {
             switch (this.cmd) {
               case ServiceCommands.CLEAR_BUFF:
-                process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
+                let reply = new DriverReply();
+                reply.cmd = this.cmd;
+                reply.callbackId = this.callbacId;
+                reply.answer = false
+                process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
                 this.connected      = false
+                this.cmdInProgress  = false
                 break;
               default:
                 process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
+                this.cmdInProgress  = false
             }
           }
-          this.cmdInProgress  = false
+
         }
       }, 50)
 
     }
   }
 
-  // public sendStr(cmd : string){
-  //   if (this.connected == false) {
-  //     process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
-  //     return
-  //   }
-  //
-  //   if (this.cmdInProgress == false){
-  //     this.cmdInProgress = true
-  //     this.sendThruPort(ServiceCommands.STRING,cmd);
-  //   }
-  //    else{
-  //      this.queue.enqueue(cmd);
-  //    }
-  // }
 
   public sendCmd(cmd : McdnCmd ){
     if (this.connected == false) {
@@ -204,6 +196,8 @@ class Serial {
           // replay verify
           reply.answer = true
           process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
+          this.connected = false
+          this.serialPort.close();
           this.checkForPendingCmd();
           return;
         case Commands.FW_VER:
@@ -228,6 +222,7 @@ class Serial {
 
   public disconnect () {
     if (!this.connected){
+      process.exit(0);
       return;
     }
     this.connected = false
