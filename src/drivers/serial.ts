@@ -215,7 +215,7 @@ class Serial {
           break;
         case Commands.STATUS:
           if (reply.answer){
-            let num = Number(reply.answer)
+            let num = parseInt(reply.answer, 16)
             let servoOn = (num & StatusMask.ServoOn) == 0 ? false:true
             let powerOn = (num & StatusMask.PowerOn) == 0 ? false:true
             reply.answer = new Status(servoOn, powerOn)
