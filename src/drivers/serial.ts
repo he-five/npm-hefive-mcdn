@@ -1,6 +1,6 @@
-import {cmdFail, cmdPass, McdnCmd, ServiceCommands} from "./mcdn-cmd";
+import {cmdFail, cmdPass, McdnCmd, ServiceCommands, StatusMask} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {Commands} from "../index";
+import {Commands, RelativeMove, Status} from "../index";
 
 const SerialPort = require('serialport')
 const HeFiveParser = require('./he-five-parser')
@@ -9,7 +9,7 @@ const cmdTerm = '\r'
 const asciiEnc     = 'ascii'
 
 class Queue{
-  _queue: any[];
+  _queue : any[];
 
   constructor(queue?: any[]) {
     this._queue = queue || [];
@@ -68,7 +68,7 @@ class Serial {
 
       this.timer = setInterval(() => {
         if (this.cmdInProgress) {
-          if ((Date.now() - this.cmdSendTime) > 25000) {
+          if ((Date.now() - this.cmdSendTime) > 500) {
             switch (this.cmd) {
               case ServiceCommands.CLEAR_BUFF:
                 let reply = new DriverReply();
@@ -122,6 +122,26 @@ class Serial {
       case Commands.FOLLOWING_ERROR:
         actualCmd = 'err'
         break;
+      case Commands.POWER_ON:
+        actualCmd = 'enable'
+        break;
+      case Commands.POWER_OFF:
+        actualCmd = 'disable'
+        break;
+      case Commands.SERVO_ON:
+        actualCmd = 'on'
+        break;
+      case Commands.SERVO_OFF:
+        actualCmd = 'off'
+        break;
+      case Commands.RelativeMove:
+        let data = cmd.data as RelativeMove
+        actualCmd = `rel ${data.distance}${cmdTerm}go`
+       break;
+      case Commands.STATUS:
+        actualCmd = `sta`
+        break;
+
       case ServiceCommands.CLEAR_BUFF:
         actualCmd = ' '
         break;
@@ -193,6 +213,14 @@ class Serial {
             reply.answer = reply.answer.slice(0,reply.answer.indexOf(','))
           }
           break;
+        case Commands.STATUS:
+          if (reply.answer){
+            let num = Number(reply.answer)
+            let servoOn = (num & StatusMask.ServoOn) == 0 ? false:true
+            let powerOn = (num & StatusMask.PowerOn) == 0 ? false:true
+            reply.answer = new Status(servoOn, powerOn)
+          }
+          break;
       }
     process.send?.(new IpcReply(IpcReplyType.DRV, reply))
     this.checkForPendingCmd();
@@ -218,3 +246,4 @@ class Serial {
 }
 
 export { Serial }
+

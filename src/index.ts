@@ -10,8 +10,37 @@ const child_process = require('child_process')
 enum Commands {
     FW_VER = `FW_VER`,
     ENCODER = 'ENCODER',
-    FOLLOWING_ERROR = 'FOLLOWING_ERROR',
+    FOLLOWING_ERROR     = 'FOLLOWING_ERROR',
+    POWER_ON            = 'POWER_ON',
+    POWER_OFF           = 'POWER_OFF',
+    SERVO_ON            = 'SERVO_ON',
+    SERVO_OFF           = 'SERVO_OFF',
+    RelativeMove        = 'RelativeMove',
+    STATUS              = 'STATUS'
+
 }
+
+class RelativeMove {
+    public distance : number
+
+    constructor(distance : number) {
+        this.distance = distance;
+    }
+}
+
+class Status {
+    public servoOn : boolean
+    public powerOn : boolean
+
+
+    constructor(servoOn : boolean, powerOn : boolean) {
+        this.servoOn = servoOn;
+        this.powerOn = powerOn;
+    }
+}
+
+
+
 
 class CommandReply {
     public cmd          : Commands | string
@@ -87,16 +116,16 @@ class McdnDriver extends EventEmitter {
         this.sendCmd(Commands.FW_VER)
     }
 
-    public sendCmd(cmd: Commands | ServiceCommands, callback?: (data: any) => void) {
+    public sendCmd(cmd: Commands | ServiceCommands, data : any = undefined , callback?: (data: any) => void) {
         console.log(`REQUEST: ${cmd}`)
         // expected driver reply to call callback function too
         if (callback){
             let key = `${cmd.toString()}_${Date.now()}`;
             this.callbacksMap.set(key, callback)
-            this.driverProcess?.send(new McdnCmd(cmd, undefined, key));
+            this.driverProcess?.send(new McdnCmd(cmd, data, key));
         }
         else{
-            this.driverProcess?.send(new McdnCmd(cmd, undefined));
+            this.driverProcess?.send(new McdnCmd(cmd, data));
         }
     }
 
@@ -153,4 +182,4 @@ class McdnDriver extends EventEmitter {
     }
 }
 
-export {Commands, McdnDriver, CommandReply};
+export {Commands, McdnDriver, CommandReply, RelativeMove, Status};

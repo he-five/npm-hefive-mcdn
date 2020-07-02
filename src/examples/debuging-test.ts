@@ -1,4 +1,4 @@
-import {CommandReply, Commands, McdnDriver} from '../index'
+import {CommandReply, Commands, McdnDriver, RelativeMove} from '../index'
 
 // eslint-disable-next-line no-unused-vars
 function testCallback (data:any) {
@@ -21,7 +21,7 @@ driver.on('connected', (data :boolean) => {
   console.log('CONNECTED: ' + data)
 //  console.time('EXECUTION TIME Commands.FW_VER')
 //  driver.sendCmd(Commands.FW_VER, testCallback)
-//  console.time('EXECUTION TIME Commands.ENCODER')
+  console.time('EXECUTION TIME Commands.ENCODER')
 //  driver.sendCmd(Commands.ENCODER, testCallback)
 //  console.time('EXECUTION TIME Commands.FOLLOWING_ERROR')
 //  driver.sendCmd(Commands.FOLLOWING_ERROR, testCallback)
@@ -35,6 +35,10 @@ driver.on('connected', (data :boolean) => {
   setTimeout(() => {
     //driver.disconnect()
   }, 1000)
+  driver.sendCmd(Commands.ENCODER)
+  driver.sendCmd(Commands.SERVO_ON);
+  driver.sendCmd(Commands.POWER_ON);
+
 })
 
 driver.on('disconnected', () => {
@@ -51,7 +55,7 @@ driver.on('data', (data) => {
   }
 
   if (data.cmd === 'ENCODER') {
-    console.timeEnd('EXECUTION TIME Commands.ENCODER')
+    //console.timeEnd('EXECUTION TIME Commands.ENCODER')
   }
 
   if (data.cmd === 'FOLLOWING_ERROR') {
@@ -62,8 +66,24 @@ driver.on('data', (data) => {
     console.timeEnd('EXECUTION TIME \'ver\'')
   }
 
-  console.log(`DATA: ${JSON.stringify(data)}`)
+  if (data.cmd === Commands.POWER_ON) {
+
+    driver.sendCmd(Commands.RelativeMove, new RelativeMove(100));
+
+
+    //console.timeEnd('EXECUTION TIME \'ver\'')
+  }
+  if (data.cmd === Commands.RelativeMove) {
+     setTimeout(() => {
+       driver.sendCmd(Commands.STATUS)
+       driver.sendCmd(Commands.ENCODER)
+     }, 500)
+
+  }
+
+    console.log(`DATA: ${JSON.stringify(data)}`)
 })
 
 // driver.openMcdnPort('COM5');
 // driver.closePort();
+
