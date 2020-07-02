@@ -4,7 +4,7 @@ declare const cmdFail = "?";
 declare enum StatusMask {
     AtTarget = 1,
     ServoOn = 2,
-    PowerOn = 2,
+    PowerOn = 4,
     IdxCaptured = 16,
     Homed = 32,
     Aligning = 64,
