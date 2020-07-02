@@ -6,6 +6,8 @@ function testCallback (data:any) {
   console.log(`testCallback: ${JSON.stringify(data)}`)
 }
 
+const i = 0
+
 const driver = new McdnDriver()
 console.time('EXECUTION TIME enumSerialPorts')
 driver.enumSerialPorts()
@@ -13,7 +15,7 @@ driver.on('ports', (ports) => {
   console.timeEnd('EXECUTION TIME enumSerialPorts')
   console.log(ports)
   console.time('EXECUTION TIME openSerialPort')
-  driver.openSerialPort('COM9')
+  driver.openSerialPort('COM1')
 })
 
 driver.on('connected', (data :boolean) => {
@@ -35,9 +37,9 @@ driver.on('connected', (data :boolean) => {
   setTimeout(() => {
     //driver.disconnect()
   }, 1000)
-  driver.sendCmd(Commands.ENCODER)
-  driver.sendCmd(Commands.SERVO_ON);
-  driver.sendCmd(Commands.POWER_ON);
+  driver.sendCmd(Commands.STATUS)
+  driver.sendCmd(Commands.SERVO_OFF);
+  driver.sendCmd(Commands.POWER_OFF);
 
 })
 
@@ -68,14 +70,29 @@ driver.on('data', (data) => {
 
   if (data.cmd === Commands.POWER_ON) {
 
-    driver.sendCmd(Commands.RelativeMove, new RelativeMove(100));
+    //driver.sendCmd(Commands.RelativeMove, new RelativeMove(100));
 
 
     //console.timeEnd('EXECUTION TIME \'ver\'')
   }
+  if (data.cmd === Commands.STATUS) {
+
+    setTimeout(() => {
+      // if (i%1 === 0 ){
+      //   driver.sendCmd(Commands.SERVO_OFF);
+      // }
+      // else {
+      //   driver.sendCmd(Commands.SERVO_ON);
+      // }
+
+    }, 500)
+
+    //driver.sendCmd(Commands.STATUS)
+
+  }
+
   if (data.cmd === Commands.RelativeMove) {
      setTimeout(() => {
-       driver.sendCmd(Commands.STATUS)
        driver.sendCmd(Commands.ENCODER)
      }, 500)
 
