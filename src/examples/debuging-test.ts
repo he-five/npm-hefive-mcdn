@@ -1,7 +1,17 @@
-import {CommandReply, Commands, McdnDriver, RelativeMove} from '../index'
+import {CommandReply, Commands, CommandsData,McdnDriver, RelativeMove} from '../index'
 
 // eslint-disable-next-line no-unused-vars
 function testCallback (data:any) {
+  let reply = data as CommandReply
+  console.log(`testCallback: ${JSON.stringify(data)}`)
+}
+
+function testCallback1 (data:any) {
+  let reply = data as CommandReply
+  console.log(`testCallback: ${JSON.stringify(data)}`)
+}
+
+function testCallback2 (data:any) {
   let reply = data as CommandReply
   console.log(`testCallback: ${JSON.stringify(data)}`)
 }
@@ -24,14 +34,14 @@ driver.on('connected', (data :boolean) => {
   console.time('EXECUTION TIME Commands.ENCODER')
 
 
-  driver.sendCmd(Commands.STATUS)
+  driver.sendCmd(Commands.STATUS, testCallback2)
 
   setTimeout(() => {
     driver.sendCmd(Commands.SERVO_OFF);
     //driver.sendCmd(Commands.POWER_OFF);
-    driver.sendCmd(Commands.STATUS)
+    driver.sendCmd(Commands.STATUS, testCallback1)
     setTimeout(() => {
-      driver.sendCmd(Commands.STATUS)
+      driver.sendCmd(Commands.STATUS, testCallback)
       driver.sendCmd(Commands.SERVO_ON);
       driver.sendCmd(Commands.POWER_ON);
 
@@ -61,9 +71,9 @@ driver.on('data', (data) => {
     //console.timeEnd('EXECUTION TIME Commands.ENCODER')
   }
 
-  if (data.cmd === 'FOLLOWING_ERROR') {
-    console.timeEnd('EXECUTION TIME Commands.FOLLOWING_ERROR')
-  }
+  // if (data.cmd === 'FOLLOWING_ERROR') {
+  //   console.timeEnd('EXECUTION TIME Commands.FOLLOWING_ERROR')
+  // }
 
   if (data.cmd === 'STR') {
     console.timeEnd('EXECUTION TIME \'ver\'')
@@ -88,11 +98,13 @@ driver.on('data', (data) => {
 
     }, 500)
 
-    //driver.sendCmd(Commands.STATUS)
+    driver.sendCmd(Commands.STATUS, testCallback)
+    driver.sendCmd(Commands.ENCODER, testCallback1)
+    driver.sendCmd(Commands.FOLLOWING_ERROR, testCallback2)
 
   }
 
-  if (data.cmd === Commands.RelativeMove) {
+  if (data.cmd === CommandsData.RelativeMove) {
      setTimeout(() => {
        driver.sendCmd(Commands.ENCODER)
      }, 500)

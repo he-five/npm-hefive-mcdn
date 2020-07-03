@@ -1,4 +1,4 @@
-import {Commands} from "../index";
+import {Commands, CommandsData} from "../index";
 
 const cmdPass = '>'
 const cmdFail = '?'
@@ -35,11 +35,11 @@ enum ServiceCommands {
 
 
 class McdnCmd {
-    public cmd      : Commands | ServiceCommands;
+    public cmd      : Commands | ServiceCommands | CommandsData;
     public data     : any;
     public uniqueId : string | undefined;
 
-    constructor(cmd: Commands | ServiceCommands, data: string | any, uniqueId?: string) {
+    constructor(cmd: Commands | ServiceCommands | CommandsData, data: string | any, uniqueId?: string) {
         this.cmd = cmd
         this.data = data
         this.uniqueId = uniqueId;

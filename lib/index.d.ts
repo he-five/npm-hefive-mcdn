@@ -9,8 +9,10 @@ declare enum Commands {
     POWER_OFF = "POWER_OFF",
     SERVO_ON = "SERVO_ON",
     SERVO_OFF = "SERVO_OFF",
-    RelativeMove = "RelativeMove",
     STATUS = "STATUS"
+}
+declare enum CommandsData {
+    RelativeMove = "RelativeMove"
 }
 declare class RelativeMove {
     distance: number;
@@ -32,6 +34,7 @@ declare class McdnDriver extends EventEmitter {
     connected: boolean;
     private driverProcess;
     private callbacksMap;
+    private sequentialNum;
     constructor();
     enumSerialPorts(): void;
     openMcdnPort(portName: string): void;
@@ -39,8 +42,10 @@ declare class McdnDriver extends EventEmitter {
     private createProcess;
     disconnect(): void;
     getFwVersion(): void;
-    sendCmd(cmd: Commands | ServiceCommands, data?: any, callback?: (data: any) => void): void;
+    sendCmdData(cmd: CommandsData, data: any, callback?: (data: any) => void): void;
+    sendCmd(cmd: Commands | ServiceCommands, callback?: (data: any) => void): void;
+    private sendToDriver;
     sendStr(str: string): void;
     consumeEvents(): void;
 }
-export { Commands, McdnDriver, CommandReply, RelativeMove, Status };
+export { Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status };

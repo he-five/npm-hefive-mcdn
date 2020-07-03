@@ -8,16 +8,18 @@ const SerialPort = require('serialport')
 const child_process = require('child_process')
 
 enum Commands {
-    FW_VER = `FW_VER`,
-    ENCODER = 'ENCODER',
+    FW_VER              = `FW_VER`,
+    ENCODER             = 'ENCODER',
     FOLLOWING_ERROR     = 'FOLLOWING_ERROR',
     POWER_ON            = 'POWER_ON',
     POWER_OFF           = 'POWER_OFF',
     SERVO_ON            = 'SERVO_ON',
     SERVO_OFF           = 'SERVO_OFF',
-    RelativeMove        = 'RelativeMove',
     STATUS              = 'STATUS'
+}
 
+enum CommandsData {
+    RelativeMove        = 'RelativeMove'
 }
 
 class RelativeMove {
@@ -63,11 +65,14 @@ class McdnDriver extends EventEmitter {
     public connected: boolean
     private driverProcess: ChildProcess | null
     private callbacksMap: any;
+    private sequentialNum : number;
+
     constructor() {
         super()
         this.driverProcess = null
         this.connected = false
         this.callbacksMap = new Map();
+        this.sequentialNum = 1;
     }
 
     public enumSerialPorts() {
@@ -116,15 +121,26 @@ class McdnDriver extends EventEmitter {
         this.sendCmd(Commands.FW_VER)
     }
 
-    public sendCmd(cmd: Commands | ServiceCommands, data : any = undefined , callback?: (data: any) => void) {
-        console.log(`REQUEST: ${cmd}`)
+    public sendCmdData(cmd: CommandsData, data : any, callback?: (data: any) => void) {
+        this.sendToDriver(callback, cmd, data);
+    }
+
+    public sendCmd(cmd: Commands | ServiceCommands, callback?: (data: any) => void) {
+        //console.log(`REQUEST: ${cmd}`)
+        let data = undefined
         // expected driver reply to call callback function too
-        if (callback){
-            let key = `${cmd.toString()}_${Date.now()}`;
+        this.sendToDriver(callback, cmd, data);
+    }
+
+    private sendToDriver(callback: ((data: any) => void) | undefined, cmd: Commands | ServiceCommands | CommandsData, data: any) {
+        if (callback) {
+            let key = `${cmd.toString()}_${this.sequentialNum}}`;
+            this.sequentialNum++
+            if (this.sequentialNum > 1000){ this.sequentialNum = 0}
             this.callbacksMap.set(key, callback)
+            //console.log(`sequentialNum: ${this.sequentialNum}`)
             this.driverProcess?.send(new McdnCmd(cmd, data, key));
-        }
-        else{
+        } else {
             this.driverProcess?.send(new McdnCmd(cmd, data));
         }
     }
@@ -182,4 +198,4 @@ class McdnDriver extends EventEmitter {
     }
 }
 
-export {Commands, McdnDriver, CommandReply, RelativeMove, Status};
+export {Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status};

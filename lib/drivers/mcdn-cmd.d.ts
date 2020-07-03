@@ -1,4 +1,4 @@
-import { Commands } from "../index";
+import { Commands, CommandsData } from "../index";
 declare const cmdPass = ">";
 declare const cmdFail = "?";
 declare enum StatusMask {
@@ -25,9 +25,9 @@ declare enum ServiceCommands {
     STRING = "STR"
 }
 declare class McdnCmd {
-    cmd: Commands | ServiceCommands;
+    cmd: Commands | ServiceCommands | CommandsData;
     data: any;
     uniqueId: string | undefined;
-    constructor(cmd: Commands | ServiceCommands, data: string | any, uniqueId?: string);
+    constructor(cmd: Commands | ServiceCommands | CommandsData, data: string | any, uniqueId?: string);
 }
 export { McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask };

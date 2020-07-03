@@ -1,6 +1,6 @@
 import {cmdFail, cmdPass, McdnCmd, ServiceCommands, StatusMask} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {Commands, RelativeMove, Status} from "../index";
+import {Commands, CommandsData, RelativeMove, Status} from "../index";
 
 const SerialPort = require('serialport')
 const HeFiveParser = require('./he-five-parser')
@@ -134,7 +134,7 @@ class Serial {
       case Commands.SERVO_OFF:
         actualCmd = 'off'
         break;
-      case Commands.RelativeMove:
+      case CommandsData.RelativeMove:
         let data = cmd.data as RelativeMove
         actualCmd = `rel ${data.distance}${cmdTerm}go`
        break;
