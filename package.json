@@ -1,6 +1,6 @@
 {
   "name": "@hefive/mcdn",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "author": "HE FIVE LLC",
   "license": "MIT",
   "description": "Communication driver for HE FIVE's Digital Servo Drives",
@@ -21,6 +21,8 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build-prod": "tsc",
+    "build-dev": "node --inspect lib\\examples\\debuging-test.js ",
+
     "ts": "tsc -w",
     "lint": "standard"
   },

@@ -21,26 +21,27 @@ driver.on('ports', (ports) => {
 driver.on('connected', (data :boolean) => {
   console.timeEnd('EXECUTION TIME openSerialPort')
   console.log('CONNECTED: ' + data)
-//  console.time('EXECUTION TIME Commands.FW_VER')
-//  driver.sendCmd(Commands.FW_VER, testCallback)
   console.time('EXECUTION TIME Commands.ENCODER')
-//  driver.sendCmd(Commands.ENCODER, testCallback)
-//  console.time('EXECUTION TIME Commands.FOLLOWING_ERROR')
-//  driver.sendCmd(Commands.FOLLOWING_ERROR, testCallback)
-//  console.time('EXECUTION TIME \'ver\'')
-//  driver.sendStr('ver')
 
-  // setTimeout(() => {
-  //
-  // }, 500)
+
+  driver.sendCmd(Commands.STATUS)
 
   setTimeout(() => {
+    driver.sendCmd(Commands.SERVO_OFF);
+    //driver.sendCmd(Commands.POWER_OFF);
+    driver.sendCmd(Commands.STATUS)
+    setTimeout(() => {
+      driver.sendCmd(Commands.STATUS)
+      driver.sendCmd(Commands.SERVO_ON);
+      driver.sendCmd(Commands.POWER_ON);
+
+      driver.sendCmd(Commands.STATUS)
+
+      //driver.disconnect()
+    }, 1000)
+
     //driver.disconnect()
   }, 1000)
-  driver.sendCmd(Commands.STATUS)
-  driver.sendCmd(Commands.SERVO_OFF);
-  driver.sendCmd(Commands.POWER_OFF);
-
 })
 
 driver.on('disconnected', () => {
@@ -101,6 +102,4 @@ driver.on('data', (data) => {
     console.log(`DATA: ${JSON.stringify(data)}`)
 })
 
-// driver.openMcdnPort('COM5');
-// driver.closePort();
 
