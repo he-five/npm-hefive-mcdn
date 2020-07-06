@@ -41,7 +41,23 @@ class Status {
     }
 }
 
+enum SerialPortType  {
+    USB         = 'USB',
+    UNKNOWN     = 'UNKNOWN'
+}
 
+class SerialPortInfo {
+
+    public comName      : string
+    public manufacturer : string
+    public type         : SerialPortType
+
+    constructor(comName: string, manufacturer: string, type : SerialPortType = SerialPortType.UNKNOWN ) {
+        this.comName      = comName
+        this.manufacturer = manufacturer
+        this.type = type
+    }
+}
 
 
 class CommandReply {
@@ -79,13 +95,25 @@ class McdnDriver extends EventEmitter {
         SerialPort.list().then(
             (ports: any[]) => {
                 let portsPath: string[] = [];
+                let portsInfo: SerialPortInfo[] = []
                 ports.forEach((port) => {
+                    //console.log(port);
                     //console.log(port['path'])
+                    let portType= port['path'].toUpperCase().includes('USB')
+                    if (portType == false ){
+                        portType= port['pnpId'].toUpperCase().includes('USB')
+                    }
+                    let info = new SerialPortInfo(  port['path'],
+                                                    port['manufacturer'],
+                                                portType? SerialPortType.USB : SerialPortType.UNKNOWN)
                     if (port['path']) {
                         portsPath.push(port['path']);
                     }
+                    portsInfo.push(info)
                 })
                 this.emit('ports', portsPath);
+                this.emit('portsInfo',portsInfo )
+
             },
             (err: any) => {
                 this.emit('error', err);
@@ -198,4 +226,4 @@ class McdnDriver extends EventEmitter {
     }
 }
 
-export {Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status};
+export {Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status, SerialPortInfo, SerialPortType};

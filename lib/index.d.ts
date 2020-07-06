@@ -23,6 +23,16 @@ declare class Status {
     powerOn: boolean;
     constructor(servoOn: boolean, powerOn: boolean);
 }
+declare enum SerialPortType {
+    USB = "USB",
+    UNKNOWN = "UNKNOWN"
+}
+declare class SerialPortInfo {
+    comName: string;
+    manufacturer: string;
+    type: SerialPortType;
+    constructor(comName: string, manufacturer: string, type?: SerialPortType);
+}
 declare class CommandReply {
     cmd: Commands | string;
     passed: boolean;
@@ -48,4 +58,4 @@ declare class McdnDriver extends EventEmitter {
     sendStr(str: string): void;
     consumeEvents(): void;
 }
-export { Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status };
+export { Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status, SerialPortInfo, SerialPortType };

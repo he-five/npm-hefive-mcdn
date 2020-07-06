@@ -23,9 +23,15 @@ console.time('EXECUTION TIME enumSerialPorts')
 driver.enumSerialPorts()
 driver.on('ports', (ports) => {
   console.timeEnd('EXECUTION TIME enumSerialPorts')
-  console.log(ports)
+  //console.log(ports)
   console.time('EXECUTION TIME openSerialPort')
   driver.openSerialPort('COM1')
+})
+
+driver.on('portsInfo', (ports) => {
+
+  console.log(ports)
+
 })
 
 driver.on('connected', (data :boolean) => {
