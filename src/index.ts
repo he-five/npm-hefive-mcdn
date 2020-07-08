@@ -100,7 +100,7 @@ class McdnDriver extends EventEmitter {
                     //console.log(port);
                     //console.log(port['path'])
                     let portType= port['path'].toUpperCase().includes('USB')
-                    if (portType == false && port.hasOwnProperty('pnpId')){
+                    if (portType == false && port.hasOwnProperty('pnpId') && port['pnpId'] !== undefined){
                         portType= port['pnpId'].toUpperCase().includes('USB')
                     }
                     let info = new SerialPortInfo(  port['path'],
