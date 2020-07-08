@@ -21,11 +21,11 @@ const i = 0
 const driver = new McdnDriver()
 console.time('EXECUTION TIME enumSerialPorts')
 driver.enumSerialPorts()
-driver.on('ports', (ports) => {
+driver.on('portsInfo', (ports) => {
   console.timeEnd('EXECUTION TIME enumSerialPorts')
   //console.log(ports)
   console.time('EXECUTION TIME openSerialPort')
-  driver.openSerialPort('COM1')
+  driver.openSerialPort('COM9')
 })
 
 driver.on('portsInfo', (ports) => {

@@ -9,26 +9,26 @@ const cmdTerm = '\r'
 const asciiEnc     = 'ascii'
 
 class Queue{
-  _queue : any[];
+  private cmds : McdnCmd[]
 
-  constructor(queue?: any[]) {
-    this._queue = queue || [];
+  constructor(queue?: McdnCmd[]) {
+    this.cmds = queue || [];
   }
 
   enqueue(item: any) {
-    this._queue.push(item);
+    this.cmds.push(item);
   }
 
   dequeue(): any {
-    return this._queue.shift();
+    return this.cmds.shift();
   }
 
   clear() {
-    this._queue = [];
+    this.cmds = [];
   }
 
   get count(): number {
-    return this._queue.length;
+    return this.cmds.length;
   }
 }
 

@@ -55,7 +55,7 @@ class SerialPortInfo {
     constructor(comName: string, manufacturer: string, type : SerialPortType = SerialPortType.UNKNOWN ) {
         this.comName      = comName
         this.manufacturer = manufacturer
-        this.type = type
+        this.type         = type
     }
 }
 
@@ -94,7 +94,7 @@ class McdnDriver extends EventEmitter {
     public enumSerialPorts() {
         SerialPort.list().then(
             (ports: any[]) => {
-                let portsPath: string[] = [];
+                //let portsPath: string[] = [];
                 let portsInfo: SerialPortInfo[] = []
                 ports.forEach((port) => {
                     //console.log(port);
@@ -106,12 +106,9 @@ class McdnDriver extends EventEmitter {
                     let info = new SerialPortInfo(  port['path'],
                                                     port['manufacturer'],
                                                 portType? SerialPortType.USB : SerialPortType.UNKNOWN)
-                    if (port['path']) {
-                        portsPath.push(port['path']);
-                    }
                     portsInfo.push(info)
                 })
-                this.emit('ports', portsPath);
+
                 this.emit('portsInfo',portsInfo )
 
             },
