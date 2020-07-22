@@ -9,7 +9,8 @@ declare enum Commands {
     POWER_OFF = "POWER_OFF",
     SERVO_ON = "SERVO_ON",
     SERVO_OFF = "SERVO_OFF",
-    STATUS = "STATUS"
+    STATUS = "STATUS",
+    INPUTS = "INPUTS"
 }
 declare enum CommandsData {
     RelativeMove = "RelativeMove"
@@ -22,6 +23,23 @@ declare class Status {
     servoOn: boolean;
     powerOn: boolean;
     constructor(servoOn: boolean, powerOn: boolean);
+}
+declare class Inputs {
+    axis1HallAActive: boolean;
+    axis1HallBActive: boolean;
+    axis1HallCActive: boolean;
+    axis1OverTemp: boolean;
+    axis1ForwardLimit: boolean;
+    axis1ReverseLimit: boolean;
+    axis1ExtraLimit: boolean;
+    axis2HallAActive: boolean;
+    axis2HallBActive: boolean;
+    axis2HallCActive: boolean;
+    axis2OverTemp: boolean;
+    axis2ForwardLimit: boolean;
+    axis2ReverseLimit: boolean;
+    axis2ExtraLimit: boolean;
+    constructor();
 }
 declare enum SerialPortType {
     USB = "USB",
@@ -58,4 +76,4 @@ declare class McdnDriver extends EventEmitter {
     sendStr(str: string): void;
     consumeEvents(): void;
 }
-export { Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status, SerialPortInfo, SerialPortType };
+export { Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status, SerialPortInfo, SerialPortType, Inputs };

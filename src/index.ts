@@ -15,7 +15,8 @@ enum Commands {
     POWER_OFF           = 'POWER_OFF',
     SERVO_ON            = 'SERVO_ON',
     SERVO_OFF           = 'SERVO_OFF',
-    STATUS              = 'STATUS'
+    STATUS              = 'STATUS',
+    INPUTS              = 'INPUTS'
 }
 
 enum CommandsData {
@@ -38,6 +39,42 @@ class Status {
     constructor(servoOn : boolean, powerOn : boolean) {
         this.servoOn = servoOn;
         this.powerOn = powerOn;
+    }
+}
+
+class Inputs {
+    public axis1HallAActive  : boolean
+    public axis1HallBActive  : boolean
+    public axis1HallCActive  : boolean
+    public axis1OverTemp     : boolean
+    public axis1ForwardLimit : boolean
+    public axis1ReverseLimit : boolean
+    public axis1ExtraLimit   : boolean
+
+    public axis2HallAActive  : boolean
+    public axis2HallBActive  : boolean
+    public axis2HallCActive  : boolean
+    public axis2OverTemp     : boolean
+    public axis2ForwardLimit : boolean
+    public axis2ReverseLimit : boolean
+    public axis2ExtraLimit   : boolean
+
+    constructor() {
+        this.axis1HallAActive = false
+        this.axis1HallBActive = false
+        this.axis1HallCActive = false
+        this.axis1OverTemp    = false
+        this.axis1ForwardLimit= false
+        this.axis1ReverseLimit= false
+        this.axis1ExtraLimit  = false
+
+        this.axis2HallAActive = false
+        this.axis2HallBActive = false
+        this.axis2HallCActive = false
+        this.axis2OverTemp    = false
+        this.axis2ForwardLimit= false
+        this.axis2ReverseLimit= false
+        this.axis2ExtraLimit  = false
     }
 }
 
@@ -151,7 +188,10 @@ class McdnDriver extends EventEmitter {
     }
 
     public sendCmd(cmd: Commands | ServiceCommands, callback?: (data: any) => void) {
-        //console.log(`REQUEST: ${cmd}`)
+
+        // if ((cmd !== Commands.STATUS) && (cmd !== Commands.ENCODER)){
+        //     console.log(`---- ${cmd}`)
+        // }
         let data = undefined
         // expected driver reply to call callback function too
         this.sendToDriver(callback, cmd, data);
@@ -223,4 +263,4 @@ class McdnDriver extends EventEmitter {
     }
 }
 
-export {Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status, SerialPortInfo, SerialPortType};
+export {Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status, SerialPortInfo, SerialPortType, Inputs};

@@ -1,7 +1,7 @@
 import {CommandReply, Commands, CommandsData,McdnDriver, RelativeMove} from '../index'
 
 // eslint-disable-next-line no-unused-vars
-function testCallback (data:any) {
+function testCallback (data : any) {
   let reply = data as CommandReply
   console.log(`testCallback: ${JSON.stringify(data)}`)
 }
@@ -19,13 +19,13 @@ function testCallback2 (data:any) {
 const i = 0
 
 const driver = new McdnDriver()
-console.time('EXECUTION TIME enumSerialPorts')
+//console.time('EXECUTION TIME enumSerialPorts')
 driver.enumSerialPorts()
 driver.on('portsInfo', (ports) => {
-  console.timeEnd('EXECUTION TIME enumSerialPorts')
+  //console.timeEnd('EXECUTION TIME enumSerialPorts')
   //console.log(ports)
-  console.time('EXECUTION TIME openSerialPort')
-  driver.openSerialPort('COM9')
+  //console.time('EXECUTION TIME openSerialPort')
+  driver.openSerialPort('COM1')
 })
 
 driver.on('portsInfo', (ports) => {
@@ -35,9 +35,9 @@ driver.on('portsInfo', (ports) => {
 })
 
 driver.on('connected', (data :boolean) => {
-  console.timeEnd('EXECUTION TIME openSerialPort')
+  // console.timeEnd('EXECUTION TIME openSerialPort')
   console.log('CONNECTED: ' + data)
-  console.time('EXECUTION TIME Commands.ENCODER')
+  //console.time('EXECUTION TIME Commands.ENCODER')
 
 
   driver.sendCmd(Commands.STATUS, testCallback2)
@@ -47,11 +47,12 @@ driver.on('connected', (data :boolean) => {
     //driver.sendCmd(Commands.POWER_OFF);
     driver.sendCmd(Commands.STATUS, testCallback1)
     setTimeout(() => {
-      driver.sendCmd(Commands.STATUS, testCallback)
-      driver.sendCmd(Commands.SERVO_ON);
-      driver.sendCmd(Commands.POWER_ON);
+ //     driver.sendCmd(Commands.STATUS, testCallback)
+      // driver.sendCmd(Commands.SERVO_ON);
+      // driver.sendCmd(Commands.POWER_ON);
 
-      driver.sendCmd(Commands.STATUS)
+   //   driver.sendCmd(Commands.STATUS)
+      driver.sendCmd(Commands.INPUTS)
 
       //driver.disconnect()
     }, 1000)
@@ -92,30 +93,26 @@ driver.on('data', (data) => {
 
     //console.timeEnd('EXECUTION TIME \'ver\'')
   }
-  if (data.cmd === Commands.STATUS) {
+  if (data.cmd === Commands.INPUTS) {
 
     setTimeout(() => {
-      // if (i%1 === 0 ){
-      //   driver.sendCmd(Commands.SERVO_OFF);
-      // }
-      // else {
-      //   driver.sendCmd(Commands.SERVO_ON);
-      // }
+      //     driver.sendCmd(Commands.STATUS, testCallback)
+      // driver.sendCmd(Commands.SERVO_ON);
+      // driver.sendCmd(Commands.POWER_ON);
 
-    }, 500)
+      //   driver.sendCmd(Commands.STATUS)
+      driver.sendCmd(Commands.INPUTS)
 
-    driver.sendCmd(Commands.STATUS, testCallback)
-    driver.sendCmd(Commands.ENCODER, testCallback1)
-    driver.sendCmd(Commands.FOLLOWING_ERROR, testCallback2)
-
+      //driver.disconnect()
+    }, 1000)
   }
 
-  if (data.cmd === CommandsData.RelativeMove) {
-     setTimeout(() => {
-       driver.sendCmd(Commands.ENCODER)
-     }, 500)
-
-  }
+  // if (data.cmd === CommandsData.RelativeMove) {
+  //    setTimeout(() => {
+  //      driver.sendCmd(Commands.ENCODER)
+  //    }, 500)
+  //
+  // }
 
     console.log(`DATA: ${JSON.stringify(data)}`)
 })
