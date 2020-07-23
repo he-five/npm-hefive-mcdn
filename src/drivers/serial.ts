@@ -147,6 +147,15 @@ class Serial {
       case Commands.STATUS:
         actualCmd = `sta`
         break;
+      case Commands.STOP:
+        actualCmd = `stop`
+        break;
+      case Commands.AXIS1:
+        actualCmd = `1`
+        break;
+      case Commands.AXIS2:
+        actualCmd = `2`
+        break;
       case Commands.INPUTS:
         actualCmd = `inp`
         break;
@@ -209,8 +218,6 @@ class Serial {
     })
   }
 
-
-
   private postProcessAnswer(reply : DriverReply){
     this.cmdInProgress = false
       switch(reply.cmd){
@@ -236,29 +243,30 @@ class Serial {
           //console.log('INPUTS: ', reply.answer)
           let num = parseInt(reply.answer, 16) & 0x0007
           let input = new Inputs();
-
-          input.axis1HallAActive    = (num&0x0001) != 0
-          input.axis1HallBActive    = (num&0x0002) != 0
-          input.axis1HallCActive    = (num&0x0004) != 0
-          input.axis1OverTemp       = (num&0x0100) != 0
-          input.axis1ForwardLimit   = (num&0x0200) != 0
-          input.axis1ReverseLimit   = (num&0x0400) != 0
-          input.axis1ExtraLimit     = (num&0x0800) != 0
-
-          input.axis2HallAActive    = (num&0x0010) != 0
-          input.axis2HallBActive    = (num&0x0020) != 0
-          input.axis2HallCActive    = (num&0x0040) != 0
-          input.axis2OverTemp       = (num&0x1000) != 0
-          input.axis2ForwardLimit   = (num&0x2000) != 0
-          input.axis2ReverseLimit   = (num&0x4000) != 0
-          input.axis2ExtraLimit     = (num&0x8000) != 0
-
+          this.decodeInputs(input, num);
           reply.answer = input
           break;
       }
     process.send?.(new IpcReply(IpcReplyType.DRV, reply))
     this.checkForPendingCmd();
 
+  }
+
+  private decodeInputs(input: Inputs, num: number) {
+    input.axis1HallAActive = (num & 0x0001) != 0
+    input.axis1HallBActive = (num & 0x0002) != 0
+    input.axis1HallCActive = (num & 0x0004) != 0
+    input.axis1OverTemp = (num & 0x0100) != 0
+    input.axis1ForwardLimit = (num & 0x0200) != 0
+    input.axis1ReverseLimit = (num & 0x0400) != 0
+    input.axis1ExtraLimit = (num & 0x0800) != 0
+    input.axis2HallAActive = (num & 0x0010) != 0
+    input.axis2HallBActive = (num & 0x0020) != 0
+    input.axis2HallCActive = (num & 0x0040) != 0
+    input.axis2OverTemp = (num & 0x1000) != 0
+    input.axis2ForwardLimit = (num & 0x2000) != 0
+    input.axis2ReverseLimit = (num & 0x4000) != 0
+    input.axis2ExtraLimit = (num & 0x8000) != 0
   }
 
   private checkForPendingCmd() {

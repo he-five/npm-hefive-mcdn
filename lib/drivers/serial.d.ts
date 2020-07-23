@@ -14,6 +14,7 @@ declare class Serial {
     private sendThruPort;
     private startListening;
     private postProcessAnswer;
+    private decodeInputs;
     private checkForPendingCmd;
     disconnect(): void;
 }

@@ -16,11 +16,16 @@ enum Commands {
     SERVO_ON            = 'SERVO_ON',
     SERVO_OFF           = 'SERVO_OFF',
     STATUS              = 'STATUS',
-    INPUTS              = 'INPUTS'
+    INPUTS              = 'INPUTS',
+    STOP                = 'STOP',
+    AXIS1               = 'AXIS1',
+    AXIS2               = 'AXIS2',
+
+
 }
 
 enum CommandsData {
-    RelativeMove        = 'RelativeMove'
+    RelativeMove        = 'RelativeMove',
 }
 
 class RelativeMove {
