@@ -1,27 +1,8 @@
 /// <reference types="node" />
 import { EventEmitter } from "events";
 import { ServiceCommands } from "./drivers/mcdn-cmd";
-declare enum Commands {
-    FW_VER = "FW_VER",
-    ENCODER = "ENCODER",
-    FOLLOWING_ERROR = "FOLLOWING_ERROR",
-    POWER_ON = "POWER_ON",
-    POWER_OFF = "POWER_OFF",
-    SERVO_ON = "SERVO_ON",
-    SERVO_OFF = "SERVO_OFF",
-    STATUS = "STATUS",
-    INPUTS = "INPUTS",
-    STOP = "STOP",
-    AXIS1 = "AXIS1",
-    AXIS2 = "AXIS2"
-}
-declare enum CommandsData {
-    RelativeMove = "RelativeMove"
-}
-declare class RelativeMove {
-    distance: number;
-    constructor(distance: number);
-}
+import { Commands } from "./commands";
+import { CommandsData } from "./commands-data";
 declare class Status {
     servoOn: boolean;
     powerOn: boolean;
@@ -79,4 +60,6 @@ declare class McdnDriver extends EventEmitter {
     sendStr(str: string): void;
     consumeEvents(): void;
 }
-export { Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status, SerialPortInfo, SerialPortType, Inputs };
+export { Commands } from "./commands";
+export { CommandsData, RelativeMove } from "./commands-data";
+export { McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs };

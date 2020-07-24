@@ -1,5 +1,5 @@
 import { ServiceCommands } from "./mcdn-cmd";
-import { Commands } from "../index";
+import { Commands } from "../commands";
 declare class DriverReply {
     cmd: Commands | ServiceCommands | string;
     passed: boolean;

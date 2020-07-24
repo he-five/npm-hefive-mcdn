@@ -1,4 +1,5 @@
-import { Commands, CommandsData } from "../index";
+import { CommandsData } from "../index";
+import { Commands } from "../commands";
 declare const cmdPass = ">";
 declare const cmdFail = "?";
 declare enum StatusMask {

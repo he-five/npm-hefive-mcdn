@@ -2,39 +2,13 @@ import {EventEmitter} from "events";
 import {ChildProcess} from "child_process";
 import {McdnCmd, ServiceCommands} from "./drivers/mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./drivers/driver-replay";
+import {Commands} from "./commands";
+import {CommandsData} from "./commands-data";
+
 
 const path = require('path');
 const SerialPort = require('serialport')
 const child_process = require('child_process')
-
-enum Commands {
-    FW_VER              = `FW_VER`,
-    ENCODER             = 'ENCODER',
-    FOLLOWING_ERROR     = 'FOLLOWING_ERROR',
-    POWER_ON            = 'POWER_ON',
-    POWER_OFF           = 'POWER_OFF',
-    SERVO_ON            = 'SERVO_ON',
-    SERVO_OFF           = 'SERVO_OFF',
-    STATUS              = 'STATUS',
-    INPUTS              = 'INPUTS',
-    STOP                = 'STOP',
-    AXIS1               = 'AXIS1',
-    AXIS2               = 'AXIS2',
-
-
-}
-
-enum CommandsData {
-    RelativeMove        = 'RelativeMove',
-}
-
-class RelativeMove {
-    public distance : number
-
-    constructor(distance : number) {
-        this.distance = distance;
-    }
-}
 
 class Status {
     public servoOn : boolean
@@ -267,5 +241,6 @@ class McdnDriver extends EventEmitter {
         })
     }
 }
-
-export {Commands, CommandsData, McdnDriver, CommandReply, RelativeMove, Status, SerialPortInfo, SerialPortType, Inputs};
+export {Commands} from "./commands";
+export {CommandsData, RelativeMove} from "./commands-data";
+export {McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs};

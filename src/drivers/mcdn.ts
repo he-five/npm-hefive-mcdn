@@ -1,5 +1,5 @@
 import {McdnCmd, ServiceCommands} from "./mcdn-cmd";
-import {Commands} from "../index";
+import {Commands} from "../commands";
 
 class MCDN {
   constructor () {}
