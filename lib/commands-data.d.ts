@@ -10,7 +10,11 @@ declare enum CommandsData {
     MotorOutputLimit = "MLIMIT",
     DerivativeSampleInterval = "DS",
     MaxError = "Max",
-    AutoStopMode = "AStop"
+    AutoStopMode = "AStop",
+    ECPR = "ECPR",
+    Velocity = "Vel",
+    Acceleration = "Acc",
+    Decceleration = "Dec"
 }
 declare class RelativeMove {
     distance: number;
@@ -42,4 +46,12 @@ declare class MaxError extends Param {
 }
 declare class AutoStopMode extends Param {
 }
-export { CommandsData, RelativeMove, KP, KI, KD, IntegrationLimit, VelocityFeedForward, AccelerationFeedForward, BIAS, MotorOutputLimit, DerivativeSampleInterval, MaxError, AutoStopMode, Param };
+declare class ECPR extends Param {
+}
+declare class Velocity extends Param {
+}
+declare class Acceleration extends Param {
+}
+declare class Decceleration extends Param {
+}
+export { CommandsData, RelativeMove, KP, KI, KD, IntegrationLimit, VelocityFeedForward, AccelerationFeedForward, BIAS, MotorOutputLimit, DerivativeSampleInterval, MaxError, AutoStopMode, ECPR, Velocity, Acceleration, Decceleration, Param };

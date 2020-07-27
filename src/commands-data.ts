@@ -10,7 +10,11 @@ enum CommandsData {
     MotorOutputLimit                    = 'MLIMIT',
     DerivativeSampleInterval            = 'DS',
     MaxError                            = 'Max',
-    AutoStopMode                        = 'AStop'
+    AutoStopMode                        = 'AStop',
+    ECPR                                = 'ECPR',
+    Velocity                            = 'Vel',
+    Acceleration                        = 'Acc',
+    Decceleration                       = 'Dec'
 }
 
 class RelativeMove {
@@ -68,7 +72,23 @@ class AutoStopMode extends Param  {
 
 }
 
+class ECPR extends Param  {
 
+}
+
+class Velocity extends Param  {
+
+}
+
+class Acceleration extends Param  {
+
+}
+
+class Decceleration extends Param  {
+
+}
 export {    CommandsData, RelativeMove, KP, KI, KD,
             IntegrationLimit, VelocityFeedForward, AccelerationFeedForward,
-            BIAS, MotorOutputLimit, DerivativeSampleInterval, MaxError,  AutoStopMode, Param}
+            BIAS, MotorOutputLimit, DerivativeSampleInterval,
+            MaxError,  AutoStopMode, ECPR , Velocity, Acceleration,
+            Decceleration,Param}

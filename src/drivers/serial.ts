@@ -178,6 +178,10 @@ class Serial {
       case CommandsData.DerivativeSampleInterval:
       case CommandsData.MaxError:
       case CommandsData.AutoStopMode:
+      case CommandsData.ECPR:
+      case CommandsData.Velocity:
+      case CommandsData.Acceleration:
+      case CommandsData.Decceleration:
 
         if (cmd.data){
           let paramData = cmd.data as Param
