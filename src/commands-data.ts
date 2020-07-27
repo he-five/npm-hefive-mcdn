@@ -9,7 +9,7 @@ enum CommandsData {
     BIAS                                = 'BIAS',
     MotorOutputLimit                    = 'MLIMIT',
     DerivativeSampleInterval            = 'DS',
-    MaxError                            = 'MaxError',
+    MaxError                            = 'Max',
     AutoStopMode                        = 'AStop'
 }
 
