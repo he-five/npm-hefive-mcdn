@@ -1,7 +1,8 @@
 import {cmdFail, cmdPass, McdnCmd, ServiceCommands, StatusMask} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {CommandsData, RelativeMove, Status, Inputs} from "../index";
+import { RelativeMove, Status, Inputs} from "../index";
 import {Commands} from "../commands";
+import {CommandsData,Param} from "../commands-data";
 
 const SerialPort = require('serialport')
 const HeFiveParser = require('./he-five-parser')
@@ -165,6 +166,18 @@ class Serial {
         break;
       case ServiceCommands.STRING:
         actualCmd = cmd.data
+        break;
+      case CommandsData.KD:
+      case CommandsData.KI:
+      case CommandsData.KP:
+      case CommandsData.IntegrationLimit:
+      case CommandsData.BIAS:
+      case CommandsData.AccelerationFeedForward:
+      case CommandsData.VelocityFeedForward:
+      case CommandsData.MotorOutputLimit:
+      case CommandsData.DerivativeSampleInterval:
+        let paramData = cmd.data as Param
+        actualCmd = `${this.cmd} ${paramData.value}`
         break;
     }
 

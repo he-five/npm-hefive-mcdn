@@ -42,5 +42,24 @@ class  VelocityFeedForward extends Param {
 
 }
 
+class  AccelerationFeedForward extends Param {
 
-export {CommandsData, RelativeMove}
+}
+
+class  BIAS extends Param {
+
+}
+
+class  MotorOutputLimit extends Param {
+
+}
+
+class  DerivativeSampleInterval extends Param {
+
+}
+
+
+
+export {    CommandsData, RelativeMove, KP, KI, KD,
+            IntegrationLimit, VelocityFeedForward, AccelerationFeedForward,
+            BIAS, MotorOutputLimit, DerivativeSampleInterval, Param}
