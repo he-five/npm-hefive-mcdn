@@ -176,6 +176,9 @@ class Serial {
       case CommandsData.VelocityFeedForward:
       case CommandsData.MotorOutputLimit:
       case CommandsData.DerivativeSampleInterval:
+      case CommandsData.MaxError:
+      case CommandsData.AutoStopMode:
+
         if (cmd.data){
           let paramData = cmd.data as Param
           actualCmd = `${this.cmd} ${paramData.value}`
