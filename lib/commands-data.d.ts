@@ -16,7 +16,8 @@ declare enum CommandsData {
     Acceleration = "Acc",
     Decceleration = "Dec",
     AbsMove = "Abs",
-    Position = "Pos"
+    Position = "Pos",
+    PWM = "Pwm"
 }
 declare class RelativeMove {
     distance: number;
@@ -27,6 +28,8 @@ declare class Param {
     constructor(value: number);
 }
 declare class Position extends Param {
+}
+declare class PWM extends Param {
 }
 declare class AbsMove extends Param {
 }
@@ -60,4 +63,4 @@ declare class Acceleration extends Param {
 }
 declare class Decceleration extends Param {
 }
-export { CommandsData, RelativeMove, KP, KI, KD, IntegrationLimit, VelocityFeedForward, AccelerationFeedForward, BIAS, MotorOutputLimit, DerivativeSampleInterval, MaxError, AutoStopMode, ECPR, Velocity, Acceleration, Decceleration, AbsMove, Position, Param };
+export { CommandsData, RelativeMove, KP, KI, KD, IntegrationLimit, VelocityFeedForward, AccelerationFeedForward, BIAS, MotorOutputLimit, DerivativeSampleInterval, MaxError, AutoStopMode, ECPR, Velocity, Acceleration, Decceleration, AbsMove, Position, PWM, Param };

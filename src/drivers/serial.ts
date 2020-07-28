@@ -187,6 +187,7 @@ class Serial {
       case CommandsData.Decceleration:
       case CommandsData.AbsMove:
       case CommandsData.Position:
+      case CommandsData.PWM:
 
         if (cmd.data){
           let paramData = cmd.data as Param

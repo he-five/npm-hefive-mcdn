@@ -16,7 +16,9 @@ enum CommandsData {
     Acceleration                        = 'Acc',
     Decceleration                       = 'Dec',
     AbsMove                             = 'Abs',
-    Position                            = 'Pos'
+    Position                            = 'Pos',
+    PWM                                 = 'Pwm',
+
 }
 
 class RelativeMove {
@@ -37,7 +39,9 @@ class Position extends Param{
 
 }
 
+class PWM extends Param{
 
+}
 class AbsMove extends Param{
 
 }
@@ -102,4 +106,4 @@ export {    CommandsData, RelativeMove, KP, KI, KD,
             IntegrationLimit, VelocityFeedForward, AccelerationFeedForward,
             BIAS, MotorOutputLimit, DerivativeSampleInterval,
             MaxError,  AutoStopMode, ECPR , Velocity, Acceleration,
-            Decceleration, AbsMove, Position ,  Param}
+            Decceleration, AbsMove, Position , PWM, Param}
