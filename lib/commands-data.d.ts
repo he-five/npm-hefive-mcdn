@@ -16,7 +16,7 @@ declare enum CommandsData {
     Acceleration = "Acc",
     Decceleration = "Dec",
     AbsMove = "Abs",
-    Position = "Position"
+    Position = "Pos"
 }
 declare class RelativeMove {
     distance: number;
