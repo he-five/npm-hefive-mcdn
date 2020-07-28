@@ -11,6 +11,7 @@ enum Commands {
     STOP = 'STOP',
     AXIS1 = 'AXIS1',
     AXIS2 = 'AXIS2',
+    GO    = 'GO'
 }
 
 export {Commands};

@@ -13,11 +13,13 @@ const child_process = require('child_process')
 class Status {
     public servoOn : boolean
     public powerOn : boolean
+    public moving  : boolean
 
 
-    constructor(servoOn : boolean, powerOn : boolean) {
-        this.servoOn = servoOn;
-        this.powerOn = powerOn;
+    constructor(servoOn : boolean, powerOn : boolean, moving: boolean) {
+        this.servoOn    = servoOn;
+        this.powerOn    = powerOn;
+        this.moving     = moving;
     }
 }
 

@@ -6,7 +6,8 @@ import { CommandsData } from "./commands-data";
 declare class Status {
     servoOn: boolean;
     powerOn: boolean;
-    constructor(servoOn: boolean, powerOn: boolean);
+    moving: boolean;
+    constructor(servoOn: boolean, powerOn: boolean, moving: boolean);
 }
 declare class Inputs {
     axis1HallAActive: boolean;

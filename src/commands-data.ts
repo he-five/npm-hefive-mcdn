@@ -14,7 +14,9 @@ enum CommandsData {
     ECPR                                = 'ECPR',
     Velocity                            = 'Vel',
     Acceleration                        = 'Acc',
-    Decceleration                       = 'Dec'
+    Decceleration                       = 'Dec',
+    AbsMove                             = 'Abs',
+    Position                            = 'Position'
 }
 
 class RelativeMove {
@@ -29,6 +31,15 @@ class Param {
     constructor(value : number) {
         this.value = value;
     }
+}
+
+class Position extends Param{
+
+}
+
+
+class AbsMove extends Param{
+
 }
 
 class KP extends Param{
@@ -91,4 +102,4 @@ export {    CommandsData, RelativeMove, KP, KI, KD,
             IntegrationLimit, VelocityFeedForward, AccelerationFeedForward,
             BIAS, MotorOutputLimit, DerivativeSampleInterval,
             MaxError,  AutoStopMode, ECPR , Velocity, Acceleration,
-            Decceleration,Param}
+            Decceleration, AbsMove, Position ,  Param}

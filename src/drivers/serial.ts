@@ -161,6 +161,9 @@ class Serial {
       case Commands.INPUTS:
         actualCmd = `inp`
         break;
+      case Commands.GO:
+        actualCmd = `go`
+        break;
       case ServiceCommands.CLEAR_BUFF:
         actualCmd = ' '
         break;
@@ -182,6 +185,8 @@ class Serial {
       case CommandsData.Velocity:
       case CommandsData.Acceleration:
       case CommandsData.Decceleration:
+      case CommandsData.AbsMove:
+      case CommandsData.Position:
 
         if (cmd.data){
           let paramData = cmd.data as Param
@@ -260,9 +265,10 @@ class Serial {
         case Commands.STATUS:
           if (reply.answer){
             let num = parseInt(reply.answer, 16)
-            let servoOn = (num & StatusMask.ServoOn) == 0 ? false:true
-            let powerOn = (num & StatusMask.PowerOn) == 0 ? false:true
-            reply.answer = new Status(servoOn, powerOn)
+            let servoOn = (num & StatusMask.ServoOn) == 0   ?  false:true
+            let powerOn = (num & StatusMask.PowerOn) == 0   ?  false:true
+            let moving =  (num & StatusMask.AtTarget) == 0  ?  true:false
+            reply.answer = new Status(servoOn, powerOn, moving)
           }
           break;
         case Commands.INPUTS:
