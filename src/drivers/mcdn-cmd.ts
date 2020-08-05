@@ -8,6 +8,7 @@ enum StatusMask {
     AtTarget    = 0x0001,
     ServoOn     = 0x0002,
     PowerOn     = 0x0004,
+    PosCaptured = 0x0008,
 
     IdxCaptured = 0x0010,
     Homed       = 0x0020,

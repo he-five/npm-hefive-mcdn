@@ -6,6 +6,7 @@ declare enum StatusMask {
     AtTarget = 1,
     ServoOn = 2,
     PowerOn = 4,
+    PosCaptured = 8,
     IdxCaptured = 16,
     Homed = 32,
     Aligning = 64,

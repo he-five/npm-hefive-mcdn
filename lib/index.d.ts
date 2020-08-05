@@ -7,7 +7,19 @@ declare class Status {
     servoOn: boolean;
     powerOn: boolean;
     moving: boolean;
-    constructor(servoOn: boolean, powerOn: boolean, moving: boolean);
+    positionCaptured: boolean;
+    homing: boolean;
+    homingCompleted: boolean;
+    phaseAligning: boolean;
+    phaseAlignmentCompleted: boolean;
+    hallSensorScanning: boolean;
+    pvtQueueFull: boolean;
+    pvtQueueEmpty: boolean;
+    overCurrentWarning: boolean;
+    amplifierCurrentLimit: boolean;
+    followingErrorLimit: boolean;
+    counterWrapAround: boolean;
+    constructor();
 }
 declare class Inputs {
     axis1HallAActive: boolean;

@@ -11,15 +11,38 @@ const SerialPort = require('serialport')
 const child_process = require('child_process')
 
 class Status {
-    public servoOn : boolean
-    public powerOn : boolean
-    public moving  : boolean
+    public servoOn                  : boolean
+    public powerOn                  : boolean
+    public moving                   : boolean
+    public positionCaptured         : boolean
+    public homing                   : boolean
+    public homingCompleted          : boolean
+    public phaseAligning            : boolean
+    public phaseAlignmentCompleted  : boolean
+    public hallSensorScanning       : boolean
+    public pvtQueueFull             : boolean
+    public pvtQueueEmpty            : boolean
+    public overCurrentWarning       : boolean
+    public amplifierCurrentLimit    : boolean
+    public followingErrorLimit      : boolean
+    public counterWrapAround        : boolean
 
-
-    constructor(servoOn : boolean, powerOn : boolean, moving: boolean) {
-        this.servoOn    = servoOn;
-        this.powerOn    = powerOn;
-        this.moving     = moving;
+    constructor() {
+        this.servoOn                  = false
+        this.powerOn                  = false
+        this.moving                   = false
+        this.positionCaptured         = false
+        this.homing                   = false
+        this.homingCompleted          = false
+        this.phaseAligning            = false
+        this.phaseAlignmentCompleted  = false
+        this.hallSensorScanning       = false
+        this.pvtQueueFull             = false
+        this.pvtQueueEmpty            = false
+        this.overCurrentWarning       = false
+        this.amplifierCurrentLimit    = false
+        this.followingErrorLimit      = false
+        this.counterWrapAround        = false
     }
 }
 
