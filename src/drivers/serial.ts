@@ -270,22 +270,22 @@ class Serial {
             status.servoOn                  = (num & StatusMask.ServoOn) == 0       ?  false:true
             status.powerOn                  = (num & StatusMask.PowerOn) == 0       ?  false:true
             status.moving                   = (num & StatusMask.AtTarget) == 0      ?  true:false
-            status.positionCaptured         = (num & StatusMask.PosCaptured) == 0   ?  true:false
+            status.positionCaptured         = (num & StatusMask.PosCaptured) == 0   ?  false:true
 
-            status.homing                   = (num & StatusMask.IdxCaptured) == 0   ?  true:false
-            status.homingCompleted          = (num & StatusMask.Homed) == 0         ?  true:false
-            status.phaseAligning            = (num & StatusMask.Aligning) == 0      ?  true:false
-            status.phaseAlignmentCompleted  = (num & StatusMask.Aligned) == 0       ?  true:false
+            status.homing                   = (num & StatusMask.IdxCaptured) == 0   ?  false:true
+            status.homingCompleted          = (num & StatusMask.Homed) == 0         ?  false:true
+            status.phaseAligning            = (num & StatusMask.Aligning) == 0      ?  false:true
+            status.phaseAlignmentCompleted  = (num & StatusMask.Aligned) == 0       ?  false:true
 
-            status.hallSensorScanning       = (num & StatusMask.Busy) == 0          ?  true:false
+            status.hallSensorScanning       = (num & StatusMask.Busy) == 0          ?  false:true
             // OVER CURRENT
-            status.pvtQueueFull             = (num & StatusMask.Inhibit) == 0       ?  true:false
-            status.pvtQueueEmpty            = (num & StatusMask.PvtEmpty) == 0      ?  true:false
+            status.pvtQueueFull             = (num & StatusMask.Inhibit) == 0       ?  false:true
+            status.pvtQueueEmpty            = (num & StatusMask.PvtEmpty) == 0      ?  false:true
 
-            status.overCurrentWarning       = (num & StatusMask.AmpWarning) == 0    ?  true:false
-            status.amplifierCurrentLimit    = (num & StatusMask.AmpFault) == 0      ?  true:false
-            status.followingErrorLimit      = (num & StatusMask.PosError) == 0      ?  true:false
-            status.counterWrapAround        = (num & StatusMask.Wraparound) == 0    ?  true:false
+            status.overCurrentWarning       = (num & StatusMask.AmpWarning) == 0    ?  false:true
+            status.amplifierCurrentLimit    = (num & StatusMask.AmpFault) == 0      ?  false:true
+            status.followingErrorLimit      = (num & StatusMask.PosError) == 0      ?  false:true
+            status.counterWrapAround        = (num & StatusMask.Wraparound) == 0    ?  false:true
 
 
             reply.answer = status
