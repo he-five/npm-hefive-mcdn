@@ -15,11 +15,12 @@ class Status {
     public powerOn                  : boolean
     public moving                   : boolean
     public positionCaptured         : boolean
-    public homing                   : boolean
+    public indexCaptured            : boolean
     public homingCompleted          : boolean
     public phaseAligning            : boolean
     public phaseAlignmentCompleted  : boolean
-    public hallSensorScanning       : boolean
+    public busy                     : boolean
+    public overCurrent              : boolean
     public pvtQueueFull             : boolean
     public pvtQueueEmpty            : boolean
     public overCurrentWarning       : boolean
@@ -32,11 +33,12 @@ class Status {
         this.powerOn                  = false
         this.moving                   = false
         this.positionCaptured         = false
-        this.homing                   = false
+        this.indexCaptured            = false
         this.homingCompleted          = false
         this.phaseAligning            = false
         this.phaseAlignmentCompleted  = false
-        this.hallSensorScanning       = false
+        this.busy                     = false
+        this.overCurrent              = false
         this.pvtQueueFull             = false
         this.pvtQueueEmpty            = false
         this.overCurrentWarning       = false

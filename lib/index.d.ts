@@ -8,11 +8,12 @@ declare class Status {
     powerOn: boolean;
     moving: boolean;
     positionCaptured: boolean;
-    homing: boolean;
+    indexCaptured: boolean;
     homingCompleted: boolean;
     phaseAligning: boolean;
     phaseAlignmentCompleted: boolean;
-    hallSensorScanning: boolean;
+    busy: boolean;
+    overCurrent: boolean;
     pvtQueueFull: boolean;
     pvtQueueEmpty: boolean;
     overCurrentWarning: boolean;

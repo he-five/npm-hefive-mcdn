@@ -272,13 +272,13 @@ class Serial {
             status.moving                   = (num & StatusMask.AtTarget) == 0      ?  true:false
             status.positionCaptured         = (num & StatusMask.PosCaptured) == 0   ?  false:true
 
-            status.homing                   = (num & StatusMask.IdxCaptured) == 0   ?  false:true
+            status.indexCaptured            = (num & StatusMask.IdxCaptured) == 0   ?  false:true
             status.homingCompleted          = (num & StatusMask.Homed) == 0         ?  false:true
             status.phaseAligning            = (num & StatusMask.Aligning) == 0      ?  false:true
             status.phaseAlignmentCompleted  = (num & StatusMask.Aligned) == 0       ?  false:true
 
-            status.hallSensorScanning       = (num & StatusMask.Busy) == 0          ?  false:true
-            // OVER CURRENT
+            status.busy                     = (num & StatusMask.Busy) == 0          ?  false:true
+            status.overCurrent              = (num & StatusMask.OverCurrent) == 0   ?  false:true
             status.pvtQueueFull             = (num & StatusMask.Inhibit) == 0       ?  false:true
             status.pvtQueueEmpty            = (num & StatusMask.PvtEmpty) == 0      ?  false:true
 
