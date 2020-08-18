@@ -21,4 +21,4 @@ enum CommandsData {
 
 }
 
-export {    CommandsData}
+export {CommandsData}

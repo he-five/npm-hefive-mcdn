@@ -68,8 +68,9 @@ declare class McdnDriver extends EventEmitter {
     private createProcess;
     disconnect(): void;
     getFwVersion(): void;
-    sendCmdData(cmd: CommandsData, data: any, callback?: (data: any) => void): void;
-    sendCmd(cmd: Commands | ServiceCommands, callback?: (data: any) => void): void;
+    sendCmdDataString(cmd: CommandsData, data: string, callback?: (data: any) => void): void;
+    sendCmdDataNumber(cmd: CommandsData, data: number, callback?: (data: any) => void): void;
+    sendCmd(cmd: Commands | ServiceCommands | CommandsData, callback?: any): void;
     private sendToDriver;
     sendStr(str: string): void;
     consumeEvents(): void;

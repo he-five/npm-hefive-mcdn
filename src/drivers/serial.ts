@@ -167,7 +167,7 @@ class Serial {
         actualCmd = ' '
         break;
       case ServiceCommands.STRING:
-        actualCmd = cmd.data
+        actualCmd = cmd.data?.toString()
         break;
       case CommandsData.KD:
       case CommandsData.KI:
