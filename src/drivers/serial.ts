@@ -1,6 +1,6 @@
 import {cmdFail, cmdPass, McdnCmd, ServiceCommands, StatusMask} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import { RelativeMove, Status, Inputs} from "../index";
+import { Status, Inputs} from "../index";
 import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 
@@ -143,8 +143,7 @@ class Serial {
         actualCmd = 'off'
         break;
       case CommandsData.RelativeMove:
-        let data = cmd.data as RelativeMove
-        actualCmd = `rel ${data.distance}${cmdTerm}go`
+        actualCmd = `rel ${cmd.data}${cmdTerm}go`
        break;
       case Commands.STATUS:
         actualCmd = `sta`

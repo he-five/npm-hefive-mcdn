@@ -75,5 +75,5 @@ declare class McdnDriver extends EventEmitter {
     consumeEvents(): void;
 }
 export { Commands } from "./commands";
-export { CommandsData, RelativeMove } from "./commands-data";
+export { CommandsData } from "./commands-data";
 export { McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs };

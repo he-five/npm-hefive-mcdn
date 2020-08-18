@@ -19,8 +19,4 @@ declare enum CommandsData {
     Position = "Pos",
     PWM = "Pwm"
 }
-declare class RelativeMove {
-    distance: number;
-    constructor(distance: number);
-}
-export { CommandsData, RelativeMove };
+export { CommandsData };

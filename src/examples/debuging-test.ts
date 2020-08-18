@@ -1,4 +1,4 @@
-import {CommandReply, CommandsData,McdnDriver, RelativeMove} from '../index'
+import {CommandReply, CommandsData,McdnDriver} from '../index'
 import {Commands} from "../commands";
 
 // eslint-disable-next-line no-unused-vars
