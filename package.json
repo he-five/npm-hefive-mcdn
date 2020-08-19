@@ -22,14 +22,13 @@
   "scripts": {
     "build-prod": "tsc",
     "build-dev": "node --inspect lib\\examples\\debuging-test.js ",
-
     "ts": "tsc -w",
     "lint": "standard"
   },
   "devDependencies": {
+    "prettier-standard": "^16.4.1",
     "standard": "^14.3.4",
-    "typescript": "^3.9.3",
-    "prettier-standard": "^16.3.0"
+    "typescript": "^3.9.3"
   },
   "standard": {
     "ignore": [
@@ -38,6 +37,7 @@
     ]
   },
   "dependencies": {
+    "lodash": "^4.17.20",
     "serialport": "^9.0.0"
   }
 }
