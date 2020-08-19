@@ -197,8 +197,7 @@ class McdnDriver extends EventEmitter {
         this.sendToDriver(callback,cmd,data);
     }
 
-    public sendCmd(cmd: Commands | ServiceCommands | CommandsData, callback?: any) {
-
+    public sendCmd(cmd: Commands | ServiceCommands | CommandsData, callback?: (data: any) => void) {
         // if ((cmd !== Commands.STATUS) && (cmd !== Commands.ENCODER)){
         //     console.log(`---- ${cmd}`)
         // }
