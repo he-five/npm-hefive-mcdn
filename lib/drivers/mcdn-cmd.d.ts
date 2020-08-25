@@ -28,8 +28,8 @@ declare enum ServiceCommands {
 }
 declare class McdnCmd {
     cmd: Commands | ServiceCommands | CommandsData;
-    data: any;
+    data: string | number | undefined;
     uniqueId: string | undefined;
-    constructor(cmd: Commands | ServiceCommands | CommandsData, data: string | any, uniqueId?: string);
+    constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number, uniqueId?: string);
 }
 export { McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask };

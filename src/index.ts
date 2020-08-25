@@ -189,12 +189,15 @@ class McdnDriver extends EventEmitter {
         this.sendCmd(Commands.FW_VER)
     }
 
-    public sendCmdData(cmd: CommandsData, data : any, callback?: (data: any) => void) {
-        this.sendToDriver(callback, cmd, data);
+    public sendCmdDataString(cmd: CommandsData, data : string, callback?: (data: any) => void) {
+        this.sendToDriver(callback, cmd,data);
     }
 
-    public sendCmd(cmd: Commands | ServiceCommands, callback?: (data: any) => void) {
+    public sendCmdDataNumber(cmd: CommandsData, data : number, callback?: (data: any) => void){
+        this.sendToDriver(callback,cmd,data);
+    }
 
+    public sendCmd(cmd: Commands | ServiceCommands | CommandsData, callback?: (data: any) => void) {
         // if ((cmd !== Commands.STATUS) && (cmd !== Commands.ENCODER)){
         //     console.log(`---- ${cmd}`)
         // }
@@ -269,5 +272,5 @@ class McdnDriver extends EventEmitter {
     }
 }
 export {Commands} from "./commands";
-export {CommandsData, RelativeMove} from "./commands-data";
+export {CommandsData} from "./commands-data";
 export {McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs};

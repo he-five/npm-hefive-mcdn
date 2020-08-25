@@ -38,10 +38,10 @@ enum ServiceCommands {
 
 class McdnCmd {
     public cmd      : Commands | ServiceCommands | CommandsData;
-    public data     : any;
+    public data     : string | number | undefined;
     public uniqueId : string | undefined;
 
-    constructor(cmd: Commands | ServiceCommands | CommandsData, data: string | any, uniqueId?: string) {
+    constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number, uniqueId?: string) {
         this.cmd = cmd
         this.data = data
         this.uniqueId = uniqueId;
