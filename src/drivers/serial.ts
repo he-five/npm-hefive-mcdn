@@ -1,6 +1,6 @@
 import {cmdFail, cmdPass, McdnCmd, ServiceCommands, StatusMask, Trace} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import { Status, Inputs} from "../index";
+import {Inputs, Status} from "../index";
 import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 
@@ -226,6 +226,14 @@ class Serial {
           let reply = new DriverReply();
           reply.cmd = this.cmd;
           reply.callbackId = this.callbacId;
+
+          if (reply.cmd === ServiceCommands.STRING){
+            reply.answer  = strData;
+            reply.passed = strData.endsWith(cmdPass);
+            process.send?.(new IpcReply(IpcReplyType.DRV, reply))
+            this.postProcessAnswer(reply)
+            return;
+          }
 
           strData = strData.trim();
           reply.passed = strData.endsWith(cmdPass);

@@ -223,9 +223,10 @@ class McdnDriver extends EventEmitter {
         }
     }
 
-    public sendStr(str: string) {
+    public sendStr(str: string, callback?: (data: any) => void) {
         console.log(`STR REQUEST: ${str}`)
-        this.driverProcess?.send(new McdnCmd(ServiceCommands.STRING, str));
+        this.sendToDriver(callback, ServiceCommands.STRING, str);
+        //this.driverProcess?.send(new McdnCmd(ServiceCommands.STRING, str));
     }
 
     public consumeEvents() {
@@ -277,4 +278,4 @@ class McdnDriver extends EventEmitter {
 }
 export {Commands} from "./commands";
 export {CommandsData} from "./commands-data";
-export {McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs};
+export {McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs, ServiceCommands};

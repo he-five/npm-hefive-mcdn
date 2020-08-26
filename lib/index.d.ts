@@ -73,9 +73,9 @@ declare class McdnDriver extends EventEmitter {
     setupTrace(traceData: Trace, callback?: (data: any) => void): void;
     sendCmd(cmd: Commands | ServiceCommands | CommandsData, callback?: (data: any) => void): void;
     private sendToDriver;
-    sendStr(str: string): void;
+    sendStr(str: string, callback?: (data: any) => void): void;
     consumeEvents(): void;
 }
 export { Commands } from "./commands";
 export { CommandsData } from "./commands-data";
-export { McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs };
+export { McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs, ServiceCommands };

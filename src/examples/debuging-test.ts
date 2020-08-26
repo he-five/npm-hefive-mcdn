@@ -26,7 +26,7 @@ driver.on('portsInfo', (ports) => {
   //console.timeEnd('EXECUTION TIME enumSerialPorts')
   //console.log(ports)
   //console.time('EXECUTION TIME openSerialPort')
-  driver.openSerialPort('COM1')
+  driver.openSerialPort('')
 })
 
 driver.on('portsInfo', (ports) => {
