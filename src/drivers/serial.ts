@@ -228,10 +228,11 @@ class Serial {
           reply.callbackId = this.callbacId;
 
           if (reply.cmd === ServiceCommands.STRING){
+            this.cmdInProgress = false
             reply.answer  = strData;
             reply.passed = strData.endsWith(cmdPass);
             process.send?.(new IpcReply(IpcReplyType.DRV, reply))
-            this.postProcessAnswer(reply)
+            this.checkForPendingCmd()
             return;
           }
 
