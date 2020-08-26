@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { EventEmitter } from "events";
-import { ServiceCommands } from "./drivers/mcdn-cmd";
+import { ServiceCommands, Trace } from "./drivers/mcdn-cmd";
 import { Commands } from "./commands";
 import { CommandsData } from "./commands-data";
 declare class Status {
@@ -70,6 +70,7 @@ declare class McdnDriver extends EventEmitter {
     getFwVersion(): void;
     sendCmdDataString(cmd: CommandsData, data: string, callback?: (data: any) => void): void;
     sendCmdDataNumber(cmd: CommandsData, data: number, callback?: (data: any) => void): void;
+    setupTrace(traceData: Trace, callback?: (data: any) => void): void;
     sendCmd(cmd: Commands | ServiceCommands | CommandsData, callback?: (data: any) => void): void;
     private sendToDriver;
     sendStr(str: string): void;

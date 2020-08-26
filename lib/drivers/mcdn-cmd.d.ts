@@ -24,12 +24,22 @@ declare enum ServiceCommands {
     DISCONNECT = "DISCONNECT",
     CONNECT = "CONNECT",
     CLEAR_BUFF = "CLEAR_BUFF",
-    STRING = "STR"
+    STRING = "STR",
+    TRACE = "TRACE"
+}
+declare class Trace {
+    channel1Type: number;
+    channel2Type: number;
+    channel3Type: number;
+    trigger: number;
+    level: number;
+    rateInMicrosecond: number;
+    constructor(trigger?: number, rateInMicrosecond?: number);
 }
 declare class McdnCmd {
     cmd: Commands | ServiceCommands | CommandsData;
-    data: string | number | undefined;
+    data: string | number | Trace | undefined;
     uniqueId: string | undefined;
-    constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number, uniqueId?: string);
+    constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number | Trace, uniqueId?: string);
 }
-export { McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask };
+export { McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask, Trace };

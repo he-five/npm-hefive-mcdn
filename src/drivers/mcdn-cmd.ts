@@ -32,20 +32,58 @@ enum ServiceCommands {
     DISCONNECT          = 'DISCONNECT',
     CONNECT             = `CONNECT`,
     CLEAR_BUFF          = 'CLEAR_BUFF',
-    STRING              = 'STR'
+    STRING              = 'STR',
+    TRACE               = 'TRACE',
+}
+
+const Type = {
+    Position            : 0,
+    Velocity            : 1,
+    Acceleration        : 2,
+    I2tAccumulator      : 3,
+    PosError            : 8,
+    PidOutput           : 9,
+    TotalCurrent        : 10
+}
+
+const Trigger = {
+    MotionBegin         : 7,
+    MotionEnd           : 3,
+    Manual              : 0,
+    //case 3: // Level change (Channel #3)
+    //_crntAxis.TraceTrigger = cbSlope.SelectedIndex == 0 ? 9 : 10;
+}
+
+class Trace {
+    public channel1Type         : number;
+    public channel2Type         : number;
+    public channel3Type         : number;
+    public trigger              : number;
+    public level                : number
+    public rateInMicrosecond    : number
+
+    constructor(trigger: number = Trigger.Manual, rateInMicrosecond: number = 5000) {
+        this.channel1Type       = Type.Velocity
+        this.channel2Type       = Type.PosError
+        this.channel3Type       = Type.PosError
+        this.trigger            = trigger
+        this.level              = 0
+        this.rateInMicrosecond  = rateInMicrosecond;
+
+    }
 }
 
 
 class McdnCmd {
     public cmd      : Commands | ServiceCommands | CommandsData;
-    public data     : string | number | undefined;
+    public data     : string | number | Trace |undefined;
     public uniqueId : string | undefined;
 
-    constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number, uniqueId?: string) {
+    constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number| Trace, uniqueId?: string) {
         this.cmd = cmd
         this.data = data
         this.uniqueId = uniqueId;
     }
 }
 
-export {McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask};
+export {McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask, Trace};

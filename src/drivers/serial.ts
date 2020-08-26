@@ -1,14 +1,14 @@
-import {cmdFail, cmdPass, McdnCmd, ServiceCommands, StatusMask} from "./mcdn-cmd";
+import {cmdFail, cmdPass, McdnCmd, ServiceCommands, StatusMask, Trace} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
 import { Status, Inputs} from "../index";
 import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 
-const SerialPort = require('serialport')
-const HeFiveParser = require('./he-five-parser')
-const lineTerminator = '\r\n'
-const cmdTerm = '\r'
-const asciiEnc     = 'ascii'
+const SerialPort      = require('serialport')
+const HeFiveParser    = require('./he-five-parser')
+const lineTerminator  = '\r\n'
+const cmdTerm         = '\r'
+const asciiEnc        = 'ascii'
 
 class Queue{
   private cmds : McdnCmd[]
@@ -169,6 +169,18 @@ class Serial {
       case ServiceCommands.STRING:
         actualCmd = cmd.data?.toString()
         break;
+      case ServiceCommands.TRACE:
+        let trace = cmd.data as Trace
+        actualCmd =
+        `trace 0${cmdTerm}
+         ch1 ${trace.channel1Type}${cmdTerm}
+         ch2 ${trace.channel2Type}${cmdTerm}
+         ch3 ${trace.channel3Type}${cmdTerm}
+         trate ${trace.rateInMicrosecond/50}${cmdTerm}
+         tlevel ${trace.level}${cmdTerm}
+         trace ${trace.trigger}`
+         console.log(`ServiceCommands.TRACE ${actualCmd}`)
+        break;
       case CommandsData.KD:
       case CommandsData.KI:
       case CommandsData.KP:
@@ -187,7 +199,6 @@ class Serial {
       case CommandsData.AbsMove:
       case CommandsData.Position:
       case CommandsData.PWM:
-
         if (cmd.data){
           actualCmd = `${this.cmd} ${cmd.data}`
         }

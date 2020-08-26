@@ -1,6 +1,6 @@
 import {EventEmitter} from "events";
 import {ChildProcess} from "child_process";
-import {McdnCmd, ServiceCommands} from "./drivers/mcdn-cmd";
+import {McdnCmd, ServiceCommands, Trace} from "./drivers/mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./drivers/driver-replay";
 import {Commands} from "./commands";
 import {CommandsData} from "./commands-data";
@@ -195,6 +195,10 @@ class McdnDriver extends EventEmitter {
 
     public sendCmdDataNumber(cmd: CommandsData, data : number, callback?: (data: any) => void){
         this.sendToDriver(callback,cmd,data);
+    }
+
+    public setupTrace(traceData : Trace, callback?: (data: any) => void){
+        this.sendToDriver(callback,ServiceCommands.TRACE, traceData);
     }
 
     public sendCmd(cmd: Commands | ServiceCommands | CommandsData, callback?: (data: any) => void) {
