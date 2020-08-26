@@ -37,7 +37,7 @@ class Queue{
 class Serial {
   private serialPort    : typeof SerialPort
   private parser        : typeof HeFiveParser
-  private cmd           : Commands | ServiceCommands | string
+  private cmd           : Commands | ServiceCommands | CommandsData|  string
   private callbacId     : string | undefined
   private queue         : Queue
   private cmdInProgress : boolean
@@ -199,7 +199,7 @@ class Serial {
       case CommandsData.AbsMove:
       case CommandsData.Position:
       case CommandsData.PWM:
-        if (cmd.data){
+        if (cmd.data !== undefined){
           actualCmd = `${this.cmd} ${cmd.data}`
         }
         else{
@@ -208,9 +208,7 @@ class Serial {
         break;
     }
 
-    // if ((actualCmd !== 'pos') && (actualCmd !== 'sta')){
-    //   console.log(`---- ${actualCmd}${cmdTerm}`)
-    //}
+    //console.log(`---- ${actualCmd}${cmdTerm} --- ${JSON.stringify(cmd)}`)
 
     this.serialPort.write(`${actualCmd}${cmdTerm}`, asciiEnc, (err: any) => {
       if (err) {
