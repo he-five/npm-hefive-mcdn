@@ -25,8 +25,23 @@ declare enum ServiceCommands {
     CONNECT = "CONNECT",
     CLEAR_BUFF = "CLEAR_BUFF",
     STRING = "STR",
-    TRACE = "TRACE"
+    TRACE = "TRACE",
+    GET_TRACE_DATA = "GET_TRACE_DATA"
 }
+declare const Type: {
+    Position: number;
+    Velocity: number;
+    Acceleration: number;
+    I2tAccumulator: number;
+    PosError: number;
+    PidOutput: number;
+    TotalCurrent: number;
+};
+declare const Trigger: {
+    MotionBegin: number;
+    MotionEnd: number;
+    Manual: number;
+};
 declare class Trace {
     channel1Type: number;
     channel2Type: number;
@@ -42,4 +57,4 @@ declare class McdnCmd {
     uniqueId: string | undefined;
     constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number | Trace, uniqueId?: string);
 }
-export { McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask, Trace };
+export { McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask, Trace, Trigger, Type };

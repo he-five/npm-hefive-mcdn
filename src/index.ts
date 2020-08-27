@@ -201,6 +201,10 @@ class McdnDriver extends EventEmitter {
         this.sendToDriver(callback,ServiceCommands.TRACE, traceData);
     }
 
+    public getTraceData(callback?: (data: any) => void){
+        this.sendToDriver(callback,ServiceCommands.GET_TRACE_DATA,undefined);
+    }
+
     public sendCmd(cmd: Commands | ServiceCommands | CommandsData, callback?: (data: any) => void) {
         // if ((cmd !== Commands.STATUS) && (cmd !== Commands.ENCODER)){
         //     console.log(`---- ${cmd}`)

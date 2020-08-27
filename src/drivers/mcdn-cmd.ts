@@ -34,6 +34,7 @@ enum ServiceCommands {
     CLEAR_BUFF          = 'CLEAR_BUFF',
     STRING              = 'STR',
     TRACE               = 'TRACE',
+    GET_TRACE_DATA      = 'GET_TRACE_DATA'
 }
 
 const Type = {
@@ -86,4 +87,4 @@ class McdnCmd {
     }
 }
 
-export {McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask, Trace};
+export {McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask, Trace, Trigger, Type};

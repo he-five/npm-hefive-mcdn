@@ -71,6 +71,7 @@ declare class McdnDriver extends EventEmitter {
     sendCmdDataString(cmd: CommandsData, data: string, callback?: (data: any) => void): void;
     sendCmdDataNumber(cmd: CommandsData, data: number, callback?: (data: any) => void): void;
     setupTrace(traceData: Trace, callback?: (data: any) => void): void;
+    getTraceData(callback?: (data: any) => void): void;
     sendCmd(cmd: Commands | ServiceCommands | CommandsData, callback?: (data: any) => void): void;
     private sendToDriver;
     sendStr(str: string, callback?: (data: any) => void): void;

@@ -70,7 +70,7 @@ class Serial {
 
       this.timer = setInterval(() => {
         if (this.cmdInProgress) {
-          if ((Date.now() - this.cmdSendTime) > 500) {
+          if ((Date.now() - this.cmdSendTime) > 3500) {
             switch (this.cmd) {
               case ServiceCommands.CLEAR_BUFF:
                 let reply = new DriverReply();
@@ -93,7 +93,7 @@ class Serial {
           }
 
         }
-      }, 50)
+      }, 100)
 
     }
   }
@@ -181,6 +181,9 @@ class Serial {
          trace ${trace.trigger}`
          console.log(`ServiceCommands.TRACE ${actualCmd}`)
         break;
+      case ServiceCommands.GET_TRACE_DATA:
+        actualCmd = `play`
+        break;
       case CommandsData.KD:
       case CommandsData.KI:
       case CommandsData.KP:
@@ -227,11 +230,11 @@ class Serial {
           reply.cmd = this.cmd;
           reply.callbackId = this.callbacId;
 
-          if (reply.cmd === ServiceCommands.STRING){
+          if (reply.cmd === ServiceCommands.STRING || reply.cmd === ServiceCommands.GET_TRACE_DATA){
             this.cmdInProgress = false
             reply.answer  = strData;
-            reply.passed = strData.endsWith(cmdPass);
-            process.send?.(new IpcReply(IpcReplyType.DRV, reply))
+            //reply.passed = strData.endsWith(cmdPass);
+            setImmediate(() => process.send?.(new IpcReply(IpcReplyType.DRV, reply)));
             this.checkForPendingCmd()
             return;
           }
@@ -302,7 +305,6 @@ class Serial {
             status.amplifierCurrentLimit    = (num & StatusMask.AmpFault) == 0      ?  false:true
             status.followingErrorLimit      = (num & StatusMask.PosError) == 0      ?  false:true
             status.counterWrapAround        = (num & StatusMask.Wraparound) == 0    ?  false:true
-
 
             reply.answer = status
           }
