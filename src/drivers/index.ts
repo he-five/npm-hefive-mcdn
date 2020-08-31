@@ -16,13 +16,6 @@ process.on('message', (msg : McdnCmd) => {
             cmd = msg.data === undefined ? '' : msg.data.toString();
             driver.connect(cmd);
             break;
-        case ServiceCommands.DISCONNECT:
-
-            driver.disconnect();
-            break;
-        // case ServiceCommands.STRING:
-        //     driver.sendStr(msg.data);
-        //     break;
         default:
             driver.sendCmd(msg)
             break;

@@ -70,7 +70,7 @@ class Serial {
 
       this.timer = setInterval(() => {
         if (this.cmdInProgress) {
-          if ((Date.now() - this.cmdSendTime) > 3500) {
+          if ((Date.now() - this.cmdSendTime) > 3000) {
             switch (this.cmd) {
               case ServiceCommands.CLEAR_BUFF:
                 let reply = new DriverReply();

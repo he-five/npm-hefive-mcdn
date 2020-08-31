@@ -167,6 +167,12 @@ class McdnDriver extends EventEmitter {
         this.createProcess(serilOrMcdn, portName);
     }
 
+    // public openTcpPort(portName: string) {
+    //     let serilOrMcdn = 'mcdn';
+    //     this.createProcess(serilOrMcdn, portName);
+    // }
+
+
     public openSerialPort(portName: string) {
         let serilOrMcdn = 'serial';
         this.createProcess(serilOrMcdn, portName);
