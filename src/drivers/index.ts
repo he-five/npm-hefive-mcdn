@@ -6,7 +6,7 @@ import {Tcp} from "./tcp";
 
 let driver: MCDN | Serial | Tcp | undefined = undefined
 
-switch (process.argv[0]) {
+switch (process.argv[2]) {
     case CommunicationTypes.MCDN:
         driver = new MCDN();
         break;
