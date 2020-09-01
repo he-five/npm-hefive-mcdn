@@ -181,6 +181,10 @@ class Serial {
          trace ${trace.trigger}`
          console.log(`ServiceCommands.TRACE ${actualCmd}`)
         break;
+      case ServiceCommands.STOP_TRACE:
+        actualCmd =`trace 0`
+        console.log(`ServiceCommands.STOP_TRACE ${actualCmd}`)
+        break;
       case ServiceCommands.GET_TRACE_DATA:
         actualCmd = `play`
         break;

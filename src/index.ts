@@ -206,7 +206,9 @@ class McdnDriver extends EventEmitter {
     public setupTrace(traceData : Trace, callback?: (data: any) => void){
         this.sendToDriver(callback,ServiceCommands.TRACE, traceData);
     }
-
+    public stopTrace(callback?: (data: any) => void){
+        this.sendToDriver(callback,ServiceCommands.STOP_TRACE, undefined);
+    }
     public getTraceData(callback?: (data: any) => void){
         this.sendToDriver(callback,ServiceCommands.GET_TRACE_DATA,undefined);
     }

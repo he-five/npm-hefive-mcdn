@@ -34,6 +34,7 @@ enum ServiceCommands {
     CLEAR_BUFF          = 'CLEAR_BUFF',
     STRING              = 'STR',
     TRACE               = 'TRACE',
+    STOP_TRACE          = 'STOP_TRACE',
     GET_TRACE_DATA      = 'GET_TRACE_DATA'
 }
 

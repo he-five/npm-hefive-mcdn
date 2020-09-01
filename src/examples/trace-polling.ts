@@ -7,7 +7,8 @@ import {Trace, Trigger} from "../drivers/mcdn-cmd";
 const i = 0
 let moving = true
 let position  = 0
-let distance = 800000
+//let distance = 800000
+let distance = 100000
 
 function statusCallBack (data:any) {
     let reply = data.answer
@@ -71,13 +72,13 @@ function waitMotionComplete() {
             }, 25)
         }
         else if (moving == false){
-
+            driver.sendCmd(Commands.ENCODER, encoderCallBackWithoutStart)
             driver.sendStr('trace 0')
             driver.getTraceData(processTraceData)
 
              // setTimeout(() => {
              //     //driver.sendCmd(Commands.STATUS, statusCallBack)
-             //     //driver.sendCmd(Commands.ENCODER, encoderCallBackWithoutStart)
+             //     //
              //     //startMotion()
              // }, 150)
 

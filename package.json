@@ -1,6 +1,6 @@
 {
   "name": "@hefive/mcdn",
-  "version": "0.0.10-beta.23",
+  "version": "0.0.10-beta.24",
   "author": "HE FIVE LLC",
   "license": "MIT",
   "description": "Communication driver for HE FIVE's Digital Servo Drives",
