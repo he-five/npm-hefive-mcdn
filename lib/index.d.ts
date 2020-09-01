@@ -64,6 +64,7 @@ declare class McdnDriver extends EventEmitter {
     constructor();
     enumSerialPorts(): void;
     openMcdnPort(portName: string): void;
+    openTcpPort(portName: string): void;
     openSerialPort(portName: string): void;
     private createProcess;
     disconnect(): void;
