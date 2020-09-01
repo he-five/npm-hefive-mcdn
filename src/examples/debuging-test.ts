@@ -15,6 +15,7 @@ function testCallback1 (data:any) {
 function testCallback2 (data:any) {
   let reply = data as CommandReply
   console.log(`testCallback: ${JSON.stringify(data)}`)
+
 }
 
 const i = 0
@@ -42,25 +43,25 @@ driver.on('connected', (data :boolean) => {
   //console.time('EXECUTION TIME Commands.ENCODER')
 
 
-  driver.sendCmd(Commands.STATUS, testCallback2)
+  driver.sendCmd(Commands.FW_VER, testCallback2)
 
-  setTimeout(() => {
-    driver.sendCmd(Commands.SERVO_OFF);
-    //driver.sendCmd(Commands.POWER_OFF);
-    driver.sendCmd(Commands.STATUS, testCallback1)
-    setTimeout(() => {
- //     driver.sendCmd(Commands.STATUS, testCallback)
-      // driver.sendCmd(Commands.SERVO_ON);
-      // driver.sendCmd(Commands.POWER_ON);
-
-   //   driver.sendCmd(Commands.STATUS)
-      driver.sendCmd(Commands.INPUTS)
-
-      //driver.disconnect()
-    }, 1000)
-
-    //driver.disconnect()
-  }, 1000)
+ //  setTimeout(() => {
+ //    driver.sendCmd(Commands.SERVO_OFF);
+ //    //driver.sendCmd(Commands.POWER_OFF);
+ //    driver.sendCmd(Commands.STATUS, testCallback1)
+ //    setTimeout(() => {
+ // //     driver.sendCmd(Commands.STATUS, testCallback)
+ //      // driver.sendCmd(Commands.SERVO_ON);
+ //      // driver.sendCmd(Commands.POWER_ON);
+ //
+ //   //   driver.sendCmd(Commands.STATUS)
+ //      driver.sendCmd(Commands.INPUTS)
+ //
+ //      //driver.disconnect()
+ //    }, 1000)
+ //
+ //    //driver.disconnect()
+ //  }, 1000)
 })
 
 driver.on('disconnected', () => {
@@ -73,7 +74,7 @@ driver.on('error', (err) => {
 
 driver.on('data', (data) => {
   if (data.cmd === 'FW_VER') {
-    console.timeEnd('EXECUTION TIME Commands.FW_VER')
+    //console.timeEnd('EXECUTION TIME Commands.FW_VER')
   }
 
   if (data.cmd === 'ENCODER') {
@@ -117,6 +118,7 @@ driver.on('data', (data) => {
   // }
 
     console.log(`DATA: ${JSON.stringify(data)}`)
+   driver.disconnect()
 })
 
 
