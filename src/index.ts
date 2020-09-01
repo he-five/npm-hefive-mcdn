@@ -4,6 +4,7 @@ import {McdnCmd, ServiceCommands, Trace} from "./drivers/mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./drivers/driver-replay";
 import {Commands} from "./commands";
 import {CommandsData} from "./commands-data";
+import {CommunicationTypes} from "./helpers/communication-types";
 
 
 const path = require('path');
@@ -163,23 +164,20 @@ class McdnDriver extends EventEmitter {
     }
 
     public openMcdnPort(portName: string) {
-        let serilOrMcdn = 'mcdn';
-        this.createProcess(serilOrMcdn, portName);
+        this.createProcess(CommunicationTypes.MCDN, portName);
     }
 
-    // public openTcpPort(portName: string) {
-    //     let serilOrMcdn = 'mcdn';
-    //     this.createProcess(serilOrMcdn, portName);
-    // }
+     public openTcpPort(portName: string) {
+         this.createProcess(CommunicationTypes.TCP, portName);
+     }
 
 
     public openSerialPort(portName: string) {
-        let serilOrMcdn = 'serial';
-        this.createProcess(serilOrMcdn, portName);
+        this.createProcess(CommunicationTypes.SERIAL, portName);
     }
 
-    private createProcess(serilOrMcdn: string, portName: string) {
-        this.driverProcess = child_process.fork(path.join(__dirname, '/drivers/index'), [serilOrMcdn])
+    private createProcess(communication: CommunicationTypes, portName: string) {
+        this.driverProcess = child_process.fork(path.join(__dirname, '/drivers/index'), [communication])
         if (this.driverProcess!.connected) {
             this.connected = true
             this.consumeEvents()

@@ -20,13 +20,14 @@ function testCallback2 (data:any) {
 const i = 0
 
 const driver = new McdnDriver()
+driver.openTcpPort('87.119.102.13:3000')
 //console.time('EXECUTION TIME enumSerialPorts')
-driver.enumSerialPorts()
+//driver.enumSerialPorts()
 driver.on('portsInfo', (ports) => {
   //console.timeEnd('EXECUTION TIME enumSerialPorts')
   //console.log(ports)
   //console.time('EXECUTION TIME openSerialPort')
-  driver.openSerialPort('COM7')
+  //driver.openSerialPort('COM7')
 })
 
 driver.on('portsInfo', (ports) => {
