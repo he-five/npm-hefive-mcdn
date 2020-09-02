@@ -216,10 +216,10 @@ class Tcp {
                 //actualCmd = 'disable'
                 break;
             case Commands.SERVO_ON:
-                //actualCmd = 'on'
+                actualCmd = 'servoOn'
                 break;
             case Commands.SERVO_OFF:
-                //actualCmd = 'off'
+                actualCmd = 'servoOff'
                 break;
             case CommandsData.RelativeMove:
                 //actualCmd = `rel ${cmd.data}${cmdTerm}go`
