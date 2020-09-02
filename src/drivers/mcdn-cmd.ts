@@ -26,7 +26,6 @@ enum StatusMask {
     Wraparound  = 0x8000
 }
 
-
 enum ServiceCommands {
 
     DISCONNECT          = 'DISCONNECT',

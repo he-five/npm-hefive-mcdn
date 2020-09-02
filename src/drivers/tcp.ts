@@ -1,15 +1,13 @@
-import {McdnCmd, ServiceCommands, StatusMask, Trace} from "./mcdn-cmd";
+import {McdnCmd, ServiceCommands,cmdFail, cmdPass, Trace} from "./mcdn-cmd";
 import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {Inputs, Status} from "../index";
 const Net                   = require('net');
 const asciiEnc        = 'ascii'
+import {RobotStatus, RobotStatusMask} from "./robot-cmd"
 const lineTerminator = '\r\n';
 const cmdTerm = '\r';
-const cmdPass = '>';
-const cmdFail = '?';
 
 class Tcp {
     private netSocket    : typeof Net.Socket
@@ -49,32 +47,31 @@ class Tcp {
                 self.onConnect();
             });
 
-            // this.timer = setInterval(() => {
-            //     if (this.cmdInProgress) {
-            //         if ((Date.now() - this.cmdSendTime) > 3000) {
-            //             switch (this.cmd) {
-            //                 case ServiceCommands.CLEAR_BUFF:
-            //                     let reply = new DriverReply();
-            //                     reply.cmd = this.cmd;
-            //                     reply.callbackId = this.callbackId;
-            //                     reply.answer = false
-            //                     process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
-            //                     this.disconnect()
-            //                     break;
-            //                 default:
-            //                     process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
-            //                     let failed = new DriverReply();
-            //                     failed.cmd = this.cmd;
-            //                     failed.callbackId = this.callbackId;
-            //                     failed.passed = false
-            //                     process.send?.(new IpcReply(IpcReplyType.DRV, failed))
-            //
-            //                     this.cmdInProgress  = false
-            //             }
-            //         }
-            //
-            //     }
-            // }, 100)
+            this.timer = setInterval(() => {
+                if (this.cmdInProgress) {
+                    if ((Date.now() - this.cmdSendTime) > 3000) {
+                        switch (this.cmd) {
+                            case ServiceCommands.CLEAR_BUFF:
+                                let reply = new DriverReply();
+                                reply.cmd = this.cmd;
+                                reply.callbackId = this.callbackId;
+                                reply.answer = false
+                                process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
+                                this.disconnect()
+                                break;
+                            default:
+                                process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
+                                let failed = new DriverReply();
+                                failed.cmd = this.cmd;
+                                failed.callbackId = this.callbackId;
+                                failed.passed = false
+                                process.send?.(new IpcReply(IpcReplyType.DRV, failed))
+                                this.cmdInProgress  = false
+                        }
+                    }
+
+                }
+            }, 100)
         }
     }
     onClose(){
@@ -93,7 +90,7 @@ class Tcp {
                 if (driverReply.cmd === ServiceCommands.STRING || driverReply.cmd === ServiceCommands.GET_TRACE_DATA){
                     this.cmdInProgress = false
                     driverReply.answer  = this.reply;
-                    //reply.passed = strData.endsWith(cmdPass);
+                    driverReply.passed = this.reply.endsWith(cmdPass);
                     setImmediate(() => process.send?.(new IpcReply(IpcReplyType.DRV, driverReply)));
                     this.checkForPendingCmd()
                     return;
@@ -105,12 +102,10 @@ class Tcp {
                 let position:number =  this.reply.indexOf(lineTerminator);
                 if (position !== -1 ) {
                     let devStr = this.reply.slice(position+lineTerminator.length, this.reply.length);
-                    //console.log('deviceId:', devStr)
                     driverReply.deviceId = parseInt(devStr)
                     if (this.reply){
                         driverReply.answer = this.reply.slice(0, position);
                     }
-                    //console.log('reply.answer:'+ reply.answer)
                 }
                 this.postProcessAnswer(driverReply);
             }
@@ -124,48 +119,30 @@ class Tcp {
         this.cmdInProgress = false
         switch(reply.cmd){
             case ServiceCommands.CLEAR_BUFF:
-                // replay verify
                 reply.answer = true
                 process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
                 return;
-            // case Commands.FW_VER:
-            //     if (reply.answer){
-            //         reply.answer = reply.answer.slice(0,reply.answer.indexOf(','))
-            //     }
-            //     break;
             case Commands.STATUS:
-                // if (reply.answer){
-                //     let num = parseInt(reply.answer, 16)
-                //     let status = new Status()
-                //     status.servoOn                  = (num & StatusMask.ServoOn) == 0       ?  false:true
-                //     status.powerOn                  = (num & StatusMask.PowerOn) == 0       ?  false:true
-                //     status.moving                   = (num & StatusMask.AtTarget) == 0      ?  true:false
-                //     status.positionCaptured         = (num & StatusMask.PosCaptured) == 0   ?  false:true
-                //
-                //     status.indexCaptured            = (num & StatusMask.IdxCaptured) == 0   ?  false:true
-                //     status.homingCompleted          = (num & StatusMask.Homed) == 0         ?  false:true
-                //     status.phaseAligning            = (num & StatusMask.Aligning) == 0      ?  false:true
-                //     status.phaseAlignmentCompleted  = (num & StatusMask.Aligned) == 0       ?  false:true
-                //
-                //     status.busy                     = (num & StatusMask.Busy) == 0          ?  false:true
-                //     status.overCurrent              = (num & StatusMask.OverCurrent) == 0   ?  false:true
-                //     status.pvtQueueFull             = (num & StatusMask.Inhibit) == 0       ?  false:true
-                //     status.pvtQueueEmpty            = (num & StatusMask.PvtEmpty) == 0      ?  false:true
-                //
-                //     status.overCurrentWarning       = (num & StatusMask.AmpWarning) == 0    ?  false:true
-                //     status.amplifierCurrentLimit    = (num & StatusMask.AmpFault) == 0      ?  false:true
-                //     status.followingErrorLimit      = (num & StatusMask.PosError) == 0      ?  false:true
-                //     status.counterWrapAround        = (num & StatusMask.Wraparound) == 0    ?  false:true
-                //
-                //     reply.answer = status
-                // }
-                break;
-            case Commands.INPUTS:
-                //console.log('INPUTS: ', reply.answer)
-                // let num = parseInt(reply.answer, 16) & 0x0007
-                // let input = new Inputs();
-                // this.decodeInputs(input, num);
-                // reply.answer = input
+                if (reply.answer){
+                    //console.log(`status is ${reply.answer}`);
+                    let num = parseInt(reply.answer, 16)
+                    let status = new RobotStatus()
+                    status.servoOn                  =   !Boolean(num & RobotStatusMask.ServoOn)
+                    status.homed                    =   !Boolean(num & RobotStatusMask.Homed)
+                    status.busy                     =   Boolean(num & RobotStatusMask.Busy)
+                    status.index                    =   Boolean(num & RobotStatusMask.Index)
+                    status.limitPos                 =   Boolean(num & RobotStatusMask.LimitPos)
+                    status.currentOverload          =   Boolean(num & RobotStatusMask.CurrentOverload)
+                    status.inMotion                  =   !Boolean(num & RobotStatusMask.InMotion)
+                    status.emergencyStop            =   Boolean(num & RobotStatusMask.EmergencyStop)
+                    status.inhibit                  =   Boolean(num & RobotStatusMask.Inhibit)
+                    status.encoderErr               =   Boolean(num & RobotStatusMask.EncoderErr)
+                    status.maxError                 =   Boolean(num & RobotStatusMask.MaxError)
+                    status.overrun                  =   Boolean(num & RobotStatusMask.Overrun)
+                    status.powerFail                =   Boolean(num & RobotStatusMask.PowerFail)
+
+                    reply.answer = status
+                }
                 break;
         }
         process.send?.(new IpcReply(IpcReplyType.DRV, reply))
@@ -224,10 +201,10 @@ class Tcp {
         let actualCmd: string | undefined = ''
         switch (this.cmd) {
             case Commands.FW_VER:
-                actualCmd = '.ver'
+                actualCmd = 'ver'
                 break;
             case Commands.ENCODER:
-                actualCmd = '.pos'
+                //actualCmd = '.pos'
                 break;
             case Commands.FOLLOWING_ERROR:
                 //actualCmd = 'err'
@@ -248,7 +225,7 @@ class Tcp {
                 //actualCmd = `rel ${cmd.data}${cmdTerm}go`
                 break;
             case Commands.STATUS:
-                //actualCmd = `sta`
+                actualCmd = `status`
                 break;
             case Commands.STOP:
                 //actualCmd = `stop`
@@ -272,20 +249,9 @@ class Tcp {
                 //actualCmd = cmd.data?.toString()
                 break;
          //    case ServiceCommands.TRACE:
-         //        let trace = cmd.data as Trace
-         //        actualCmd =
-         //            `trace 0${cmdTerm}
-         // ch1 ${trace.channel1Type}${cmdTerm}
-         // ch2 ${trace.channel2Type}${cmdTerm}
-         // ch3 ${trace.channel3Type}${cmdTerm}
-         // trate ${trace.rateInMicrosecond/50}${cmdTerm}
-         // tlevel ${trace.level}${cmdTerm}
-         // trace ${trace.trigger}`
-         //        console.log(`ServiceCommands.TRACE ${actualCmd}`)
          //        break;
-            case ServiceCommands.GET_TRACE_DATA:
-                //actualCmd = `play`
-                break;
+         //    case ServiceCommands.GET_TRACE_DATA:
+         //       break;
             case CommandsData.KD:
             case CommandsData.KI:
             case CommandsData.KP:

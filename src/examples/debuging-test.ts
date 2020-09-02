@@ -1,5 +1,4 @@
-import {CommandReply, CommandsData,McdnDriver} from '../index'
-import {Commands} from "../commands";
+import {CommandReply, Commands, McdnDriver} from '../index'
 
 // eslint-disable-next-line no-unused-vars
 function testCallback (data : any) {
@@ -17,11 +16,15 @@ function testCallback2 (data:any) {
   console.log(`testCallback: ${JSON.stringify(data)}`)
 
 }
+function testCallbackStatus (data: any){
+  console.log(`testCallbackStatus: ${JSON.stringify(data)}`)
+}
 
 const i = 0
 
 const driver = new McdnDriver()
 driver.openTcpPort('87.119.102.13:3000')
+
 //console.time('EXECUTION TIME enumSerialPorts')
 //driver.enumSerialPorts()
 driver.on('portsInfo', (ports) => {
@@ -44,7 +47,7 @@ driver.on('connected', (data :boolean) => {
 
 
   driver.sendCmd(Commands.FW_VER, testCallback2)
-
+  driver.sendCmd(Commands.STATUS, testCallbackStatus)
  //  setTimeout(() => {
  //    driver.sendCmd(Commands.SERVO_OFF);
  //    //driver.sendCmd(Commands.POWER_OFF);
@@ -118,7 +121,7 @@ driver.on('data', (data) => {
   // }
 
     console.log(`DATA: ${JSON.stringify(data)}`)
-   driver.disconnect()
+  // driver.disconnect()
 })
 
 

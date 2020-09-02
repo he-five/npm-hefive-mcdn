@@ -46,6 +46,7 @@ class Status {
         this.amplifierCurrentLimit    = false
         this.followingErrorLimit      = false
         this.counterWrapAround        = false
+
     }
 }
 
