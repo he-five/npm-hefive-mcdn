@@ -3,6 +3,7 @@ import { EventEmitter } from "events";
 import { ServiceCommands, Trace } from "./drivers/mcdn-cmd";
 import { Commands } from "./commands";
 import { CommandsData } from "./commands-data";
+import { RobotData } from "./drivers/robot-cmd";
 declare class Status {
     servoOn: boolean;
     powerOn: boolean;
@@ -70,7 +71,7 @@ declare class McdnDriver extends EventEmitter {
     disconnect(): void;
     getFwVersion(): void;
     sendCmdDataString(cmd: CommandsData, data: string, callback?: (data: any) => void): void;
-    sendCmdDataNumber(cmd: CommandsData, data: number, callback?: (data: any) => void): void;
+    sendCmdDataNumber(cmd: CommandsData, data: number | RobotData, callback?: (data: any) => void): void;
     setupTrace(traceData: Trace, callback?: (data: any) => void): void;
     getTraceData(callback?: (data: any) => void): void;
     sendCmd(cmd: Commands | ServiceCommands | CommandsData, callback?: (data: any) => void): void;

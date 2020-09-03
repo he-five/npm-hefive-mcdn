@@ -1,5 +1,6 @@
 import {CommandsData} from "../index";
 import {Commands} from "../commands";
+import {RobotData} from "./robot-cmd";
 
 const cmdPass = '>'
 const cmdFail = '?'
@@ -76,10 +77,10 @@ class Trace {
 
 class McdnCmd {
     public cmd      : Commands | ServiceCommands | CommandsData;
-    public data     : string | number | Trace |undefined;
+    public data     : string | number | Trace | RobotData | undefined;
     public uniqueId : string | undefined;
 
-    constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number| Trace, uniqueId?: string) {
+    constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number| RobotData | Trace, uniqueId?: string) {
         this.cmd = cmd
         this.data = data
         this.uniqueId = uniqueId;

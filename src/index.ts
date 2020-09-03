@@ -5,6 +5,7 @@ import {DriverReply, IpcReply, IpcReplyType} from "./drivers/driver-replay";
 import {Commands} from "./commands";
 import {CommandsData} from "./commands-data";
 import {CommunicationTypes} from "./helpers/communication-types";
+import {RobotData} from "./drivers/robot-cmd";
 
 
 const path = require('path');
@@ -198,7 +199,7 @@ class McdnDriver extends EventEmitter {
         this.sendToDriver(callback, cmd,data);
     }
 
-    public sendCmdDataNumber(cmd: CommandsData, data : number, callback?: (data: any) => void){
+    public sendCmdDataNumber(cmd: CommandsData, data : number | RobotData, callback?: (data: any) => void){
         this.sendToDriver(callback,cmd,data);
     }
 

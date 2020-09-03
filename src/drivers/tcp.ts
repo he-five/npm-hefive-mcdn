@@ -1,11 +1,12 @@
-import {McdnCmd, ServiceCommands,cmdFail, cmdPass, Trace} from "./mcdn-cmd";
+import {cmdFail, cmdPass, McdnCmd, ServiceCommands} from "./mcdn-cmd";
 import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
+import {RobotStatus, RobotStatusMask, RobotData} from "./robot-cmd"
+
 const Net                   = require('net');
 const asciiEnc        = 'ascii'
-import {RobotStatus, RobotStatusMask} from "./robot-cmd"
 const lineTerminator = '\r\n';
 const cmdTerm = '\r';
 
@@ -82,12 +83,15 @@ class Tcp {
     onData(data : string) {
         this.reply += data;
         if (this.reply.endsWith(cmdPass) || this.reply.endsWith(cmdFail)) {
+            console.log(this.reply);
             try {
                 let driverReply = new DriverReply();
                 driverReply.cmd = this.cmd;
                 driverReply.callbackId = this.callbackId;
 
-                if (driverReply.cmd === ServiceCommands.STRING || driverReply.cmd === ServiceCommands.GET_TRACE_DATA){
+                if (driverReply.cmd === ServiceCommands.STRING ||
+                    driverReply.cmd === ServiceCommands.GET_TRACE_DATA ||
+                    driverReply.cmd === Commands.FW_VER){
                     this.cmdInProgress = false
                     driverReply.answer  = this.reply;
                     driverReply.passed = this.reply.endsWith(cmdPass);
@@ -128,18 +132,21 @@ class Tcp {
                     let num = parseInt(reply.answer, 16)
                     let status = new RobotStatus()
                     status.servoOn                  =   !Boolean(num & RobotStatusMask.ServoOn)
-                    status.homed                    =   !Boolean(num & RobotStatusMask.Homed)
-                    status.busy                     =   Boolean(num & RobotStatusMask.Busy)
+                    status.indexAcq                 =   Boolean(num & RobotStatusMask.IndexAcq)
+                    status.encError                 =   Boolean(num & RobotStatusMask.EncError)
                     status.index                    =   Boolean(num & RobotStatusMask.Index)
-                    status.limitPos                 =   Boolean(num & RobotStatusMask.LimitPos)
+                    status.wraparound               =   Boolean(num & RobotStatusMask.Wraparound)
                     status.currentOverload          =   Boolean(num & RobotStatusMask.CurrentOverload)
-                    status.inMotion                  =   !Boolean(num & RobotStatusMask.InMotion)
-                    status.emergencyStop            =   Boolean(num & RobotStatusMask.EmergencyStop)
+                    status.fwrdLimit                =   !Boolean(num & RobotStatusMask.FwrdLimit)
+                    status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
                     status.inhibit                  =   Boolean(num & RobotStatusMask.Inhibit)
-                    status.encoderErr               =   Boolean(num & RobotStatusMask.EncoderErr)
-                    status.maxError                 =   Boolean(num & RobotStatusMask.MaxError)
+                    status.pathPoint                =   Boolean(num & RobotStatusMask.PathPoint)
+                    status.accPhase                 =   Boolean(num & RobotStatusMask.AccPhase)
                     status.overrun                  =   Boolean(num & RobotStatusMask.Overrun)
                     status.powerFail                =   Boolean(num & RobotStatusMask.PowerFail)
+                    status.inMotion                 =   Boolean(num & RobotStatusMask.InMotion)
+                    status.rvsLimit                 =   Boolean(num & RobotStatusMask.RvsLimit)
+                    status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
 
                     reply.answer = status
                 }
@@ -201,7 +208,7 @@ class Tcp {
         let actualCmd: string | undefined = ''
         switch (this.cmd) {
             case Commands.FW_VER:
-                actualCmd = 'ver'
+                actualCmd = '.ver'
                 break;
             case Commands.ENCODER:
                 //actualCmd = '.pos'
@@ -210,19 +217,24 @@ class Tcp {
                 //actualCmd = 'err'
                 break;
             case Commands.POWER_ON:
-                //actualCmd = 'enable'
+                actualCmd = '.power'
                 break;
             case Commands.POWER_OFF:
-                //actualCmd = 'disable'
+                actualCmd = '.nopower'
                 break;
             case Commands.SERVO_ON:
-                actualCmd = 'servoOn'
+                actualCmd = '.servo'
                 break;
             case Commands.SERVO_OFF:
-                actualCmd = 'servoOff'
+                actualCmd = '.noservo'
                 break;
             case CommandsData.RelativeMove:
-                //actualCmd = `rel ${cmd.data}${cmdTerm}go`
+                if (cmd.data) {
+                    let data: RobotData = cmd.data as RobotData;
+                    if (data) {
+                        actualCmd = `mvr ${data.axis} ${data.distance} ${cmdTerm}`
+                    }
+                }
                 break;
             case Commands.STATUS:
                 actualCmd = `status`

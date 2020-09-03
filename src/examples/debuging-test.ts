@@ -1,4 +1,5 @@
-import {CommandReply, Commands, McdnDriver} from '../index'
+import {CommandReply, Commands, CommandsData, McdnDriver} from '../index'
+import {RobotData} from "../drivers/robot-cmd";
 
 // eslint-disable-next-line no-unused-vars
 function testCallback (data : any) {
@@ -16,10 +17,23 @@ function testCallback2 (data:any) {
   console.log(`testCallback: ${JSON.stringify(data)}`)
 
 }
-function testCallbackStatus (data: any){
-  console.log(`testCallbackStatus: ${JSON.stringify(data)}`)
+
+function callbackAfterSonSof(data:any){
+  console.log(`answer after son/sof is ${JSON.stringify(data)}`)
+  driver.sendCmd(Commands.STATUS, testCallbackStatus)
+
 }
 
+function testCallbackStatus (data: any){
+  console.log(`testCallbackStatus: ${JSON.stringify(data)}`)
+  driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 1000) ,testCallbackAfetrMvr )
+  //driver.disconnect()
+}
+
+function testCallbackAfetrMvr(data:any){
+  console.log(`testCallbackAfetrMvr: ${JSON.stringify(data)}`)
+
+}
 const i = 0
 
 const driver = new McdnDriver()
@@ -47,7 +61,9 @@ driver.on('connected', (data :boolean) => {
 
 
   driver.sendCmd(Commands.FW_VER, testCallback2)
-  driver.sendCmd(Commands.STATUS, testCallbackStatus)
+  //driver.sendCmd(Commands.SERVO_ON, callbackAfterSonSof)
+
+  driver.sendCmd(Commands.SERVO_ON, callbackAfterSonSof)
  //  setTimeout(() => {
  //    driver.sendCmd(Commands.SERVO_OFF);
  //    //driver.sendCmd(Commands.POWER_OFF);
@@ -120,8 +136,8 @@ driver.on('data', (data) => {
   //
   // }
 
-    console.log(`DATA: ${JSON.stringify(data)}`)
-  // driver.disconnect()
+   // console.log(`DATA: ${JSON.stringify(data)}`)
+
 })
 
 

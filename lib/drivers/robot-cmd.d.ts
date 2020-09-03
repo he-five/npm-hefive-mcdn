@@ -1,32 +1,43 @@
 declare enum RobotStatusMask {
-    Homed = 1,
-    InMotion = 2,
+    IndexAcq = 1,
+    FwrdLimit = 2,
+    RvsLimit = 4,
     Index = 8,
-    LimitPos = 16,
-    MaxError = 32,
-    EncoderErr = 64,
+    Wraparound = 16,
+    AccPhase = 32,
+    PathPoint = 64,
     ServoOn = 128,
-    Busy = 256,
+    EncError = 256,
+    MaxPos = 512,
+    InMotion = 1024,
     Inhibit = 2048,
     Overrun = 4096,
     CurrentOverload = 8192,
-    EmergencyStop = 16384,
+    DigitalOverload = 16384,
     PowerFail = 32768
 }
 declare class RobotStatus {
-    inMotion: boolean;
+    fwrdLimit: boolean;
     index: boolean;
-    limitPos: boolean;
-    maxError: boolean;
-    encoderErr: boolean;
+    wraparound: boolean;
+    accPhase: boolean;
     servoOn: boolean;
     inhibit: boolean;
     overrun: boolean;
     currentOverload: boolean;
-    emergencyStop: boolean;
+    digitalOverload: boolean;
+    inMotion: boolean;
+    maxPos: boolean;
     powerFail: boolean;
-    homed: boolean;
-    busy: boolean;
+    indexAcq: boolean;
+    encError: boolean;
+    rvsLimit: boolean;
+    pathPoint: boolean;
     constructor();
 }
-export { RobotStatusMask, RobotStatus };
+declare class RobotData {
+    axis: string;
+    distance: number | undefined;
+    constructor(axis: string, distance: number);
+}
+export { RobotStatusMask, RobotStatus, RobotData };
