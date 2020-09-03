@@ -3,7 +3,7 @@ import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {RobotStatus, RobotStatusMask, RobotData} from "./robot-cmd"
+import {RobotData, RobotStatus, RobotStatusMask} from "./robot-cmd"
 
 const Net                   = require('net');
 const asciiEnc        = 'ascii'
@@ -83,30 +83,17 @@ class Tcp {
     onData(data : string) {
         this.reply += data;
         if (this.reply.endsWith(cmdPass) || this.reply.endsWith(cmdFail)) {
-            console.log(this.reply);
+            //console.log(this.reply);
             try {
                 let driverReply = new DriverReply();
                 driverReply.cmd = this.cmd;
                 driverReply.callbackId = this.callbackId;
-
-                if (driverReply.cmd === ServiceCommands.STRING ||
-                    driverReply.cmd === ServiceCommands.GET_TRACE_DATA ||
-                    driverReply.cmd === Commands.FW_VER){
-                    this.cmdInProgress = false
-                    driverReply.answer  = this.reply;
-                    driverReply.passed = this.reply.endsWith(cmdPass);
-                    setImmediate(() => process.send?.(new IpcReply(IpcReplyType.DRV, driverReply)));
-                    this.checkForPendingCmd()
-                    return;
-                }
-
                 this.reply = this.reply.trim();
                 driverReply.passed = this.reply.endsWith(cmdPass);
+                this.reply = this.reply.replace(cmdPass, '').replace(cmdFail, '')
                 this.reply  = this.reply.slice(0, this.reply.length - 1);
                 let position:number =  this.reply.indexOf(lineTerminator);
                 if (position !== -1 ) {
-                    let devStr = this.reply.slice(position+lineTerminator.length, this.reply.length);
-                    driverReply.deviceId = parseInt(devStr)
                     if (this.reply){
                         driverReply.answer = this.reply.slice(0, position);
                     }
@@ -154,7 +141,6 @@ class Tcp {
         }
         process.send?.(new IpcReply(IpcReplyType.DRV, reply))
         this.checkForPendingCmd();
-
     }
 
     private checkForPendingCmd() {
@@ -190,7 +176,6 @@ class Tcp {
             process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
             return
         }
-
         if (this.cmdInProgress == false){
             this.sendThruPort(cmd);
         }
