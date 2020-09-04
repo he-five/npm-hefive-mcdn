@@ -16,6 +16,13 @@ declare enum RobotStatusMask {
     DigitalOverload = 16384,
     PowerFail = 32768
 }
+declare enum RobotAxes {
+    T = 0,
+    R = 1,
+    R2 = 2,
+    Z = 3,
+    X = 4
+}
 declare class RobotStatus {
     fwrdLimit: boolean;
     index: boolean;
@@ -40,4 +47,4 @@ declare class RobotData {
     distance: number | undefined;
     constructor(axis: string, distance: number);
 }
-export { RobotStatusMask, RobotStatus, RobotData };
+export { RobotStatusMask, RobotStatus, RobotData, RobotAxes };

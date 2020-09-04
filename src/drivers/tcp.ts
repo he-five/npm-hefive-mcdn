@@ -48,31 +48,31 @@ class Tcp {
                 self.onConnect();
             });
 
-            this.timer = setInterval(() => {
-                if (this.cmdInProgress) {
-                    if ((Date.now() - this.cmdSendTime) > 3000) {
-                        switch (this.cmd) {
-                            case ServiceCommands.CLEAR_BUFF:
-                                let reply = new DriverReply();
-                                reply.cmd = this.cmd;
-                                reply.callbackId = this.callbackId;
-                                reply.answer = false
-                                process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
-                                this.disconnect()
-                                break;
-                            default:
-                                process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
-                                let failed = new DriverReply();
-                                failed.cmd = this.cmd;
-                                failed.callbackId = this.callbackId;
-                                failed.passed = false
-                                process.send?.(new IpcReply(IpcReplyType.DRV, failed))
-                                this.cmdInProgress  = false
-                        }
-                    }
-
-                }
-            }, 100)
+            // this.timer = setInterval(() => {
+            //     if (this.cmdInProgress) {
+            //         if ((Date.now() - this.cmdSendTime) > 3000) {
+            //             switch (this.cmd) {
+            //                 case ServiceCommands.CLEAR_BUFF:
+            //                     let reply = new DriverReply();
+            //                     reply.cmd = this.cmd;
+            //                     reply.callbackId = this.callbackId;
+            //                     reply.answer = false
+            //                     process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
+            //                     this.disconnect()
+            //                     break;
+            //                 default:
+            //                     process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
+            //                     let failed = new DriverReply();
+            //                     failed.cmd = this.cmd;
+            //                     failed.callbackId = this.callbackId;
+            //                     failed.passed = false
+            //                     process.send?.(new IpcReply(IpcReplyType.DRV, failed))
+            //                     this.cmdInProgress  = false
+            //             }
+            //         }
+            //
+            //     }
+            // }, 100)
         }
     }
     onClose(){
@@ -213,16 +213,31 @@ class Tcp {
             case Commands.SERVO_OFF:
                 actualCmd = '.noservo'
                 break;
-            case CommandsData.RelativeMove:
+            case CommandsData.SyncRelMove:
+            case CommandsData.SyncAbsMove:
                 if (cmd.data) {
                     let data: RobotData = cmd.data as RobotData;
                     if (data) {
-                        actualCmd = `mvr ${data.axis} ${data.distance} ${cmdTerm}`
+                        let moveCmd = this.cmd === CommandsData.SyncRelMove ? '.rel' : '.abs';
+                        actualCmd = `${moveCmd} ${data.axis} = ${data.distance} go ${data.axis} wait sta[${data.axis}] & ${RobotStatusMask.InMotion}`
                     }
                 }
                 break;
+            case CommandsData.RelativeMove:
+            case CommandsData.AbsMove:
+                if (cmd.data) {
+                    let data: RobotData = cmd.data as RobotData;
+                    if (data) {
+                        let moveCmd = this.cmd === CommandsData.RelativeMove ? '.rel' : '.abs';
+                        actualCmd = `${moveCmd} ${data.axis} = ${data.distance} go ${data.axis}`
+                    }
+                }
+                break;
+            case CommandsData.Delay:
+                actualCmd = `.delay ${cmd.data}`
+                break;
             case Commands.STATUS:
-                actualCmd = `status`
+                actualCmd = `.sta[t]|.sta[r]|.sta[r2]|.sta[z]|.sta[x]`
                 break;
             case Commands.STOP:
                 //actualCmd = `stop`
@@ -264,7 +279,6 @@ class Tcp {
             case CommandsData.Velocity:
             case CommandsData.Acceleration:
             case CommandsData.Decceleration:
-            case CommandsData.AbsMove:
             case CommandsData.Position:
             case CommandsData.PWM:
                 if (cmd.data !== undefined){

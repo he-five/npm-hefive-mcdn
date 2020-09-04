@@ -1,5 +1,6 @@
 declare enum CommandsData {
     RelativeMove = "RelativeMove",
+    SyncRelMove = "SyncRelMove",
     KP = "KP",
     KI = "KI",
     KD = "KD",
@@ -16,7 +17,9 @@ declare enum CommandsData {
     Acceleration = "Acc",
     Decceleration = "Dec",
     AbsMove = "Abs",
+    SyncAbsMove = "SyncAbsMove",
     Position = "Pos",
-    PWM = "Pwm"
+    PWM = "Pwm",
+    Delay = "Delay"
 }
 export { CommandsData };
