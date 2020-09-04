@@ -91,13 +91,7 @@ class Tcp {
                 this.reply = this.reply.trim();
                 driverReply.passed = this.reply.endsWith(cmdPass);
                 this.reply = this.reply.replace(cmdPass, '').replace(cmdFail, '')
-                this.reply  = this.reply.slice(0, this.reply.length - 1);
-                let position:number =  this.reply.indexOf(lineTerminator);
-                if (position !== -1 ) {
-                    if (this.reply){
-                        driverReply.answer = this.reply.slice(0, position);
-                    }
-                }
+                driverReply.answer = this.reply;
                 this.postProcessAnswer(driverReply);
             }
             catch (err){
@@ -115,8 +109,22 @@ class Tcp {
                 return;
             case Commands.STATUS:
                 if (reply.answer){
-                    //console.log(`status is ${reply.answer}`);
-                    let num = parseInt(reply.answer, 16)
+                    console.log(`status is ${reply.answer}`);
+                    let statusArr = reply.answer.split(lineTerminator);
+                    statusArr = statusArr.map((eachStatusAxis: string) => {
+                        let equalSignPosition = eachStatusAxis.indexOf('=')
+                        if (equalSignPosition !== -1) {
+                            eachStatusAxis = eachStatusAxis.slice(equalSignPosition + 1);
+                        }
+                        if (eachStatusAxis){
+                           // return parseInt(eachStatusAxis, 16);
+                            return parseInt(eachStatusAxis);
+                        }
+
+                    })
+                    statusArr = statusArr.filter((el:number)=> el !== undefined)
+                    let num = statusArr.reduce((prevValue:number,currentVal:number)=> prevValue | currentVal)
+                    num = parseInt(num, 16)
                     let status = new RobotStatus()
                     status.servoOn                  =   !Boolean(num & RobotStatusMask.ServoOn)
                     status.indexAcq                 =   Boolean(num & RobotStatusMask.IndexAcq)
@@ -137,6 +145,9 @@ class Tcp {
 
                     reply.answer = status
                 }
+                break;
+            default :
+                reply.answer = reply.answer.replace(/\r\n/g, '')
                 break;
         }
         process.send?.(new IpcReply(IpcReplyType.DRV, reply))
@@ -219,7 +230,9 @@ class Tcp {
                     let data: RobotData = cmd.data as RobotData;
                     if (data) {
                         let moveCmd = this.cmd === CommandsData.SyncRelMove ? '.rel' : '.abs';
-                        actualCmd = `${moveCmd} ${data.axis} = ${data.distance} go ${data.axis} wait sta[${data.axis}] & ${RobotStatusMask.InMotion}`
+                        //actualCmd = `${moveCmd} ${data.axis} = ${data.distance} go ${data.axis} wait sta[${data.axis}] & ${RobotStatusMask.InMotion}`
+                        actualCmd = `${moveCmd} ${data.axis} = ${data.distance} go ${data.axis}`
+                       //TODO - WAIT motion
                     }
                 }
                 break;
@@ -236,8 +249,11 @@ class Tcp {
             case CommandsData.Delay:
                 actualCmd = `.delay ${cmd.data}`
                 break;
+            case Commands.AXESNUM:
+                actualCmd = `._axes`
+                break;
             case Commands.STATUS:
-                actualCmd = `.sta[t]|.sta[r]|.sta[r2]|.sta[z]|.sta[x]`
+                actualCmd = '.sta'
                 break;
             case Commands.STOP:
                 //actualCmd = `stop`

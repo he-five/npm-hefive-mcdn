@@ -15,7 +15,7 @@ function testCallback1 (data:any) {
 
 function testCallback2 (data:any) {
   let reply = data as CommandReply
-  //console.log(`testCallback: ${JSON.stringify(data)}`)
+  console.log(`testCallback: ${JSON.stringify(data)}`)
 
 }
 
@@ -67,12 +67,13 @@ driver.on('connected', (data :boolean) => {
   setInterval(() => {
   driver.sendCmd(Commands.FW_VER, testCallback2)
   driver.sendCmd(Commands.SERVO_ON)
-  driver.sendCmd(Commands.STATUS, testCallbackStatus)
+  driver.sendCmd(Commands.AXESNUM, testCallback2)
+    driver.sendCmd(Commands.STATUS, testCallback2)
   //driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 10000))
   //  driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 1000))
  // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('Z', 100))
-    timeSentCmd =  Date.now();
-  driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 100), testCallbackAfetrMvr)
+    //timeSentCmd =  Date.now();
+ // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 100), testCallbackAfetrMvr)
   }, 2000)
 })
 

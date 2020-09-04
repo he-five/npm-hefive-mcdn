@@ -21,14 +21,6 @@ enum RobotStatusMask {
     PowerFail       = 0x8000
 }
 
-enum RobotAxes {
-    T       =0,
-    R       =1,
-    R2      =2,
-    Z       =3,
-    X       =4
-}
-
 class RobotStatus {
     public fwrdLimit            : boolean;
     public index                : boolean;
@@ -78,4 +70,4 @@ class RobotData {
     }
 }
 
-export {RobotStatusMask, RobotStatus, RobotData, RobotAxes};
+export {RobotStatusMask, RobotStatus, RobotData};
