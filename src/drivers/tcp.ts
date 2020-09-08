@@ -117,14 +117,12 @@ class Tcp {
                             eachStatusAxis = eachStatusAxis.slice(equalSignPosition + 1);
                         }
                         if (eachStatusAxis){
-                           // return parseInt(eachStatusAxis, 16);
-                            return parseInt(eachStatusAxis);
+                           return parseInt(eachStatusAxis , 16);
                         }
 
                     })
                     statusArr = statusArr.filter((el:number)=> el !== undefined)
                     let num = statusArr.reduce((prevValue:number,currentVal:number)=> prevValue | currentVal)
-                    num = parseInt(num, 16)
                     let status = new RobotStatus()
                     status.servoOn                  =   !Boolean(num & RobotStatusMask.ServoOn)
                     status.indexAcq                 =   Boolean(num & RobotStatusMask.IndexAcq)
@@ -139,7 +137,7 @@ class Tcp {
                     status.accPhase                 =   Boolean(num & RobotStatusMask.AccPhase)
                     status.overrun                  =   Boolean(num & RobotStatusMask.Overrun)
                     status.powerFail                =   Boolean(num & RobotStatusMask.PowerFail)
-                    status.inMotion                 =   Boolean(num & RobotStatusMask.InMotion)
+                    status.inMotion                 =   !Boolean(num & RobotStatusMask.MotionCompleted)
                     status.rvsLimit                 =   Boolean(num & RobotStatusMask.RvsLimit)
                     status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
 

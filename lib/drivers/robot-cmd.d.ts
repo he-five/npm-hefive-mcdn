@@ -9,7 +9,7 @@ declare enum RobotStatusMask {
     ServoOn = 128,
     EncError = 256,
     MaxPos = 512,
-    InMotion = 1024,
+    MotionCompleted = 1024,
     Inhibit = 2048,
     Overrun = 4096,
     CurrentOverload = 8192,

@@ -74,7 +74,7 @@ driver.on('connected', (data :boolean) => {
  // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('Z', 100))
     //timeSentCmd =  Date.now();
  // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 100), testCallbackAfetrMvr)
-  }, 2000)
+  }, 200)
 })
 
 driver.on('disconnected', () => {
