@@ -1,24 +1,27 @@
 enum RobotStatusMask {
-    IndexAcq                    = 0x00000001,
-    FwrdLimit                   = 0x00000002,
-    RvsLimit                    = 0x00000004,
-    Index                       = 0x00000008,
+    IndexAcq                    = 0x0001,
+    FwrdLimit                   = 0x0002,
+    RvsLimit                    = 0x0004,
+    Index                       = 0x0008,
 
-    Wraparound                  = 0x00000010,
-    AccPhase                    = 0x00000020,
-    PathPoint                   = 0x00000040,
-    ServoOn                     = 0x00000080,
+    Wraparound                  = 0x0010,
+    AccPhase                    = 0x0020,
+    PathPoint                   = 0x0040,
+    ServoOn                     = 0x0080,
 
+    Busy                        = 0x0100,
+    MaxPos                      = 0x0200,
+    MotionCompleted             = 0x0400,
+    Inhibit                     = 0x0800,
 
-    EncError                    = 0x00000100,
-    MaxPos                      = 0x00000200,
-    MotionCompleted             = 0x00000400,
-    Inhibit                     = 0x00000800,
+    Overrun                     = 0x1000,
+    CurrentOverload             = 0x2000,
+    DigitalOverload             = 0x4000,
+    PowerFail                   = 0x8000,
 
-    Overrun                     = 0x00001000,
-    CurrentOverload             = 0x00002000,
-    DigitalOverload             = 0x00004000,
-    PowerFail                   = 0x00008000
+    UserMacroRunning            = 0x08000000,
+    SysMacroRunning             = 0x00400000,
+
 }
 
 class RobotStatus {
@@ -35,15 +38,17 @@ class RobotStatus {
     public maxPos                       : boolean;
     public powerFail                    : boolean;
     public indexAcq                     : boolean;
-    public encError                     : boolean;
+    public busy                         : boolean;
     public rvsLimit                     : boolean;
     public pathPoint                    : boolean;
+    private userMacroRunning             : boolean;
+    private sysMacroRunning              : boolean;
 
     constructor() {
         this.fwrdLimit                  = false;
         this.wraparound                 = false;
         this.accPhase                   = false;
-        this.encError                   = false;
+        this.busy                       = false;
         this.servoOn                    = false;
         this.index                      = false;
         this.inhibit                    = false;
@@ -52,11 +57,13 @@ class RobotStatus {
         this.digitalOverload            = false;
         this.powerFail                  = false;
         this.indexAcq                   = false;
-        this.encError                   = false;
+        this.busy                       = false;
         this.maxPos                     = false;
-        this.inMotion            = false;
+        this.inMotion                   = false;
         this.rvsLimit                   = false;
         this.pathPoint                  = false;
+        this.userMacroRunning           = false;
+        this.sysMacroRunning            = false;
     }
 }
 

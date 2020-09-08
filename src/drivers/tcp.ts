@@ -126,7 +126,7 @@ class Tcp {
                     let status = new RobotStatus()
                     status.servoOn                  =   !Boolean(num & RobotStatusMask.ServoOn)
                     status.indexAcq                 =   Boolean(num & RobotStatusMask.IndexAcq)
-                    status.encError                 =   Boolean(num & RobotStatusMask.EncError)
+                    status.busy                     =   Boolean(num & RobotStatusMask.Busy)
                     status.index                    =   Boolean(num & RobotStatusMask.Index)
                     status.wraparound               =   Boolean(num & RobotStatusMask.Wraparound)
                     status.currentOverload          =   Boolean(num & RobotStatusMask.CurrentOverload)
@@ -140,6 +140,7 @@ class Tcp {
                     status.inMotion                 =   !Boolean(num & RobotStatusMask.MotionCompleted)
                     status.rvsLimit                 =   Boolean(num & RobotStatusMask.RvsLimit)
                     status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
+                    status.busy                     =   Boolean(num & (RobotStatusMask.SysMacroRunning | RobotStatusMask.UserMacroRunning ))
 
                     reply.answer = status
                 }

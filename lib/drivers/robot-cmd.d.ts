@@ -7,14 +7,16 @@ declare enum RobotStatusMask {
     AccPhase = 32,
     PathPoint = 64,
     ServoOn = 128,
-    EncError = 256,
+    Busy = 256,
     MaxPos = 512,
     MotionCompleted = 1024,
     Inhibit = 2048,
     Overrun = 4096,
     CurrentOverload = 8192,
     DigitalOverload = 16384,
-    PowerFail = 32768
+    PowerFail = 32768,
+    UserMacroRunning = 134217728,
+    SysMacroRunning = 4194304
 }
 declare class RobotStatus {
     fwrdLimit: boolean;
@@ -30,9 +32,11 @@ declare class RobotStatus {
     maxPos: boolean;
     powerFail: boolean;
     indexAcq: boolean;
-    encError: boolean;
+    busy: boolean;
     rvsLimit: boolean;
     pathPoint: boolean;
+    private userMacroRunning;
+    private sysMacroRunning;
     constructor();
 }
 declare class RobotData {
