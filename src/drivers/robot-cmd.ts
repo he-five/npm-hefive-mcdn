@@ -77,4 +77,20 @@ class RobotData {
     }
 }
 
-export {RobotStatusMask, RobotStatus, RobotData};
+class RobotPosition{
+    public T : number   | undefined;
+    public R : number   | undefined;
+    public Z : number   | undefined;
+    public R2: number   | undefined;
+    public X : number   | undefined;
+
+    constructor() {
+        this.T  = undefined;
+        this.R  = undefined;
+        this.Z  = undefined;
+        this.R2 = undefined;
+        this.X  = undefined;
+    }
+}
+
+export {RobotStatusMask, RobotStatus, RobotData, RobotPosition};

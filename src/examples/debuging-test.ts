@@ -1,8 +1,12 @@
-import {CommandReply, Commands, McdnDriver, ServiceCommands} from '../index'
-import {McdnCmd} from "../drivers/mcdn-cmd";
+import {CommandReply, Commands, CommandsData, McdnDriver} from '../index'
+import {RobotPosition} from "../drivers/robot-cmd";
 
 // eslint-disable-next-line no-unused-vars
 let timeSentCmd = Date.now();
+function testCallbackPos(data:any){
+  let reply = data as RobotPosition;
+  console.log(`robot position: ${JSON.stringify(data)}`);
+}
 function testCallback (data : any) {
   //let reply = data as CommandReply
   console.log(`testCallback: ${JSON.stringify(data)}`)
@@ -70,6 +74,7 @@ driver.on('connected', (data :boolean) => {
   driver.sendCmd(Commands.AXESNUM, testCallback2)
     driver.sendCmd(Commands.STATUS, testCallback2)
     driver.sendStr(`.rel r = 100 go r`,testCallback)
+    driver.sendCmd(CommandsData.Position, testCallbackPos);
   //driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 10000), testCallbackAfetrMvr)
   //  driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 1000))
  // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('Z', 100))

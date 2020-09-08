@@ -3,7 +3,7 @@ import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {RobotData, RobotStatus, RobotStatusMask} from "./robot-cmd"
+import {RobotData, RobotPosition, RobotStatus, RobotStatusMask} from "./robot-cmd"
 
 const Net                   = require('net');
 const asciiEnc        = 'ascii'
@@ -113,41 +113,57 @@ class Tcp {
                 reply.answer = true
                 process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
                 return;
+            case CommandsData.Position:
             case Commands.STATUS:
                 if (reply.answer){
-                    let statusArr = reply.answer.split(lineTerminator);
-                    statusArr = statusArr.map((eachStatusAxis: string) => {
+                    let answerArr = reply.answer.split(lineTerminator);
+                    answerArr = answerArr.map((eachStatusAxis: string) => {
                         let equalSignPosition = eachStatusAxis.indexOf('=')
                         if (equalSignPosition !== -1) {
                             eachStatusAxis = eachStatusAxis.slice(equalSignPosition + 1);
                         }
-                        if (eachStatusAxis){
-                           return parseInt(eachStatusAxis , 16);
+                        if (this.cmd === Commands.STATUS){
+                            if (eachStatusAxis){
+                                return parseInt(eachStatusAxis , 16);
+                            }}
+                        else{
+                            return  parseInt(eachStatusAxis);
                         }
-
                     })
-                    statusArr = statusArr.filter((el:number)=> el !== undefined)
-                    let num = statusArr.reduce((prevValue:number,currentVal:number)=> prevValue | currentVal)
-                    let status = new RobotStatus()
-                    status.servoOn                  =   !Boolean(num & RobotStatusMask.ServoOn)
-                    status.indexAcq                 =   Boolean(num & RobotStatusMask.IndexAcq)
-                    status.busy                     =   Boolean(num & RobotStatusMask.Busy)
-                    status.index                    =   Boolean(num & RobotStatusMask.Index)
-                    status.wraparound               =   Boolean(num & RobotStatusMask.Wraparound)
-                    status.currentOverload          =   Boolean(num & RobotStatusMask.CurrentOverload)
-                    status.fwrdLimit                =   !Boolean(num & RobotStatusMask.FwrdLimit)
-                    status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
-                    status.inhibit                  =   Boolean(num & RobotStatusMask.Inhibit)
-                    status.pathPoint                =   Boolean(num & RobotStatusMask.PathPoint)
-                    status.accPhase                 =   Boolean(num & RobotStatusMask.AccPhase)
-                    status.overrun                  =   Boolean(num & RobotStatusMask.Overrun)
-                    status.powerFail                =   Boolean(num & RobotStatusMask.PowerFail)
-                    status.inMotion                 =   !Boolean(num & RobotStatusMask.MotionCompleted)
-                    status.rvsLimit                 =   Boolean(num & RobotStatusMask.RvsLimit)
-                    status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
-                    status.busy                     =   Boolean(num & (RobotStatusMask.SysMacroRunning | RobotStatusMask.UserMacroRunning ))
+                    answerArr = answerArr.filter((el:number)=> el !== undefined)
+                    if (this.cmd === Commands.STATUS){
+                        let num = answerArr.reduce((prevValue:number,currentVal:number)=> prevValue | currentVal)
+                        let status = new RobotStatus()
+                        status.servoOn                  =   !Boolean(num & RobotStatusMask.ServoOn)
+                        status.indexAcq                 =   Boolean(num & RobotStatusMask.IndexAcq)
+                        status.busy                     =   Boolean(num & RobotStatusMask.Busy)
+                        status.index                    =   Boolean(num & RobotStatusMask.Index)
+                        status.wraparound               =   Boolean(num & RobotStatusMask.Wraparound)
+                        status.currentOverload          =   Boolean(num & RobotStatusMask.CurrentOverload)
+                        status.fwrdLimit                =   !Boolean(num & RobotStatusMask.FwrdLimit)
+                        status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
+                        status.inhibit                  =   Boolean(num & RobotStatusMask.Inhibit)
+                        status.pathPoint                =   Boolean(num & RobotStatusMask.PathPoint)
+                        status.accPhase                 =   Boolean(num & RobotStatusMask.AccPhase)
+                        status.overrun                  =   Boolean(num & RobotStatusMask.Overrun)
+                        status.powerFail                =   Boolean(num & RobotStatusMask.PowerFail)
+                        status.inMotion                 =   !Boolean(num & RobotStatusMask.MotionCompleted)
+                        status.rvsLimit                 =   Boolean(num & RobotStatusMask.RvsLimit)
+                        status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
+                        status.busy                     =   Boolean(num & (RobotStatusMask.SysMacroRunning | RobotStatusMask.UserMacroRunning ))
 
-                    reply.answer = status
+                        reply.answer = status
+                    }
+                    else{
+                        let robotPosition = new RobotPosition();
+                        robotPosition.T = answerArr[0];
+                        robotPosition.R = answerArr[1];
+                        robotPosition.Z = answerArr[2];
+                        robotPosition.R2 = answerArr[3];
+                        robotPosition.X = answerArr[4];
+
+                        reply.answer = robotPosition;
+                    }
                 }
                 break;
             default :
@@ -213,9 +229,6 @@ class Tcp {
             case Commands.ENCODER:
                 //actualCmd = '.pos'
                 break;
-            case Commands.FOLLOWING_ERROR:
-                //actualCmd = 'err'
-                break;
             case Commands.POWER_ON:
                 actualCmd = '.power'
                 break;
@@ -248,19 +261,7 @@ class Tcp {
                 actualCmd = '.sta'
                 break;
             case Commands.STOP:
-                //actualCmd = `stop`
-                break;
-            case Commands.AXIS1:
-               // actualCmd = `1`
-                break;
-            case Commands.AXIS2:
-                //actualCmd = `2`
-                break;
-            case Commands.INPUTS:
-               // actualCmd = `inp`
-                break;
-            case Commands.GO:
-                //actualCmd = `go`
+                actualCmd = '.stop'
                 break;
             case ServiceCommands.CLEAR_BUFF:
                 actualCmd = ' '
@@ -268,38 +269,10 @@ class Tcp {
             case ServiceCommands.STRING:
                 actualCmd = cmd.data?.toString()
                 break;
-         //    case ServiceCommands.TRACE:
-         //        break;
-         //    case ServiceCommands.GET_TRACE_DATA:
-         //       break;
-            case CommandsData.KD:
-            case CommandsData.KI:
-            case CommandsData.KP:
-            case CommandsData.IntegrationLimit:
-            case CommandsData.BIAS:
-            case CommandsData.AccelerationFeedForward:
-            case CommandsData.VelocityFeedForward:
-            case CommandsData.MotorOutputLimit:
-            case CommandsData.DerivativeSampleInterval:
-            case CommandsData.MaxError:
-            case CommandsData.AutoStopMode:
-            case CommandsData.ECPR:
-            case CommandsData.Velocity:
-            case CommandsData.Acceleration:
-            case CommandsData.Decceleration:
             case CommandsData.Position:
-            case CommandsData.PWM:
-                if (cmd.data !== undefined){
-                    actualCmd = `${this.cmd} ${cmd.data}`
-                }
-                else{
-                    actualCmd = `${this.cmd}`
-                }
+                actualCmd = '.pos'
                 break;
         }
-
-        //console.log(`---- ${actualCmd}${cmdTerm} --- ${JSON.stringify(cmd)}`)
-
         this.netSocket.write(`${actualCmd}${cmdTerm}`, asciiEnc, (err: any) => {
             if (err) {
                 process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))
