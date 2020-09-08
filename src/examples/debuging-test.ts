@@ -1,21 +1,21 @@
-import {CommandReply, Commands, CommandsData, McdnDriver} from '../index'
-import {RobotData} from "../drivers/robot-cmd";
+import {CommandReply, Commands, McdnDriver, ServiceCommands} from '../index'
+import {McdnCmd} from "../drivers/mcdn-cmd";
 
 // eslint-disable-next-line no-unused-vars
 let timeSentCmd = Date.now();
 function testCallback (data : any) {
-  let reply = data as CommandReply
+  //let reply = data as CommandReply
   console.log(`testCallback: ${JSON.stringify(data)}`)
 }
 
 function testCallback1 (data:any) {
   let reply = data as CommandReply
-  console.log(`testCallback: ${JSON.stringify(data)}`)
+  console.log(`testCallback1: ${JSON.stringify(data)}`)
 }
 
 function testCallback2 (data:any) {
   let reply = data as CommandReply
-  console.log(`testCallback: ${JSON.stringify(data)}`)
+  console.log(`testCallback2: ${JSON.stringify(data)}`)
 
 }
 
@@ -69,7 +69,8 @@ driver.on('connected', (data :boolean) => {
   //driver.sendCmd(Commands.SERVO_ON)
   driver.sendCmd(Commands.AXESNUM, testCallback2)
     driver.sendCmd(Commands.STATUS, testCallback2)
-  driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 10000), testCallbackAfetrMvr)
+    driver.sendStr(`.rel r = 100 go r`,testCallback)
+  //driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 10000), testCallbackAfetrMvr)
   //  driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 1000))
  // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('Z', 100))
     //timeSentCmd =  Date.now();
@@ -99,7 +100,7 @@ driver.on('data', (data) => {
   // }
 
   if (data.cmd === 'STR') {
-    console.timeEnd('EXECUTION TIME \'ver\'')
+   // console.timeEnd('EXECUTION TIME \'ver\'')
   }
 
   if (data.cmd === Commands.POWER_ON) {

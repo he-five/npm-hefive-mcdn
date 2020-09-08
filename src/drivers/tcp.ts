@@ -83,13 +83,19 @@ class Tcp {
     onData(data : string) {
         this.reply += data;
         if (this.reply.endsWith(cmdPass) || this.reply.endsWith(cmdFail)) {
-            //console.log(this.reply);
+            let driverReply = new DriverReply();
+            driverReply.cmd = this.cmd;
+            driverReply.callbackId = this.callbackId;
+            driverReply.passed = this.reply.endsWith(cmdPass);
+            if (this.cmd === ServiceCommands.STRING){
+                this.cmdInProgress = false
+                driverReply.answer = this.reply
+                setImmediate(() => process.send?.(new IpcReply(IpcReplyType.DRV, driverReply)));
+                this.checkForPendingCmd()
+                return;
+            }
             try {
-                let driverReply = new DriverReply();
-                driverReply.cmd = this.cmd;
-                driverReply.callbackId = this.callbackId;
                 this.reply = this.reply.trim();
-                driverReply.passed = this.reply.endsWith(cmdPass);
                 this.reply = this.reply.replace(cmdPass, '').replace(cmdFail, '')
                 driverReply.answer = this.reply;
                 this.postProcessAnswer(driverReply);
@@ -109,7 +115,6 @@ class Tcp {
                 return;
             case Commands.STATUS:
                 if (reply.answer){
-                    console.log(`status is ${reply.answer}`);
                     let statusArr = reply.answer.split(lineTerminator);
                     statusArr = statusArr.map((eachStatusAxis: string) => {
                         let equalSignPosition = eachStatusAxis.indexOf('=')
@@ -261,7 +266,7 @@ class Tcp {
                 actualCmd = ' '
                 break;
             case ServiceCommands.STRING:
-                //actualCmd = cmd.data?.toString()
+                actualCmd = cmd.data?.toString()
                 break;
          //    case ServiceCommands.TRACE:
          //        break;
