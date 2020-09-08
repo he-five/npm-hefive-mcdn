@@ -104,7 +104,6 @@ class Serial {
       process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
       return
     }
-
     if (this.cmdInProgress == false){
       this.sendThruPort(cmd);
     }
@@ -179,11 +178,11 @@ class Serial {
          trate ${trace.rateInMicrosecond/50}${cmdTerm}
          tlevel ${trace.level}${cmdTerm}
          trace ${trace.trigger}`
-         console.log(`ServiceCommands.TRACE ${actualCmd}`)
+         //console.log(`ServiceCommands.TRACE ${actualCmd}`)
         break;
       case ServiceCommands.STOP_TRACE:
         actualCmd =`trace 0`
-        console.log(`ServiceCommands.STOP_TRACE ${actualCmd}`)
+        //console.log(`ServiceCommands.STOP_TRACE ${actualCmd}`)
         break;
       case ServiceCommands.GET_TRACE_DATA:
         actualCmd = `play`
@@ -216,7 +215,7 @@ class Serial {
     }
 
     //console.log(`---- ${actualCmd}${cmdTerm} --- ${JSON.stringify(cmd)}`)
-
+    console.log(`--- RX ${Date.now()} ${actualCmd}`)
     this.serialPort.write(`${actualCmd}${cmdTerm}`, asciiEnc, (err: any) => {
       if (err) {
         process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))
@@ -238,7 +237,7 @@ class Serial {
             this.cmdInProgress = false
             reply.answer  = strData;
             //reply.passed = strData.endsWith(cmdPass);
-            setImmediate(() => process.send?.(new IpcReply(IpcReplyType.DRV, reply)));
+            process.send?.(new IpcReply(IpcReplyType.DRV, reply));
             this.checkForPendingCmd()
             return;
           }
@@ -321,6 +320,7 @@ class Serial {
           reply.answer = input
           break;
       }
+    console.log(`--- RX ${Date.now()} ${reply.answer}`)
     process.send?.(new IpcReply(IpcReplyType.DRV, reply))
     this.checkForPendingCmd();
 
@@ -344,10 +344,16 @@ class Serial {
   }
 
   private checkForPendingCmd() {
-    if (this.queue.count > 0) {
+
+    let queueCount = this.queue.count;
+    if (queueCount > 5){
+      console.log(`queueCount: ${queueCount}`)
+    }
+
+    if (queueCount > 0) {
       let nextCmd = this.queue.dequeue()
       if (nextCmd) {
-        this.sendCmd(nextCmd);
+        setTimeout(() => {this.sendCmd(nextCmd)}, 4)
       }
     }
   }
