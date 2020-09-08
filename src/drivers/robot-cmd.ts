@@ -77,7 +77,7 @@ class RobotData {
     }
 }
 
-class RobotPosition{
+class RobotAxisValue{
     public T : number   | undefined;
     public R : number   | undefined;
     public Z : number   | undefined;
@@ -93,4 +93,4 @@ class RobotPosition{
     }
 }
 
-export {RobotStatusMask, RobotStatus, RobotData, RobotPosition};
+export {RobotStatusMask, RobotStatus, RobotData, RobotAxisValue};

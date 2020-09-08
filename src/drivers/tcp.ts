@@ -3,7 +3,7 @@ import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {RobotData, RobotPosition, RobotStatus, RobotStatusMask} from "./robot-cmd"
+import {RobotAxisValue, RobotData, RobotStatus, RobotStatusMask} from "./robot-cmd"
 
 const Net                   = require('net');
 const asciiEnc        = 'ascii'
@@ -114,6 +114,7 @@ class Tcp {
                 process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
                 return;
             case CommandsData.Position:
+            case Commands.ENCODER:
             case Commands.STATUS:
                 if (reply.answer){
                     let answerArr = reply.answer.split(lineTerminator);
@@ -155,7 +156,7 @@ class Tcp {
                         reply.answer = status
                     }
                     else{
-                        let robotPosition = new RobotPosition();
+                        let robotPosition = new RobotAxisValue();
                         robotPosition.T = answerArr[0];
                         robotPosition.R = answerArr[1];
                         robotPosition.Z = answerArr[2];
@@ -227,7 +228,7 @@ class Tcp {
                 actualCmd = '.ver'
                 break;
             case Commands.ENCODER:
-                //actualCmd = '.pos'
+                actualCmd = '.enc'
                 break;
             case Commands.POWER_ON:
                 actualCmd = '.power'
