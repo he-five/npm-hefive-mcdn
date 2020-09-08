@@ -223,18 +223,6 @@ class Tcp {
             case Commands.SERVO_OFF:
                 actualCmd = '.noservo'
                 break;
-            case CommandsData.SyncRelMove:
-            case CommandsData.SyncAbsMove:
-                if (cmd.data) {
-                    let data: RobotData = cmd.data as RobotData;
-                    if (data) {
-                        let moveCmd = this.cmd === CommandsData.SyncRelMove ? '.rel' : '.abs';
-                        //actualCmd = `${moveCmd} ${data.axis} = ${data.distance} go ${data.axis} wait sta[${data.axis}] & ${RobotStatusMask.InMotion}`
-                        actualCmd = `${moveCmd} ${data.axis} = ${data.distance} go ${data.axis}`
-                       //TODO - WAIT motion
-                    }
-                }
-                break;
             case CommandsData.RelativeMove:
             case CommandsData.AbsMove:
                 if (cmd.data) {

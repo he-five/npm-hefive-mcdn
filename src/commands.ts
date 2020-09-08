@@ -12,7 +12,7 @@ enum Commands {
     AXIS1 = 'AXIS1',
     AXIS2 = 'AXIS2',
     GO    = 'GO',
-    AXESNUM = 'AXESNUM'
+    AXESNUM = 'AXESNUM',
 }
 
 export {Commands};
