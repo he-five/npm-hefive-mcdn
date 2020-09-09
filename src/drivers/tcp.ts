@@ -114,16 +114,21 @@ class Tcp {
                 reply.answer = true
                 process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
                 return;
+            case Commands.AXES:
             case CommandsData.Position:
             case Commands.ENCODER:
                 if (reply.answer){
                     let posArray = reply.answer.split(lineTerminator);
-                    posArray = posArray.filter((el:number)=> el !== undefined);
+                    posArray = posArray.filter((el: string)=> el !== undefined && el !== null && el !== '');
                     posArray = posArray.map((eachAxis: string) =>{
                         let quotePosition = eachAxis.indexOf(':')
                         let equalPosition = eachAxis.indexOf('=')
                         if (quotePosition !== -1 && equalPosition !== -1) {
-                            return new RobotAxis(eachAxis.substring(quotePosition+1, equalPosition).trim(), parseInt(eachAxis.slice(equalPosition+1)))
+                            let axis = eachAxis.substring(quotePosition+1, equalPosition).trim();
+                            if (this.cmd === Commands.AXES){
+                                return axis;
+                            }
+                            return new RobotAxis(axis, parseInt(eachAxis.slice(equalPosition+1)))
                         }
                     })
 
@@ -255,8 +260,8 @@ class Tcp {
             case CommandsData.Delay:
                 actualCmd = `.delay ${cmd.data}`
                 break;
-            case Commands.AXESNUM:
-                actualCmd = `._axes`
+            case Commands.AXES:
+                actualCmd = `.pos`
                 break;
             case Commands.STATUS:
                 actualCmd = '.sta'

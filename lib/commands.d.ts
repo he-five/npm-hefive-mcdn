@@ -12,6 +12,6 @@ declare enum Commands {
     AXIS1 = "AXIS1",
     AXIS2 = "AXIS2",
     GO = "GO",
-    AXESNUM = "AXESNUM"
+    AXES = "AXES"
 }
 export { Commands };

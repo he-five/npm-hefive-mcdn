@@ -69,9 +69,9 @@ driver.on('connected', (data :boolean) => {
   //console.time('EXECUTION TIME Commands.ENCODER')
 
   setInterval(() => {
-  driver.sendCmd(Commands.FW_VER, testCallback2)
+  //driver.sendCmd(Commands.FW_VER, testCallback2)
   //driver.sendCmd(Commands.SERVO_ON)
-  driver.sendCmd(Commands.AXESNUM, testCallback2)
+  driver.sendCmd(Commands.AXES, testCallback2)
     driver.sendCmd(Commands.STATUS, testCallback2)
     driver.sendStr(`.rel r = 100 go r`,testCallback)
     driver.sendCmd(CommandsData.Position, testCallbackPos);
