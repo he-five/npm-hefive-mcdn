@@ -167,10 +167,6 @@ class McdnDriver extends EventEmitter {
         this.createProcess(serilOrMcdn, portName);
     }
 
-    // public openTcpPort(portName: string) {
-    //     let serilOrMcdn = 'mcdn';
-    //     this.createProcess(serilOrMcdn, portName);
-    // }
 
 
     public openSerialPort(portName: string) {
@@ -204,7 +200,12 @@ class McdnDriver extends EventEmitter {
     }
 
     public setupTrace(traceData : Trace, callback?: (data: any) => void){
-        this.sendToDriver(callback,ServiceCommands.TRACE, traceData);
+        this.sendToDriver(undefined,ServiceCommands.CH1,    traceData.channel1Type);
+        this.sendToDriver(undefined,ServiceCommands.CH2,    traceData.channel2Type);
+        this.sendToDriver(undefined,ServiceCommands.CH3,    traceData.channel3Type);
+        this.sendToDriver(undefined,ServiceCommands.TLEVEL, traceData.level);
+        this.sendToDriver(undefined,ServiceCommands.TRATE,  traceData.rateInMicrosecond);
+        this.sendToDriver(callback,ServiceCommands.TRACE, traceData.trigger);
     }
     public stopTrace(callback?: (data: any) => void){
         this.sendToDriver(callback,ServiceCommands.STOP_TRACE, undefined);

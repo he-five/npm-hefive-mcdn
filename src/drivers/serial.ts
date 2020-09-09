@@ -169,17 +169,27 @@ class Serial {
         actualCmd = cmd.data?.toString()
         break;
       case ServiceCommands.TRACE:
-        let trace = cmd.data as Trace
-        actualCmd =
-        `trace 0${cmdTerm}
-         ch1 ${trace.channel1Type}${cmdTerm}
-         ch2 ${trace.channel2Type}${cmdTerm}
-         ch3 ${trace.channel3Type}${cmdTerm}
-         trate ${trace.rateInMicrosecond/50}${cmdTerm}
-         tlevel ${trace.level}${cmdTerm}
-         trace ${trace.trigger}`
-         //console.log(`ServiceCommands.TRACE ${actualCmd}`)
+        actualCmd =`trace ${cmd.data}`
         break;
+      case ServiceCommands.CH1:
+      case ServiceCommands.CH2:
+      case ServiceCommands.CH3:
+      case ServiceCommands.TLEVEL:
+        actualCmd =`${this.cmd} ${cmd.data}`
+        break;
+      case ServiceCommands.TRATE:
+        let rateInMicrosecond = (cmd.data as number) / 50
+        actualCmd =`${this.cmd} ${rateInMicrosecond}`
+        break;
+
+        // `ch1 ${trace.channel1Type}${cmdTerm}
+        //  ch2 ${trace.channel2Type}${cmdTerm}
+        //  ch3 ${trace.channel3Type}${cmdTerm}
+        //  trate ${trace.rateInMicrosecond/50}${cmdTerm}
+        //  tlevel ${trace.level}${cmdTerm}
+
+         //console.log(`ServiceCommands.TRACE ${actualCmd}`)
+
       case ServiceCommands.STOP_TRACE:
         actualCmd =`trace 0`
         //console.log(`ServiceCommands.STOP_TRACE ${actualCmd}`)
@@ -215,7 +225,7 @@ class Serial {
     }
 
     //console.log(`---- ${actualCmd}${cmdTerm} --- ${JSON.stringify(cmd)}`)
-    console.log(`--- RX ${Date.now()} ${actualCmd}`)
+    //console.log(`--- TX ${Date.now()} ${actualCmd}`)
     this.serialPort.write(`${actualCmd}${cmdTerm}`, asciiEnc, (err: any) => {
       if (err) {
         process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))
@@ -320,7 +330,7 @@ class Serial {
           reply.answer = input
           break;
       }
-    console.log(`--- RX ${Date.now()} ${reply.answer}`)
+    //console.log(`--- RX ${Date.now()} ${reply.answer}`)
     process.send?.(new IpcReply(IpcReplyType.DRV, reply))
     this.checkForPendingCmd();
 
@@ -344,16 +354,11 @@ class Serial {
   }
 
   private checkForPendingCmd() {
-
     let queueCount = this.queue.count;
-    if (queueCount > 5){
-      console.log(`queueCount: ${queueCount}`)
-    }
-
     if (queueCount > 0) {
       let nextCmd = this.queue.dequeue()
       if (nextCmd) {
-        setTimeout(() => {this.sendCmd(nextCmd)}, 4)
+        this.sendCmd(nextCmd)
       }
     }
   }
@@ -368,4 +373,5 @@ class Serial {
 }
 
 export { Serial }
+
 
