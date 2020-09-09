@@ -3,7 +3,7 @@ import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {RobotAxisValue, RobotData, RobotStatus, RobotStatusMask} from "./robot-cmd"
+import {RobotAxis, RobotData, RobotStatus, RobotStatusMask} from "./robot-cmd"
 
 const Net                   = require('net');
 const asciiEnc        = 'ascii'
@@ -21,6 +21,7 @@ class Tcp {
     private timer         : any
     private connected     : boolean
     private reply         : string
+
 
     constructor () {
         this.netSocket = null
@@ -115,6 +116,20 @@ class Tcp {
                 return;
             case CommandsData.Position:
             case Commands.ENCODER:
+                if (reply.answer){
+                    let posArray = reply.answer.split(lineTerminator);
+                    posArray = posArray.filter((el:number)=> el !== undefined);
+                    posArray = posArray.map((eachAxis: string) =>{
+                        let quotePosition = eachAxis.indexOf(':')
+                        let equalPosition = eachAxis.indexOf('=')
+                        if (quotePosition !== -1 && equalPosition !== -1) {
+                            return new RobotAxis(eachAxis.substring(quotePosition+1, equalPosition).trim(), parseInt(eachAxis.slice(equalPosition+1)))
+                        }
+                    })
+
+                    reply.answer = posArray;
+                }
+                break;
             case Commands.STATUS:
                 if (reply.answer){
                     let answerArr = reply.answer.split(lineTerminator);
@@ -123,12 +138,8 @@ class Tcp {
                         if (equalSignPosition !== -1) {
                             eachStatusAxis = eachStatusAxis.slice(equalSignPosition + 1);
                         }
-                        if (this.cmd === Commands.STATUS){
-                            if (eachStatusAxis){
-                                return parseInt(eachStatusAxis , 16);
-                            }}
-                        else{
-                            return  parseInt(eachStatusAxis);
+                        if (eachStatusAxis){
+                            return parseInt(eachStatusAxis , 16);
                         }
                     })
                     answerArr = answerArr.filter((el:number)=> el !== undefined)
@@ -137,7 +148,6 @@ class Tcp {
                         let status = new RobotStatus()
                         status.servoOn                  =   !Boolean(num & RobotStatusMask.ServoOn)
                         status.indexAcq                 =   Boolean(num & RobotStatusMask.IndexAcq)
-                        status.busy                     =   Boolean(num & RobotStatusMask.Busy)
                         status.index                    =   Boolean(num & RobotStatusMask.Index)
                         status.wraparound               =   Boolean(num & RobotStatusMask.Wraparound)
                         status.currentOverload          =   Boolean(num & RobotStatusMask.CurrentOverload)
@@ -154,16 +164,6 @@ class Tcp {
                         status.busy                     =   Boolean(num & (RobotStatusMask.SysMacroRunning | RobotStatusMask.UserMacroRunning ))
 
                         reply.answer = status
-                    }
-                    else{
-                        let robotPosition = new RobotAxisValue();
-                        robotPosition.T = answerArr[0];
-                        robotPosition.R = answerArr[1];
-                        robotPosition.Z = answerArr[2];
-                        robotPosition.R2 = answerArr[3];
-                        robotPosition.X = answerArr[4];
-
-                        reply.answer = robotPosition;
                     }
                 }
                 break;

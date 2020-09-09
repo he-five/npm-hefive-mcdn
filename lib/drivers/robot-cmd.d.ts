@@ -44,12 +44,9 @@ declare class RobotData {
     distance: number | undefined;
     constructor(axis: string, distance: number);
 }
-declare class RobotAxisValue {
-    T: number | undefined;
-    R: number | undefined;
-    Z: number | undefined;
-    R2: number | undefined;
-    X: number | undefined;
-    constructor();
+declare class RobotAxis {
+    axisName: string | undefined;
+    axisValue: number | undefined;
+    constructor(axisName: string | undefined, axisValue: number | undefined);
 }
-export { RobotStatusMask, RobotStatus, RobotData, RobotAxisValue };
+export { RobotStatusMask, RobotStatus, RobotData, RobotAxis };

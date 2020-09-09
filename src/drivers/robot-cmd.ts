@@ -77,20 +77,14 @@ class RobotData {
     }
 }
 
-class RobotAxisValue{
-    public T : number   | undefined;
-    public R : number   | undefined;
-    public Z : number   | undefined;
-    public R2: number   | undefined;
-    public X : number   | undefined;
+class RobotAxis{
+    public axisName : string | undefined;
+    public axisValue : number | undefined;
 
-    constructor() {
-        this.T  = undefined;
-        this.R  = undefined;
-        this.Z  = undefined;
-        this.R2 = undefined;
-        this.X  = undefined;
+    constructor(axisName : string | undefined, axisValue : number | undefined) {
+        this.axisName  = axisName;
+        this.axisValue  = axisValue;
     }
 }
 
-export {RobotStatusMask, RobotStatus, RobotData, RobotAxisValue};
+export {RobotStatusMask, RobotStatus, RobotData, RobotAxis};
