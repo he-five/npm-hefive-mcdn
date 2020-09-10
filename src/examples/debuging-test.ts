@@ -70,7 +70,7 @@ driver.on('connected', (data :boolean) => {
 
   setInterval(() => {
   //driver.sendCmd(Commands.FW_VER, testCallback2)
-  //driver.sendCmd(Commands.SERVO_ON)
+  driver.sendCmd(Commands.SERVO_ON)
   driver.sendCmd(Commands.AXES, testCallback2)
     driver.sendCmd(Commands.STATUS, testCallback2)
     driver.sendStr(`.rel r = 100 go r`,testCallback)

@@ -5,8 +5,7 @@ import {DriverReply, IpcReply, IpcReplyType} from "./drivers/driver-replay";
 import {Commands} from "./commands";
 import {CommandsData} from "./commands-data";
 import {CommunicationTypes} from "./helpers/communication-types";
-import {RobotData} from "./drivers/robot-cmd";
-
+import {RobotData, RobotAxis, RobotStatus} from "./drivers/robot-cmd";
 
 const path = require('path');
 const SerialPort = require('serialport')
@@ -288,4 +287,5 @@ class McdnDriver extends EventEmitter {
 }
 export {Commands} from "./commands";
 export {CommandsData} from "./commands-data";
+export {RobotAxis, RobotData, RobotStatus}
 export {McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs, ServiceCommands};
