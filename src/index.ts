@@ -5,7 +5,7 @@ import {DriverReply, IpcReply, IpcReplyType} from "./drivers/driver-replay";
 import {Commands} from "./commands";
 import {CommandsData} from "./commands-data";
 import {CommunicationTypes} from "./helpers/communication-types";
-import {RobotData, RobotAxis, RobotStatus} from "./drivers/robot-cmd";
+import {RobotAxisData, RobotStatus} from "./drivers/robot-cmd";
 
 const path = require('path');
 const SerialPort = require('serialport')
@@ -198,7 +198,7 @@ class McdnDriver extends EventEmitter {
         this.sendToDriver(callback, cmd,data);
     }
 
-    public sendCmdDataNumber(cmd: CommandsData, data : number | RobotData, callback?: (data: any) => void){
+    public sendCmdDataNumber(cmd: CommandsData, data : number | RobotAxisData, callback?: (data: any) => void){
         this.sendToDriver(callback,cmd,data);
     }
 
@@ -287,5 +287,5 @@ class McdnDriver extends EventEmitter {
 }
 export {Commands} from "./commands";
 export {CommandsData} from "./commands-data";
-export {RobotAxis, RobotData, RobotStatus}
+export {RobotAxisData, RobotStatus}
 export {McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs, ServiceCommands};

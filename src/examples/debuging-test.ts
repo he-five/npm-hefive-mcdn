@@ -1,10 +1,10 @@
 import {CommandReply, Commands, CommandsData, McdnDriver} from '../index'
-import {RobotAxis} from "../drivers/robot-cmd";
+import {RobotAxisData} from "../drivers/robot-cmd";
 
 // eslint-disable-next-line no-unused-vars
 let timeSentCmd = Date.now();
 function testCallbackPos(data:any){
-  let reply = data as RobotAxis;
+  let reply = data as RobotAxisData;
   console.log(`robot position: ${JSON.stringify(data)}`);
 }
 function testCallback (data : any) {
@@ -34,7 +34,7 @@ function testCallbackStatus (data: any){
   let elapsedTime = Date.now() ;
   console.log(`testCallbackStatus: ${JSON.stringify(data)}`);
   console.log(`elapsed time: ${elapsedTime - timeSentCmd}`);
-  //driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 1000) ,testCallbackAfetrMvr )
+  //driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('T', 1000) ,testCallbackAfetrMvr )
   //driver.disconnect()
 }
 
@@ -75,11 +75,11 @@ driver.on('connected', (data :boolean) => {
     driver.sendCmd(Commands.STATUS, testCallback2)
     driver.sendStr(`.rel r = 100 go r`,testCallback)
     driver.sendCmd(CommandsData.Position, testCallbackPos);
-  //driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 10000), testCallbackAfetrMvr)
-  //  driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 1000))
- // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('Z', 100))
+  //driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('T', 10000), testCallbackAfetrMvr)
+  //  driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('T', 1000))
+ // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('Z', 100))
     //timeSentCmd =  Date.now();
- // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotData('T', 100), testCallbackAfetrMvr)
+ // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('T', 100), testCallbackAfetrMvr)
   }, 2000)
 })
 

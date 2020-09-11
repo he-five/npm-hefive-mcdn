@@ -67,24 +67,14 @@ class RobotStatus {
     }
 }
 
-class RobotData {
-    public axis     : string;
-    public distance : number | undefined;
+class RobotAxisData{
+    public name : string | undefined;
+    public value : number | undefined;
 
-    constructor(axis : string, distance: number) {
-        this.axis = axis;
-        this.distance = distance;
+    constructor(name : string | undefined, value : number | undefined) {
+        this.name  = name;
+        this.value  = value;
     }
 }
 
-class RobotAxis{
-    public axisName : string | undefined;
-    public axisValue : number | undefined;
-
-    constructor(axisName : string | undefined, axisValue : number | undefined) {
-        this.axisName  = axisName;
-        this.axisValue  = axisValue;
-    }
-}
-
-export {RobotStatusMask, RobotStatus, RobotData, RobotAxis};
+export {RobotStatusMask, RobotStatus, RobotAxisData};

@@ -3,7 +3,7 @@ import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {RobotAxis, RobotData, RobotStatus, RobotStatusMask} from "./robot-cmd"
+import {RobotAxisData, RobotStatus, RobotStatusMask} from "./robot-cmd"
 
 const Net                   = require('net');
 const asciiEnc        = 'ascii'
@@ -128,7 +128,7 @@ class Tcp {
                             if (this.cmd === Commands.AXES){
                                 return axis;
                             }
-                            return new RobotAxis(axis, parseInt(eachAxis.slice(equalPosition+1)))
+                            return new RobotAxisData(axis, parseInt(eachAxis.slice(equalPosition+1)))
                         }
                     })
 
@@ -250,10 +250,10 @@ class Tcp {
             case CommandsData.RelativeMove:
             case CommandsData.AbsMove:
                 if (cmd.data) {
-                    let data: RobotData = cmd.data as RobotData;
+                    let data: RobotAxisData = cmd.data as RobotAxisData;
                     if (data) {
                         let moveCmd = this.cmd === CommandsData.RelativeMove ? '.rel' : '.abs';
-                        actualCmd = `${moveCmd} ${data.axis} = ${data.distance} go ${data.axis}`
+                        actualCmd = `${moveCmd} ${data.name} = ${data.value} go ${data.name}`
                     }
                 }
                 break;

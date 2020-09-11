@@ -39,14 +39,9 @@ declare class RobotStatus {
     private sysMacroRunning;
     constructor();
 }
-declare class RobotData {
-    axis: string;
-    distance: number | undefined;
-    constructor(axis: string, distance: number);
+declare class RobotAxisData {
+    name: string | undefined;
+    value: number | undefined;
+    constructor(name: string | undefined, value: number | undefined);
 }
-declare class RobotAxis {
-    axisName: string | undefined;
-    axisValue: number | undefined;
-    constructor(axisName: string | undefined, axisValue: number | undefined);
-}
-export { RobotStatusMask, RobotStatus, RobotData, RobotAxis };
+export { RobotStatusMask, RobotStatus, RobotAxisData };
