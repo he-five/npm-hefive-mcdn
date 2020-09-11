@@ -1,32 +1,60 @@
-import {CommandReply, CommandsData,McdnDriver} from '../index'
-import {Commands} from "../commands";
+import {CommandReply, Commands, CommandsData, McdnDriver} from '../index'
+import {RobotAxisData} from "../drivers/robot-cmd";
 
 // eslint-disable-next-line no-unused-vars
+let timeSentCmd = Date.now();
+function testCallbackPos(data:any){
+  let reply = data as RobotAxisData;
+  console.log(`robot position: ${JSON.stringify(data)}`);
+}
 function testCallback (data : any) {
-  let reply = data as CommandReply
+  //let reply = data as CommandReply
   console.log(`testCallback: ${JSON.stringify(data)}`)
 }
 
 function testCallback1 (data:any) {
   let reply = data as CommandReply
-  console.log(`testCallback: ${JSON.stringify(data)}`)
+  console.log(`testCallback1: ${JSON.stringify(data)}`)
 }
 
 function testCallback2 (data:any) {
   let reply = data as CommandReply
-  console.log(`testCallback: ${JSON.stringify(data)}`)
+  console.log(`testCallback2: ${JSON.stringify(data)}`)
+
 }
 
+function callbackAfterSonSof(data:any){
+  console.log(`answer after son/sof is ${JSON.stringify(data)}`)
+
+
+}
+
+function testCallbackStatus (data: any){
+
+  let elapsedTime = Date.now() ;
+  console.log(`testCallbackStatus: ${JSON.stringify(data)}`);
+  console.log(`elapsed time: ${elapsedTime - timeSentCmd}`);
+  //driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('T', 1000) ,testCallbackAfetrMvr )
+  //driver.disconnect()
+}
+
+function testCallbackAfetrMvr(data:any){
+  console.log(`testCallbackAfetrMvr: ${JSON.stringify(data)}`)
+  //driver.disconnect()
+
+}
 const i = 0
 
 const driver = new McdnDriver()
+driver.openTcpPort('87.119.102.13:3000')
+
 //console.time('EXECUTION TIME enumSerialPorts')
-driver.enumSerialPorts()
+//driver.enumSerialPorts()
 driver.on('portsInfo', (ports) => {
   //console.timeEnd('EXECUTION TIME enumSerialPorts')
   //console.log(ports)
   //console.time('EXECUTION TIME openSerialPort')
-  driver.openSerialPort('COM7')
+  //driver.openSerialPort('COM7')
 })
 
 driver.on('portsInfo', (ports) => {
@@ -40,26 +68,19 @@ driver.on('connected', (data :boolean) => {
   console.log('CONNECTED: ' + data)
   //console.time('EXECUTION TIME Commands.ENCODER')
 
-
-  driver.sendCmd(Commands.STATUS, testCallback2)
-
-  setTimeout(() => {
-    driver.sendCmd(Commands.SERVO_OFF);
-    //driver.sendCmd(Commands.POWER_OFF);
-    driver.sendCmd(Commands.STATUS, testCallback1)
-    setTimeout(() => {
- //     driver.sendCmd(Commands.STATUS, testCallback)
-      // driver.sendCmd(Commands.SERVO_ON);
-      // driver.sendCmd(Commands.POWER_ON);
-
-   //   driver.sendCmd(Commands.STATUS)
-      driver.sendCmd(Commands.INPUTS)
-
-      //driver.disconnect()
-    }, 1000)
-
-    //driver.disconnect()
-  }, 1000)
+  setInterval(() => {
+  //driver.sendCmd(Commands.FW_VER, testCallback2)
+  driver.sendCmd(Commands.SERVO_ON)
+  driver.sendCmd(Commands.AXES, testCallback2)
+    driver.sendCmd(Commands.STATUS, testCallback2)
+    driver.sendStr(`.rel r = 100 go r`,testCallback)
+    driver.sendCmd(CommandsData.Position, testCallbackPos);
+  //driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('T', 10000), testCallbackAfetrMvr)
+  //  driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('T', 1000))
+ // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('Z', 100))
+    //timeSentCmd =  Date.now();
+ // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('T', 100), testCallbackAfetrMvr)
+  }, 2000)
 })
 
 driver.on('disconnected', () => {
@@ -72,7 +93,7 @@ driver.on('error', (err) => {
 
 driver.on('data', (data) => {
   if (data.cmd === 'FW_VER') {
-    console.timeEnd('EXECUTION TIME Commands.FW_VER')
+    //console.timeEnd('EXECUTION TIME Commands.FW_VER')
   }
 
   if (data.cmd === 'ENCODER') {
@@ -84,7 +105,7 @@ driver.on('data', (data) => {
   // }
 
   if (data.cmd === 'STR') {
-    console.timeEnd('EXECUTION TIME \'ver\'')
+   // console.timeEnd('EXECUTION TIME \'ver\'')
   }
 
   if (data.cmd === Commands.POWER_ON) {
@@ -115,7 +136,8 @@ driver.on('data', (data) => {
   //
   // }
 
-    console.log(`DATA: ${JSON.stringify(data)}`)
+   // console.log(`DATA: ${JSON.stringify(data)}`)
+
 })
 
 

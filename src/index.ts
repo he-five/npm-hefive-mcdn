@@ -4,7 +4,8 @@ import {McdnCmd, ServiceCommands, Trace} from "./drivers/mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./drivers/driver-replay";
 import {Commands} from "./commands";
 import {CommandsData} from "./commands-data";
-
+import {CommunicationTypes} from "./helpers/communication-types";
+import {RobotAxisData, RobotStatus} from "./drivers/robot-cmd";
 
 const path = require('path');
 const SerialPort = require('serialport')
@@ -45,6 +46,7 @@ class Status {
         this.amplifierCurrentLimit    = false
         this.followingErrorLimit      = false
         this.counterWrapAround        = false
+
     }
 }
 
@@ -163,19 +165,20 @@ class McdnDriver extends EventEmitter {
     }
 
     public openMcdnPort(portName: string) {
-        let serilOrMcdn = 'mcdn';
-        this.createProcess(serilOrMcdn, portName);
+        this.createProcess(CommunicationTypes.MCDN, portName);
     }
 
+     public openTcpPort(portName: string) {
+         this.createProcess(CommunicationTypes.TCP, portName);
+     }
 
 
     public openSerialPort(portName: string) {
-        let serilOrMcdn = 'serial';
-        this.createProcess(serilOrMcdn, portName);
+        this.createProcess(CommunicationTypes.SERIAL, portName);
     }
 
-    private createProcess(serilOrMcdn: string, portName: string) {
-        this.driverProcess = child_process.fork(path.join(__dirname, '/drivers/index'), [serilOrMcdn])
+    private createProcess(communication: CommunicationTypes, portName: string) {
+        this.driverProcess = child_process.fork(path.join(__dirname, '/drivers/index'), [communication])
         if (this.driverProcess!.connected) {
             this.connected = true
             this.consumeEvents()
@@ -195,7 +198,7 @@ class McdnDriver extends EventEmitter {
         this.sendToDriver(callback, cmd,data);
     }
 
-    public sendCmdDataNumber(cmd: CommandsData, data : number, callback?: (data: any) => void){
+    public sendCmdDataNumber(cmd: CommandsData, data : number | RobotAxisData, callback?: (data: any) => void){
         this.sendToDriver(callback,cmd,data);
     }
 
@@ -291,4 +294,5 @@ class McdnDriver extends EventEmitter {
 }
 export {Commands} from "./commands";
 export {CommandsData} from "./commands-data";
+export {RobotAxisData, RobotStatus}
 export {McdnDriver, CommandReply, Status, SerialPortInfo, SerialPortType, Inputs, ServiceCommands};

@@ -3,6 +3,7 @@ import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
 import {Inputs, Status} from "../index";
 import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
+import {Queue} from "../helpers/queue";
 
 const SerialPort      = require('serialport')
 const HeFiveParser    = require('./he-five-parser')
@@ -10,29 +11,6 @@ const lineTerminator  = '\r\n'
 const cmdTerm         = '\r'
 const asciiEnc        = 'ascii'
 
-class Queue{
-  private cmds : McdnCmd[]
-
-  constructor(queue?: McdnCmd[]) {
-    this.cmds = queue || [];
-  }
-
-  enqueue(item: any) {
-    this.cmds.push(item);
-  }
-
-  dequeue(): any {
-    return this.cmds.shift();
-  }
-
-  clear() {
-    this.cmds = [];
-  }
-
-  get count(): number {
-    return this.cmds.length;
-  }
-}
 
 class Serial {
   private serialPort    : typeof SerialPort

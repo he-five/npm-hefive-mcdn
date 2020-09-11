@@ -17,6 +17,7 @@ declare enum CommandsData {
     Decceleration = "Dec",
     AbsMove = "Abs",
     Position = "Pos",
-    PWM = "Pwm"
+    PWM = "Pwm",
+    Delay = "Delay"
 }
 export { CommandsData };

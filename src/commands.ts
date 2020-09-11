@@ -12,6 +12,7 @@ enum Commands {
     AXIS1 = 'AXIS1',
     AXIS2 = 'AXIS2',
     GO    = 'GO',
+    AXES = 'AXES',
     STOP_TRACE    = 'trace 0'
 }
 

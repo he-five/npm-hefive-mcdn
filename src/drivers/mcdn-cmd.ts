@@ -1,5 +1,6 @@
 import {CommandsData} from "../index";
 import {Commands} from "../commands";
+import {RobotAxisData} from './robot-cmd';
 
 const cmdPass = '>'
 const cmdFail = '?'
@@ -25,7 +26,6 @@ enum StatusMask {
     PosError    = 0x4000,
     Wraparound  = 0x8000
 }
-
 
 enum ServiceCommands {
 
@@ -83,10 +83,10 @@ class Trace {
 
 class McdnCmd {
     public cmd      : Commands | ServiceCommands | CommandsData;
-    public data     : string | number | Trace |undefined;
+    public data     : string | number | Trace | RobotAxisData | undefined;
     public uniqueId : string | undefined;
 
-    constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number| Trace, uniqueId?: string) {
+    constructor(cmd: Commands | ServiceCommands | CommandsData, data?: string | number| RobotAxisData | Trace, uniqueId?: string) {
         this.cmd = cmd
         this.data = data
         this.uniqueId = uniqueId;

@@ -18,6 +18,7 @@ enum CommandsData {
     AbsMove                             = 'Abs',
     Position                            = 'Pos',
     PWM                                 = 'Pwm',
+    Delay                               = 'Delay'
 }
 
 export {CommandsData}
