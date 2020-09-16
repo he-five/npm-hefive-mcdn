@@ -119,7 +119,7 @@ class Tcp {
             case Commands.ENCODER:
                 if (reply.answer){
                     let posArray = reply.answer.split(lineTerminator);
-                    posArray = posArray.filter((el: string)=> el !== undefined && el !== null && el !== '');
+                    posArray = posArray.filter((el: string)=> el != undefined && el != null && el != '');
                     posArray = posArray.map((eachAxis: string) =>{
                         let quotePosition = eachAxis.indexOf(':')
                         let equalPosition = eachAxis.indexOf('=')
@@ -131,7 +131,7 @@ class Tcp {
                             return new RobotAxisData(axis, parseInt(eachAxis.slice(equalPosition+1)))
                         }
                     })
-
+                    posArray = posArray.filter((el: any) => el != undefined && el != null && el != '');
                     reply.answer = posArray;
                 }
                 break;
@@ -147,7 +147,7 @@ class Tcp {
                             return parseInt(eachStatusAxis , 16);
                         }
                     })
-                    answerArr = answerArr.filter((el:number)=> el !== undefined)
+                    answerArr = answerArr.filter((el:number)=> el != undefined && el != null)
                     if (this.cmd === Commands.STATUS){
                         let num = answerArr.reduce((prevValue:number,currentVal:number)=> prevValue | currentVal)
                         let status = new RobotStatus()
