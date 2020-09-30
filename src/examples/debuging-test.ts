@@ -46,6 +46,7 @@ function testCallbackAfetrMvr(data:any){
 const i = 0
 
 const driver = new McdnDriver()
+//driver.setReplyEndString('>', '?')
 driver.openTcpPort('87.119.102.13:3000')
 
 //console.time('EXECUTION TIME enumSerialPorts')

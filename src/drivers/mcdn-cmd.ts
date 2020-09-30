@@ -2,8 +2,6 @@ import {CommandsData} from "../index";
 import {Commands} from "../commands";
 import {RobotAxisData} from './robot-cmd';
 
-const cmdPass = '>'
-const cmdFail = '?'
 
 enum StatusMask {
     AtTarget    = 0x0001,
@@ -93,4 +91,4 @@ class McdnCmd {
     }
 }
 
-export {McdnCmd, ServiceCommands, cmdPass, cmdFail, StatusMask, Trace, Trigger, Type};
+export {McdnCmd, ServiceCommands, StatusMask, Trace, Trigger, Type};

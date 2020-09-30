@@ -18,6 +18,8 @@ declare enum CommandsData {
     AbsMove = "Abs",
     Position = "Pos",
     PWM = "Pwm",
-    Delay = "Delay"
+    Delay = "Delay",
+    CmdPassString = "CmdPassString",
+    CmdFailString = "CmdFailString"
 }
 export { CommandsData };

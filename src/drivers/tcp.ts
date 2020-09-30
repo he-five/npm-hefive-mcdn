@@ -1,4 +1,4 @@
-import {cmdFail, cmdPass, McdnCmd, ServiceCommands} from "./mcdn-cmd";
+import {McdnCmd, ServiceCommands} from "./mcdn-cmd";
 import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
@@ -21,7 +21,8 @@ class Tcp {
     private timer         : any
     private connected     : boolean
     private reply         : string
-
+    private cmdPass       : string
+    private cmdFail       : string
 
     constructor () {
         this.netSocket = null
@@ -33,6 +34,8 @@ class Tcp {
         this.timer = undefined
         this.connected = false
         this.reply = ''
+        this.cmdPass = '>'
+        this.cmdFail = '?'
     }
 
     public connect (ip : string) {
@@ -83,11 +86,11 @@ class Tcp {
 
     onData(data : string) {
         this.reply += data;
-        if (this.reply.endsWith(cmdPass) || this.reply.endsWith(cmdFail)) {
+        if (this.reply.endsWith(this.cmdPass) || this.reply.endsWith(this.cmdFail)) {
             let driverReply = new DriverReply();
             driverReply.cmd = this.cmd;
             driverReply.callbackId = this.callbackId;
-            driverReply.passed = this.reply.endsWith(cmdPass);
+            driverReply.passed = this.reply.endsWith(this.cmdPass);
             if (this.cmd === ServiceCommands.STRING){
                 this.cmdInProgress = false
                 driverReply.answer = this.reply
@@ -97,7 +100,7 @@ class Tcp {
             }
             try {
                 this.reply = this.reply.trim();
-                this.reply = this.reply.replace(cmdPass, '').replace(cmdFail, '')
+                this.reply = this.reply.replace(this.cmdPass, '').replace(this.cmdFail, '')
                 driverReply.answer = this.reply;
                 this.postProcessAnswer(driverReply);
             }
@@ -208,6 +211,16 @@ class Tcp {
     }
 
     public sendCmd(cmd : McdnCmd ){
+
+        if ((cmd.cmd === CommandsData.CmdPassString) && (cmd.data)){
+            this.cmdPass = cmd.data.toString()
+            return;
+        }
+        if ((cmd.cmd === CommandsData.CmdFailString) && (cmd.data)){
+            this.cmdFail = cmd.data.toString()
+            return;
+        }
+
         this.reply = '';
         if (this.connected == false) {
             process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))

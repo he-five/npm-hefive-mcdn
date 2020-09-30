@@ -10,6 +10,8 @@ declare class Tcp {
     private timer;
     private connected;
     private reply;
+    private cmdPass;
+    private cmdFail;
     constructor();
     connect(ip: string): void;
     onClose(): void;

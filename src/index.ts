@@ -190,6 +190,11 @@ class McdnDriver extends EventEmitter {
         this.driverProcess?.send(new McdnCmd(ServiceCommands.DISCONNECT, undefined));
     }
 
+    public setReplyEndString(cmdPass: string, cmdFail: string){
+        this.sendCmdDataString(CommandsData.CmdPassString, cmdPass);
+        this.sendCmdDataString(CommandsData.CmdFailString, cmdFail);
+    }
+
     public getFwVersion() {
         this.sendCmd(Commands.FW_VER)
     }

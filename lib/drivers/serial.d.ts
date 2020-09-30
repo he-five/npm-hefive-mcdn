@@ -8,6 +8,8 @@ declare class Serial {
     private cmdInProgress;
     private cmdSendTime;
     private timer;
+    private cmdPass;
+    private cmdFail;
     constructor();
     connect(portName: string): void;
     sendCmd(cmd: McdnCmd): void;

@@ -69,6 +69,7 @@ declare class McdnDriver extends EventEmitter {
     openSerialPort(portName: string): void;
     private createProcess;
     disconnect(): void;
+    setReplyEndString(cmdPass: string, cmdFail: string): void;
     getFwVersion(): void;
     sendCmdDataString(cmd: CommandsData, data: string, callback?: (data: any) => void): void;
     sendCmdDataNumber(cmd: CommandsData, data: number | RobotAxisData, callback?: (data: any) => void): void;

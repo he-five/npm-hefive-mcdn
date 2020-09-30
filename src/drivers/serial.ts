@@ -1,8 +1,7 @@
-import {cmdFail, cmdPass, McdnCmd, ServiceCommands, StatusMask, Trace} from "./mcdn-cmd";
+import {McdnCmd, ServiceCommands, StatusMask} from "./mcdn-cmd";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {Inputs, Status} from "../index";
+import {CommandsData, Inputs, Status} from "../index";
 import {Commands} from "../commands";
-import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
 
 const SerialPort      = require('serialport')
@@ -21,6 +20,8 @@ class Serial {
   private cmdInProgress : boolean
   private cmdSendTime   : number
   private timer         : any
+  private cmdPass       : string
+  private cmdFail       : string
 
   constructor () {
     this.serialPort = null
@@ -29,7 +30,8 @@ class Serial {
     this.cmdInProgress = false
     this.cmdSendTime = 0
     this.timer = undefined
-
+    this.cmdPass = '>'
+    this.cmdFail = '?'
   }
 
   public connect (portName : string) {
@@ -41,7 +43,7 @@ class Serial {
           }
         });
 
-      this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [cmdPass, cmdFail]}))
+      this.parser =  this.serialPort.pipe(new HeFiveParser({terminators: [this.cmdPass, this.cmdFail]}))
       this.startListening();
       // Send empty command before starting real communication
       this.sendCmd(new McdnCmd(ServiceCommands.CLEAR_BUFF, undefined));
@@ -76,8 +78,17 @@ class Serial {
     }
   }
 
-
   public sendCmd(cmd : McdnCmd ){
+
+    if ((cmd.cmd === CommandsData.CmdPassString) && (cmd.data)){
+      this.cmdPass = cmd.data.toString()
+      return;
+    }
+    if ((cmd.cmd === CommandsData.CmdFailString) && (cmd.data)){
+      this.cmdFail = cmd.data.toString()
+      return;
+    }
+
     if (this.serialPort.connected == false) {
       process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
       return
@@ -231,7 +242,7 @@ class Serial {
           }
 
           strData = strData.trim();
-          reply.passed = strData.endsWith(cmdPass);
+          reply.passed = strData.endsWith(this.cmdPass);
           strData  = strData.slice(0, strData.length - 1);
           let position:number =  strData.indexOf(lineTerminator);
           if (position !== -1 ) {
