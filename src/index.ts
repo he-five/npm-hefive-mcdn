@@ -164,35 +164,33 @@ class McdnDriver extends EventEmitter {
         )
     }
 
-    public openMcdnPort(portName: string) {
-        this.createProcess(CommunicationTypes.MCDN, portName);
+    public openMcdnPort(...parameters: string[]) {
+        this.createProcess(CommunicationTypes.MCDN, parameters);
     }
 
-     public openTcpPort(portName: string) {
-         this.createProcess(CommunicationTypes.TCP, portName);
+     public openTcpPort(...parameters : string[]) {
+         this.createProcess(CommunicationTypes.TCP, parameters);
      }
 
 
-    public openSerialPort(portName: string) {
-        this.createProcess(CommunicationTypes.SERIAL, portName);
+    public openSerialPort(...parameters: string[]) {
+        this.createProcess(CommunicationTypes.SERIAL, parameters);
     }
 
-    private createProcess(communication: CommunicationTypes, portName: string) {
+    private createProcess(communication: CommunicationTypes, parameters: string[]) {
         this.driverProcess = child_process.fork(path.join(__dirname, '/drivers/index'), [communication])
         if (this.driverProcess!.connected) {
+            const [portName, cmdPass, cmdFail] = parameters
             this.connected = true
             this.consumeEvents()
+            if (cmdPass) this.driverProcess?.send(new McdnCmd(CommandsData.CmdPassString, cmdPass));
+            if (cmdFail) this.driverProcess?.send(new McdnCmd(CommandsData.CmdFailString, cmdFail));
             this.driverProcess?.send(new McdnCmd(ServiceCommands.CONNECT, portName));
         }
     }
 
     public disconnect() {
         this.driverProcess?.send(new McdnCmd(ServiceCommands.DISCONNECT, undefined));
-    }
-
-    public setReplyEndString(cmdPass: string, cmdFail: string){
-        this.sendCmdDataString(CommandsData.CmdPassString, cmdPass);
-        this.sendCmdDataString(CommandsData.CmdFailString, cmdFail);
     }
 
     public getFwVersion() {

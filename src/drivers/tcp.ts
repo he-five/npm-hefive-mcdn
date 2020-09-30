@@ -212,12 +212,12 @@ class Tcp {
 
     public sendCmd(cmd : McdnCmd ){
 
-        if ((cmd.cmd === CommandsData.CmdPassString) && (cmd.data)){
-            this.cmdPass = cmd.data.toString()
+        if (cmd.cmd === CommandsData.CmdPassString){
+            if (cmd.data) this.cmdPass = cmd.data.toString()
             return;
         }
-        if ((cmd.cmd === CommandsData.CmdFailString) && (cmd.data)){
-            this.cmdFail = cmd.data.toString()
+        if (cmd.cmd === CommandsData.CmdFailString){
+            if (cmd.data) this.cmdFail = cmd.data.toString()
             return;
         }
 
