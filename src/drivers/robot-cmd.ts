@@ -68,10 +68,10 @@ class RobotStatus {
 }
 
 class RobotAxisData{
-    public name : string | undefined;
-    public value : number | undefined;
+    public name : string ;
+    public value : number;
 
-    constructor(name : string | undefined, value : number | undefined) {
+    constructor(name : string , value : number ) {
         this.name  = name;
         this.value  = value;
     }

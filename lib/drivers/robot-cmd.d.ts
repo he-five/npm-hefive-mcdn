@@ -40,8 +40,8 @@ declare class RobotStatus {
     constructor();
 }
 declare class RobotAxisData {
-    name: string | undefined;
-    value: number | undefined;
-    constructor(name: string | undefined, value: number | undefined);
+    name: string;
+    value: number;
+    constructor(name: string, value: number);
 }
 export { RobotStatusMask, RobotStatus, RobotAxisData };
