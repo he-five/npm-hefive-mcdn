@@ -47,8 +47,7 @@ const i = 0
 
 const driver = new McdnDriver()
 
-const parameters = ['87.119.102.13:3000', '>', '?']
-driver.openTcpPort(...parameters)
+driver.openTcpPort('87.119.102.13:3000', '>', '?')
 
 //console.time('EXECUTION TIME enumSerialPorts')
 //driver.enumSerialPorts()
