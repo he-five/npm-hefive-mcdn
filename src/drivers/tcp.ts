@@ -12,6 +12,7 @@ const cmdTerm = '\r';
 
 class Tcp {
     private netSocket    : typeof Net.Socket
+    private readonly deviceAnswerTimeout : number
     private ip           : any
     private cmd           : Commands | ServiceCommands | CommandsData|  string
     private callbackId     : string | undefined
@@ -26,6 +27,7 @@ class Tcp {
 
     constructor () {
         this.netSocket = null
+        this.deviceAnswerTimeout = 5000
         this.ip = undefined
         this.cmd = ServiceCommands.CLEAR_BUFF
         this.queue = new Queue()
@@ -52,31 +54,31 @@ class Tcp {
                 self.onConnect();
             });
 
-            // this.timer = setInterval(() => {
-            //     if (this.cmdInProgress) {
-            //         if ((Date.now() - this.cmdSendTime) > 3000) {
-            //             switch (this.cmd) {
-            //                 case ServiceCommands.CLEAR_BUFF:
-            //                     let reply = new DriverReply();
-            //                     reply.cmd = this.cmd;
-            //                     reply.callbackId = this.callbackId;
-            //                     reply.answer = false
-            //                     process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
-            //                     this.disconnect()
-            //                     break;
-            //                 default:
-            //                     process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
-            //                     let failed = new DriverReply();
-            //                     failed.cmd = this.cmd;
-            //                     failed.callbackId = this.callbackId;
-            //                     failed.passed = false
-            //                     process.send?.(new IpcReply(IpcReplyType.DRV, failed))
-            //                     this.cmdInProgress  = false
-            //             }
-            //         }
-            //
-            //     }
-            // }, 100)
+            this.timer = setInterval(() => {
+                if (this.cmdInProgress) {
+                    if ((Date.now() - this.cmdSendTime) > this.deviceAnswerTimeout) {
+                        switch (this.cmd) {
+                            case ServiceCommands.CLEAR_BUFF:
+                                let reply = new DriverReply();
+                                reply.cmd = this.cmd;
+                                reply.callbackId = this.callbackId;
+                                reply.answer = false
+                                process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
+                                this.disconnect()
+                                break;
+                            default:
+                                process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
+                                let failed = new DriverReply();
+                                failed.cmd = this.cmd;
+                                failed.callbackId = this.callbackId;
+                                failed.passed = false
+                                process.send?.(new IpcReply(IpcReplyType.DRV, failed))
+                                this.cmdInProgress  = false
+                        }
+                    }
+
+                }
+            }, 200)
         }
     }
     onClose(){
@@ -86,6 +88,7 @@ class Tcp {
 
     onData(data : string) {
         this.reply += data;
+        console.log(this.reply)
         if (this.reply.endsWith(this.cmdPass) || this.reply.endsWith(this.cmdFail)) {
             let driverReply = new DriverReply();
             driverReply.cmd = this.cmd;

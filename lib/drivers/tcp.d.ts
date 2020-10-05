@@ -1,6 +1,7 @@
 import { McdnCmd } from "./mcdn-cmd";
 declare class Tcp {
     private netSocket;
+    private readonly deviceAnswerTimeout;
     private ip;
     private cmd;
     private callbackId;
