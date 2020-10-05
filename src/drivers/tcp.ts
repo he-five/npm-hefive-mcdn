@@ -88,7 +88,6 @@ class Tcp {
 
     onData(data : string) {
         this.reply += data;
-        console.log(this.reply)
         if (this.reply.endsWith(this.cmdPass) || this.reply.endsWith(this.cmdFail)) {
             let driverReply = new DriverReply();
             driverReply.cmd = this.cmd;
