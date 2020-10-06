@@ -243,7 +243,7 @@ class McdnDriver extends EventEmitter {
     }
 
     public sendStr(str: string, callback?: (data: any) => void) {
-        console.log(`STR REQUEST: ${str}`)
+        //console.log(`STR REQUEST: ${str}`)
         this.sendToDriver(callback, ServiceCommands.STRING, str);
         //this.driverProcess?.send(new McdnCmd(ServiceCommands.STRING, str));
     }
