@@ -117,6 +117,7 @@ class Tcp {
         switch(reply.cmd){
             case ServiceCommands.CLEAR_BUFF:
                 reply.answer = true
+                this.cmd = ''
                 process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
                 return;
             case Commands.AXES:
