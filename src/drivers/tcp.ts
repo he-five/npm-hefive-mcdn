@@ -89,6 +89,9 @@ class Tcp {
     onData(data : string) {
         this.reply += data;
         if (this.reply.endsWith(this.cmdPass) || this.reply.endsWith(this.cmdFail)) {
+            if (!this.cmd){
+                return;
+            }
             let driverReply = new DriverReply();
             driverReply.cmd = this.cmd;
             driverReply.callbackId = this.callbackId;
