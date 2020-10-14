@@ -31,7 +31,8 @@ declare enum ServiceCommands {
     TRATE = "TRATE",
     TLEVEL = "TLEVEL",
     STOP_TRACE = "STOP_TRACE",
-    GET_TRACE_DATA = "GET_TRACE_DATA"
+    GET_TRACE_DATA = "GET_TRACE_DATA",
+    QUIT = "QUIT"
 }
 declare const Type: {
     Position: number;

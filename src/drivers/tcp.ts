@@ -88,6 +88,9 @@ class Tcp {
 
     onData(data : string) {
         this.reply += data;
+        if (this.cmd === ServiceCommands.QUIT){
+            this.netSocket?.end()
+        }
         if (this.reply.endsWith(this.cmdPass) || this.reply.endsWith(this.cmdFail)) {
             if (!this.cmd){
                 return;
@@ -213,7 +216,8 @@ class Tcp {
             process.exit(0);
             return;
         }
-        this.netSocket.destroy();
+        this.cmd = ServiceCommands.QUIT
+        this.sendCmd(new McdnCmd(ServiceCommands.QUIT, undefined));
     }
 
     public sendCmd(cmd : McdnCmd ){
@@ -248,6 +252,9 @@ class Tcp {
 
         let actualCmd: string | undefined = ''
         switch (this.cmd) {
+            case ServiceCommands.QUIT:
+                actualCmd = '.quit'
+                break;
             case Commands.FW_VER:
                 actualCmd = '.ver'
                 break;
