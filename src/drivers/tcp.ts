@@ -90,6 +90,7 @@ class Tcp {
         this.reply += data;
         if (this.cmd === ServiceCommands.QUIT){
             this.netSocket?.end()
+            return
         }
         if (this.reply.endsWith(this.cmdPass) || this.reply.endsWith(this.cmdFail)) {
             if (!this.cmd){
