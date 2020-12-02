@@ -20,7 +20,6 @@ class Tcp {
     private cmdInProgress : boolean
     private cmdSendTime   : number
     private timer         : any
-    private connectTimer  : any
     private connected     : boolean
     private reply         : string
     private cmdPass       : string
@@ -35,7 +34,6 @@ class Tcp {
         this.cmdInProgress = false
         this.cmdSendTime = 0
         this.timer = undefined
-        this.connectTimer = undefined
         this.connected = false
         this.reply = ''
         this.cmdPass = '>'
@@ -56,7 +54,7 @@ class Tcp {
             this.netSocket.connect(tcpServerAddressArray[1], tcpServerAddressArray[0], () => {
                 self.onConnect();
             });
-            this.connectTimer = setTimeout(() => {
+            setTimeout(() => {
                 if (!this.connected){
                     let reply = new DriverReply();
                     reply.cmd = ServiceCommands.CONNECT;
