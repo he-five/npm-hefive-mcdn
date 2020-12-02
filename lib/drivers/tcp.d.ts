@@ -9,6 +9,7 @@ declare class Tcp {
     private cmdInProgress;
     private cmdSendTime;
     private timer;
+    private connectTimer;
     private connected;
     private reply;
     private cmdPass;

@@ -20,6 +20,7 @@ class Tcp {
     private cmdInProgress : boolean
     private cmdSendTime   : number
     private timer         : any
+    private connectTimer  : any
     private connected     : boolean
     private reply         : string
     private cmdPass       : string
@@ -34,6 +35,7 @@ class Tcp {
         this.cmdInProgress = false
         this.cmdSendTime = 0
         this.timer = undefined
+        this.connectTimer = undefined
         this.connected = false
         this.reply = ''
         this.cmdPass = '>'
@@ -50,9 +52,21 @@ class Tcp {
             this.netSocket.on('error', (err : string) => {self.onError(err); });
             this.netSocket.setEncoding(asciiEnc);
             let tcpServerAddressArray = this.ip.split(':');
+
             this.netSocket.connect(tcpServerAddressArray[1], tcpServerAddressArray[0], () => {
                 self.onConnect();
             });
+            this.connectTimer = setTimeout(() => {
+                if (!this.connected){
+                    let reply = new DriverReply();
+                    reply.cmd = ServiceCommands.CONNECT;
+                    reply.callbackId = undefined;
+                    reply.answer = false
+                    process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
+                    this.disconnect()
+                }
+            },this.deviceAnswerTimeout * 2)
+
 
             this.timer = setInterval(() => {
                 if (this.cmdInProgress) {
@@ -81,6 +95,9 @@ class Tcp {
             }, 200)
         }
     }
+
+
+
     onClose(){
         console.log('disconnected');
         process.exit(0);
@@ -204,6 +221,7 @@ class Tcp {
 
     onError(err : string){
         console.log(err)
+        if (this.timer) clearInterval(this.timer)
         process.send?.(new IpcReply(IpcReplyType.ERROR, err))
     }
     onConnect(){
@@ -214,6 +232,7 @@ class Tcp {
 
     public disconnect () {
         if (!this.connected){
+            if (this.timer) clearInterval(this.timer)
             process.exit(0);
             return;
         }
