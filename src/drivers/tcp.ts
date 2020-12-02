@@ -63,7 +63,7 @@ class Tcp {
                     process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
                     this.disconnect()
                 }
-            },this.deviceAnswerTimeout * 2)
+            },this.deviceAnswerTimeout)
 
 
             this.timer = setInterval(() => {
