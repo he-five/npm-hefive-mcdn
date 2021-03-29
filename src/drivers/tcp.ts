@@ -1,9 +1,10 @@
-import {McdnCmd, ServiceCommands} from "./mcdn-cmd";
+import {McdnCmd, ServiceCommands, StatusMask} from "./mcdn-cmd";
 import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {RobotAxisData, RobotStatus, RobotStatusMask} from "./robot-cmd"
+import {RobotAuxError, RobotAuxErrorMask, RobotAxisData, RobotStatus, RobotStatusMask} from "./robot-cmd"
+import {Status} from "../index";
 
 const Net                   = require('net');
 const asciiEnc        = 'ascii'
@@ -94,8 +95,6 @@ class Tcp {
         }
     }
 
-
-
     onClose(){
         console.log('disconnected');
         process.exit(0);
@@ -176,30 +175,40 @@ class Tcp {
                         }
                     })
                     answerArr = answerArr.filter((el:number)=> el != undefined && el != null)
-                    if (this.cmd === Commands.STATUS){
-                        let num = answerArr.reduce((prevValue:number,currentVal:number)=> prevValue | currentVal)
-                        let status = new RobotStatus()
-                        status.servoOn                  =   !Boolean(num & RobotStatusMask.ServoOn)
-                        status.indexAcq                 =   Boolean(num & RobotStatusMask.IndexAcq)
-                        status.index                    =   Boolean(num & RobotStatusMask.Index)
-                        status.wraparound               =   Boolean(num & RobotStatusMask.Wraparound)
-                        status.currentOverload          =   Boolean(num & RobotStatusMask.CurrentOverload)
-                        status.fwrdLimit                =   !Boolean(num & RobotStatusMask.FwrdLimit)
-                        status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
-                        status.inhibit                  =   Boolean(num & RobotStatusMask.Inhibit)
-                        status.pathPoint                =   Boolean(num & RobotStatusMask.PathPoint)
-                        status.accPhase                 =   Boolean(num & RobotStatusMask.AccPhase)
-                        status.overrun                  =   Boolean(num & RobotStatusMask.Overrun)
-                        status.powerFail                =   Boolean(num & RobotStatusMask.PowerFail)
-                        status.inMotion                 =   !Boolean(num & RobotStatusMask.MotionCompleted)
-                        status.rvsLimit                 =   Boolean(num & RobotStatusMask.RvsLimit)
-                        status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
-                        status.busy                     =   Boolean(num & (RobotStatusMask.SysMacroRunning | RobotStatusMask.UserMacroRunning ))
+                    let num = answerArr.reduce((prevValue:number,currentVal:number)=> prevValue | currentVal)
+                    let status = new RobotStatus()
+                    status.servoOn                  =   !Boolean(num & RobotStatusMask.ServoOn)
+                    status.indexAcq                 =   Boolean(num & RobotStatusMask.IndexAcq)
+                    status.index                    =   Boolean(num & RobotStatusMask.Index)
+                    status.wraparound               =   Boolean(num & RobotStatusMask.Wraparound)
+                    status.currentOverload          =   Boolean(num & RobotStatusMask.CurrentOverload)
+                    status.fwrdLimit                =   !Boolean(num & RobotStatusMask.FwrdLimit)
+                    status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
+                    status.inhibit                  =   Boolean(num & RobotStatusMask.Inhibit)
+                    status.pathPoint                =   Boolean(num & RobotStatusMask.PathPoint)
+                    status.accPhase                 =   Boolean(num & RobotStatusMask.AccPhase)
+                    status.overrun                  =   Boolean(num & RobotStatusMask.Overrun)
+                    status.powerFail                =   Boolean(num & RobotStatusMask.PowerFail)
+                    status.inMotion                 =   !Boolean(num & RobotStatusMask.MotionCompleted)
+                    status.rvsLimit                 =   Boolean(num & RobotStatusMask.RvsLimit)
+                    status.digitalOverload          =   Boolean(num & RobotStatusMask.DigitalOverload)
+                    status.busy                     =   Boolean(num & (RobotStatusMask.SysMacroRunning | RobotStatusMask.UserMacroRunning ))
 
-                        reply.answer = status
-                    }
+                    reply.answer = status
                 }
                 break;
+            case Commands.AUXERROR:
+                if (reply.answer) {
+                    let num = parseInt(reply.answer, 16)
+                    let auxError = new RobotAuxError()
+                    auxError.getFail =  Boolean(num & RobotAuxErrorMask.auxGetFail)
+                    auxError.putFail = Boolean(num & RobotAuxErrorMask.auxPutFail)
+                    auxError.flipFail = Boolean(num & RobotAuxErrorMask.auxFlpFail)
+
+                    reply.answer = auxError
+                }
+
+                    break;
             default :
                 reply.answer = reply.answer.replace(/\r\n/g, '')
                 break;
@@ -309,6 +318,9 @@ class Tcp {
                 break;
             case Commands.STATUS:
                 actualCmd = '.sta'
+                break;
+            case Commands.AUXERROR:
+                actualCmd = '.auxerror'
                 break;
             case Commands.STOP:
                 actualCmd = '.stop'

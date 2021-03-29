@@ -24,6 +24,18 @@ enum RobotStatusMask {
 
 }
 
+enum RobotAuxErrorMask {
+    auxGetFail                  = 0x0001,
+    auxPutFail                  = 0x0002,
+    auxFlpFail                  = 0x0004,
+}
+
+class RobotAuxError {
+    public getFail                    : boolean = false;
+    public putFail                    : boolean = false;
+    public flipFail                   : boolean = false;
+}
+
 class RobotStatus {
     public fwrdLimit                    : boolean;
     public index                        : boolean;
@@ -77,4 +89,4 @@ class RobotAxisData{
     }
 }
 
-export {RobotStatusMask, RobotStatus, RobotAxisData};
+export {RobotStatusMask, RobotStatus, RobotAxisData, RobotAuxError, RobotAuxErrorMask};

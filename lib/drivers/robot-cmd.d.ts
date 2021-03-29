@@ -18,6 +18,16 @@ declare enum RobotStatusMask {
     UserMacroRunning = 134217728,
     SysMacroRunning = 4194304
 }
+declare enum RobotAuxErrorMask {
+    auxGetFail = 1,
+    auxPutFail = 2,
+    auxFlpFail = 4
+}
+declare class RobotAuxError {
+    getFail: boolean;
+    putFail: boolean;
+    flipFail: boolean;
+}
 declare class RobotStatus {
     fwrdLimit: boolean;
     index: boolean;
@@ -44,4 +54,4 @@ declare class RobotAxisData {
     value: number;
     constructor(name: string, value: number);
 }
-export { RobotStatusMask, RobotStatus, RobotAxisData };
+export { RobotStatusMask, RobotStatus, RobotAxisData, RobotAuxError, RobotAuxErrorMask };

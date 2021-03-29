@@ -7,6 +7,7 @@ enum Commands {
     SERVO_ON = 'SERVO_ON',
     SERVO_OFF = 'SERVO_OFF',
     STATUS = 'STATUS',
+    AUXERROR = '.AUXERROR',
     INPUTS = 'INPUTS',
     STOP = 'STOP',
     AXIS1 = 'AXIS1',

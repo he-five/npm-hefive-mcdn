@@ -47,7 +47,7 @@ const i = 0
 
 const driver = new McdnDriver()
 
-driver.openTcpPort('87.119.102.13:3000', '>', '?')
+driver.openTcpPort('127.0.0.1:3000', '>', '?')
 
 //console.time('EXECUTION TIME enumSerialPorts')
 //driver.enumSerialPorts()
@@ -73,9 +73,10 @@ driver.on('connected', (data :boolean) => {
   //driver.sendCmd(Commands.FW_VER, testCallback2)
   driver.sendCmd(Commands.SERVO_ON)
   driver.sendCmd(Commands.AXES, testCallback2)
-    driver.sendCmd(Commands.STATUS, testCallback2)
-    driver.sendStr(`.rel r = 100 go r`,testCallback)
-    driver.sendCmd(CommandsData.Position, testCallbackPos);
+  driver.sendCmd(Commands.STATUS, testCallback2)
+//    driver.sendStr(`.rel r = 100 go r`,testCallback)
+    //driver.sendCmd(CommandsData.Position, testCallbackPos);
+    driver.sendCmd(Commands.AUXERROR, testCallback2);
   //driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('T', 10000), testCallbackAfetrMvr)
   //  driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('T', 1000))
  // driver.sendCmdDataNumber(CommandsData.RelativeMove, new RobotAxisData('Z', 100))
