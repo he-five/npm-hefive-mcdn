@@ -54,4 +54,10 @@ declare class RobotAxisData {
     value: number;
     constructor(name: string, value: number);
 }
-export { RobotStatusMask, RobotStatus, RobotAxisData, RobotAuxError, RobotAuxErrorMask };
+declare class RobotInfo {
+    ver: string;
+    sn: string;
+    type: string;
+    constructor(ver: string, sn: string, type: string);
+}
+export { RobotStatusMask, RobotStatus, RobotAxisData, RobotAuxError, RobotAuxErrorMask, RobotInfo };

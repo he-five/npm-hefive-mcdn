@@ -1,5 +1,10 @@
 declare enum Commands {
     FW_VER = "FW_VER",
+    INFO = "INFO",
+    INFO_INT = "INFO_INT",
+    SN = "SN",
+    VER = "VER",
+    TYPE = "TYPE",
     ENCODER = "ENCODER",
     FOLLOWING_ERROR = "FOLLOWING_ERROR",
     POWER_ON = "POWER_ON",

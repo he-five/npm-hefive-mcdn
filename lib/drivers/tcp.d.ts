@@ -13,6 +13,7 @@ declare class Tcp {
     private reply;
     private cmdPass;
     private cmdFail;
+    private robotInfo;
     constructor();
     connect(ip: string): void;
     onClose(): void;

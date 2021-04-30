@@ -1,10 +1,9 @@
-import {McdnCmd, ServiceCommands, StatusMask} from "./mcdn-cmd";
+import {McdnCmd, ServiceCommands} from "./mcdn-cmd";
 import {Commands} from "../commands";
 import {CommandsData} from "../commands-data";
 import {Queue} from "../helpers/queue";
 import {DriverReply, IpcReply, IpcReplyType} from "./driver-replay";
-import {RobotAuxError, RobotAuxErrorMask, RobotAxisData, RobotStatus, RobotStatusMask} from "./robot-cmd"
-import {Status} from "../index";
+import {RobotAuxError, RobotAuxErrorMask, RobotAxisData, RobotInfo, RobotStatus, RobotStatusMask} from "./robot-cmd"
 
 const Net                   = require('net');
 const asciiEnc        = 'ascii'
@@ -25,6 +24,7 @@ class Tcp {
     private reply         : string
     private cmdPass       : string
     private cmdFail       : string
+    private robotInfo     : RobotInfo
 
     constructor () {
         this.netSocket = null
@@ -39,6 +39,7 @@ class Tcp {
         this.reply = ''
         this.cmdPass = '>'
         this.cmdFail = '?'
+        this.robotInfo = new RobotInfo("", "","")
     }
 
     public connect (ip : string) {
@@ -125,6 +126,7 @@ class Tcp {
                 this.reply = this.reply.trim();
                 this.reply = this.reply.replace(this.cmdPass, '').replace(this.cmdFail, '')
                 driverReply.answer = this.reply;
+                //console.log('this.reply ' + JSON.stringify(driverReply))
                 this.postProcessAnswer(driverReply);
             }
             catch (err){
@@ -207,13 +209,40 @@ class Tcp {
 
                     reply.answer = auxError
                 }
-
                     break;
+            case Commands.VER:
+                if (reply.answer) {
+                    reply.answer = reply.answer.replace(/\r\n/g, '')
+                    this.robotInfo.ver = reply.answer;
+
+                }
+            case Commands.SN:
+                if (reply.answer) {
+                    reply.answer = reply.answer.replace(/\r\n/g, '')
+                    this.robotInfo.sn = reply.answer;
+                }
+                break;
+            case Commands.TYPE:
+                if (reply.answer) {
+                    reply.answer = reply.answer.replace(/\r\n/g, '')
+                    this.robotInfo.type = reply.answer;
+                }
+                break;
+            case Commands.INFO_INT:
+                    reply.answer = this.robotInfo
+                    // replace internal command with original
+                    reply.cmd =Commands.INFO
+                break;
             default :
                 reply.answer = reply.answer.replace(/\r\n/g, '')
                 break;
         }
+
+        // if no callbackid is given that means is internal generate nobody expecting answer yet
+       // if (reply.callbackId != undefined){
+       // console.log('this.reply ' + JSON.stringify(reply))
         process.send?.(new IpcReply(IpcReplyType.DRV, reply))
+        //}
         this.checkForPendingCmd();
     }
 
@@ -263,6 +292,24 @@ class Tcp {
             process.send?.(new IpcReply(IpcReplyType.ERROR, 'Not Connected'))
             return
         }
+
+        // generate few commands based on one
+        if (cmd.cmd == Commands.INFO){
+            let verCmd= new McdnCmd(Commands.VER)
+            if (this.cmdInProgress == false){
+                this.sendThruPort(verCmd)
+            }
+            else{
+                this.queue.enqueue(verCmd);
+            }
+            this.queue.enqueue(new McdnCmd(Commands.SN));
+            this.queue.enqueue(new McdnCmd(Commands.TYPE));
+            // pass internal command
+            cmd.cmd = Commands.INFO_INT;
+            this.queue.enqueue(cmd);
+            return
+        }
+
         if (this.cmdInProgress == false){
             this.sendThruPort(cmd);
         }
@@ -284,6 +331,19 @@ class Tcp {
                 break;
             case Commands.FW_VER:
                 actualCmd = '.ver'
+                break;
+            case Commands.VER:
+                actualCmd = 'ver'
+                break;
+            case Commands.SN:
+                actualCmd = `sn`
+                break;
+            case Commands.INFO_INT:
+                // just send empty cmd
+                actualCmd = ` `
+                break;
+            case Commands.TYPE:
+                actualCmd = `.gRobotType`
                 break;
             case Commands.ENCODER:
                 actualCmd = '.enc'
@@ -335,6 +395,7 @@ class Tcp {
                 actualCmd = '.pos'
                 break;
         }
+        //console.log(`Socket.write ${actualCmd}${cmdTerm}`);
         this.netSocket.write(`${actualCmd}${cmdTerm}`, asciiEnc, (err: any) => {
             if (err) {
                 process.send?.(new IpcReply(IpcReplyType.ERROR, err.message))

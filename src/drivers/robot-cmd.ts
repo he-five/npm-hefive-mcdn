@@ -89,4 +89,16 @@ class RobotAxisData{
     }
 }
 
-export {RobotStatusMask, RobotStatus, RobotAxisData, RobotAuxError, RobotAuxErrorMask};
+class RobotInfo{
+    public ver      : string;
+    public sn       : string;
+    public type     : string;
+
+    constructor(ver : string, sn : string, type : string ) {
+        this.ver    = ver;
+        this.sn     = sn;
+        this.type   = type;
+    }
+}
+
+export {RobotStatusMask, RobotStatus, RobotAxisData, RobotAuxError, RobotAuxErrorMask, RobotInfo};
