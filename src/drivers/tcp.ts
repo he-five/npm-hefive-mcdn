@@ -80,6 +80,9 @@ class Tcp {
                                 process.send?.(new IpcReply(IpcReplyType.CONNECTED, reply))
                                 this.disconnect()
                                 break;
+                            case ServiceCommands.QUIT:
+                                this.netSocket?.end()
+                                break;
                             default:
                                 process.send?.(new IpcReply(IpcReplyType.ERROR, `Command ${this.cmd} Timeout`))
                                 let failed = new DriverReply();
